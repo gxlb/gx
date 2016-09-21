@@ -74,7 +74,7 @@ func (me *Rand<BITS>T) RandRange(min, max <SEED_TYPE>) <SEED_TYPE> {
 
 //generate rand number with max value
 func (me *Rand<BITS>T) RandMax(max <SEED_TYPE>) <SEED_TYPE> {
-	return me.RandRange(0, max)
+	return me.RandRange(0, max-1)
 }
 
 //get seed
