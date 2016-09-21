@@ -7,13 +7,13 @@ import (
 
 func TestDebug(t *testing.T) {
 	s := Bt()
-	sesp := "Func{vipally.gmail.com/basic/debug.TestDebug}"
+	sesp := " Func{github.com/vipally/gx/debug.TestDebug}"
 	if !strings.HasPrefix(s, sesp) {
-		t.Errorf("debug.Bt() error [%s]", s)
+		t.Errorf("debug.Bt() error \n[%s]\n[%s]", s, sesp)
 	}
 
 	s = Bts()
-	sesp = "#0 Func{vipally.gmail.com/basic/debug.TestDebug}"
+	sesp = "#0 Func{github.com/vipally/gx/debug.TestDebug}"
 	if !strings.HasPrefix(s, sesp) {
 		t.Errorf("debug.Bts() error [%s]", s)
 	}
