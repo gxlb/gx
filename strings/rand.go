@@ -26,7 +26,7 @@ const (
 	upper  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	lower  = "abcdefghijklmnopqrstuvwxyz"
 	number = "1234567890"
-	sign   = "_#@!$$&*[]{}<>?/\\~"
+	sign   = "_-#@!$$&*[]{}<>?/\\~"
 )
 
 //Generate a rand string with gived rule and length
