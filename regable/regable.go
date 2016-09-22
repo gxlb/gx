@@ -7,6 +7,7 @@ package regable
 import (
 	"bytes"
 	"fmt"
+
 	acst "vipally.gmail.com/basic/consts"
 	aerr "vipally.gmail.com/basic/errors"
 )
@@ -79,4 +80,21 @@ func (cp regedId) ids() (reger_id uint32, id uint32) {
 func (cp regedId) id() (id uint32) {
 	_, id = cp.ids()
 	return
+}
+
+//-----------------------------------------------
+type RegList struct {
+	list []*RegedObjMgr
+}
+type RegedObjMgr struct {
+	id      int //id of this mgr
+	idmap   map[RegedId]*RegedObj
+	namemap map[string]RegedId
+}
+type RegedId uint //id of reged things
+type RegedObj struct {
+	name    string //name of this reg thing
+	id      RegedId
+	ref     uint   //ref count,lock free operation
+	contend string //real reged thing
 }
