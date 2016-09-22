@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	<LOCK_COMMENT>"sync"
-	acst "vipally.gmail.com/basic/consts"
-	aerr "vipally.gmail.com/basic/errors"
-	amath "vipally.gmail.com/basic/math"
+	"github.com/vipally/gx/consts"
+	"github.com/vipally/gx/errors"
+	xmath "github.com/vipally/gx/math"
 )
 
 const (
@@ -65,7 +65,7 @@ func ShowAll<TYPENAME_U>Regers() string {
 	s := fmt.Sprintf("[<TYPENAME_U>Regers] count:%d", len(g_<TYPENAME_L_SHORT>_reger_list))
 	buf.WriteString(s)
 	for _, v := range g_<TYPENAME_L_SHORT>_reger_list {
-		buf.WriteString(acst.NEW_LINE)
+		buf.WriteString(consts.NewLine)
 		buf.WriteString(v.String())
 	}
 	return buf.String()
