@@ -26,10 +26,12 @@ func (me FileSize) String() string {
 	return fmt.Sprintf("%.3f%s", d, bytesNames[i])
 }
 
+//to uint64
 func (me FileSize) N() uint64 {
 	return uint64(me)
 }
 
+//from uint64
 func (this *FileSize) Set(val uint64) {
 	*this = FileSize(val)
 }

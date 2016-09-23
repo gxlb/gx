@@ -33,6 +33,10 @@ func (this FilePath) FileName() FilePath {
 	return this
 }
 
+//func (this FilePath) Tree() *TreeNode {
+//	return nil
+//}
+
 //OS operation
 func (this FilePath) Open() {
 }

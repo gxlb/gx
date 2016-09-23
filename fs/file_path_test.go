@@ -25,4 +25,7 @@ func TestFilePath(t *testing.T) {
 	fmt.Println(f)
 	fmt.Println(RelateGoPath(f))
 	fmt.Println(RelatePath(f, "E:/dev"))
+	fmt.Println(WorkDir())
+	fmt.Println(GoPath())
+	fmt.Println(RelateGoPath(WorkDir()))
 }

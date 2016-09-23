@@ -158,5 +158,6 @@ func Match(pattern, name string) (matched bool, err error) {
 
 func WorkDir() (dir string) {
 	dir, _ = os.Getwd()
+	//dir = FormatPath(dir)
 	return
 }

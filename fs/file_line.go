@@ -11,7 +11,7 @@ const (
 )
 
 var (
-	gGoPath = goPath()
+	goPath = getGoPath()
 )
 
 //the caller's file/line info
@@ -31,7 +31,7 @@ func Func() (f string) {
 	return
 }
 
-func goPath() (p string) {
+func getGoPath() (p string) {
 	f, _ := FileLine()
 	p = strings.TrimSuffix(f, thisFile)
 	return
@@ -39,12 +39,12 @@ func goPath() (p string) {
 
 //GoPath
 func GoPath() string {
-	return gGoPath
+	return goPath
 }
 
 //path related to GoPath
 func RelateGoPath(file_path string) string {
-	return RelatePath(file_path, gGoPath)
+	return RelatePath(file_path, goPath)
 }
 
 //path related to Root
