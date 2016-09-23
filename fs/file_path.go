@@ -1,5 +1,13 @@
 package fs
 
+type FileMode uint
+
+const (
+	ModeRead FileMode = 1 << iota
+	ModeWrite
+	ModeTruncate
+)
+
 //file path object, to differentiate from common string
 type FilePath string
 
@@ -23,4 +31,14 @@ func (this FilePath) Dir() FilePath {
 
 func (this FilePath) FileName() FilePath {
 	return this
+}
+
+//OS operation
+func (this FilePath) Open() {
+}
+func (this FilePath) Create() {
+}
+func (this FilePath) Delete() {
+}
+func (this FilePath) Rename() {
 }
