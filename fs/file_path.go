@@ -1,8 +1,9 @@
 package fs
 
 import (
+	"bytes"
+	"fmt"
 	"os"
-	"path"
 	"path/filepath"
 )
 
@@ -28,7 +29,8 @@ func FilePath(str string) filePath {
 
 //set value
 func (this *filePath) Set(str string) {
-	*this = filePath(path.Clean(filepath.ToSlash(str)))
+
+	*this = filePath(filepath.ToSlash(filepath.Clean(str)))
 }
 
 //show string
@@ -130,4 +132,28 @@ func (this filePath) Rename() {
 
 func (this filePath) CreateAll(perm os.FileMode) error {
 	return os.MkdirAll(string(this), perm)
+}
+
+func (this filePath) Statistic() (nDir, nFile int, size uint64, info string) {
+	var buf bytes.Buffer
+	this.Walk(func(path string, info os.FileInfo, err error) error {
+		if err == nil {
+			if info.IsDir() {
+				nDir++
+			} else {
+				nFile++
+				size += uint64(info.Size())
+			}
+			//fmt.Println(path, info.Name(), info.Size(), info.IsDir())
+		} else {
+			buf.WriteString(err.Error())
+			buf.WriteByte('\n')
+			//fmt.Println(err)
+		}
+		return nil
+	})
+	info = buf.String()
+
+	fmt.Printf("%s\n[%s] %ddir(s) %dfile(s) %s\n", info, this.StringSys(), nDir, nFile, FileSize(size))
+	return
 }
