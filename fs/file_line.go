@@ -1,6 +1,8 @@
 package fs
 
 import (
+	"fmt"
+	"os"
 	"runtime"
 	"strings"
 )
@@ -11,7 +13,8 @@ const (
 )
 
 var (
-	goPath = getGoPath()
+	gGoPath   = goPath()
+	gWorkPath = workPath()
 )
 
 //the caller's file/line info
@@ -22,16 +25,24 @@ func FileLine() (file string, line int) {
 	return
 }
 
-//the caller's func path
-func Func() (f string) {
-	if __pc, _, _, __ok := runtime.Caller(myCallerFrame); __ok {
-		__f := runtime.FuncForPC(__pc)
-		f = __f.Name()
+//the caller's file/line info
+func RelateFileLine() (file string, line int) {
+	if _, __file, __line, __ok := runtime.Caller(myCallerFrame); __ok {
+		file, line = RelateGoPath(__file), __line
 	}
 	return
 }
 
-func getGoPath() (p string) {
+//the caller's func path
+func Func() (f string) {
+	if __pc, _, __line, __ok := runtime.Caller(myCallerFrame); __ok {
+		__f := runtime.FuncForPC(__pc)
+		f = fmt.Sprintf("%s : %d", __f.Name(), __line)
+	}
+	return
+}
+
+func goPath() (p string) {
 	f, _ := FileLine()
 	p = strings.TrimSuffix(f, thisFile)
 	return
@@ -39,15 +50,34 @@ func getGoPath() (p string) {
 
 //GoPath
 func GoPath() string {
-	return goPath
+	return gGoPath
+}
+
+func workPath() (p string) {
+	if dir, err := os.Getwd(); err == nil {
+		p = dir
+	} else {
+		panic(err)
+	}
+	return
+}
+
+//working path
+func WorkPath() (dir string) {
+	return gWorkPath
 }
 
 //path related to GoPath
 func RelateGoPath(file_path string) string {
-	return RelatePath(file_path, goPath)
+	return RelatePath(file_path, GoPath())
 }
 
-//path related to Root
+//path related to root
 func RelatePath(file_path, root string) string {
 	return strings.TrimPrefix(file_path, root)
+}
+
+//to format "\\" with "/"
+func FormatPath(filepath string) string {
+	return FilePath(filepath).String()
 }

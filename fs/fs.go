@@ -3,7 +3,6 @@ package fs
 import (
 	"os"
 	"path"
-	"strings"
 )
 
 const (
@@ -32,11 +31,6 @@ func (me FsOption) choose_name(full_name, name string) string {
 	} else {
 		return name
 	}
-}
-
-//to format "\\" with "/"
-func FormatPath(filepath string) string {
-	return strings.Replace(filepath, "\\", "/", -1)
 }
 
 func GetLeafDirs(dir string) (subs []string, err error) {
@@ -117,47 +111,42 @@ func Split(file_path string) (_path, _file string) {
 	return path.Split(file_path)
 }
 
-func Path(file_path string) (path string) {
-	path, _ = Split(file_path)
-	return
-}
+//func Path(file_path string) (path string) {
+//	path, _ = Split(file_path)
+//	return
+//}
 
 func FileName(file_path string) (file string) {
 	_, file = Split(file_path)
 	return
 }
-func FileBase(file_path string) (file string) {
-	full := FileName(file_path)
-	ext := FileExt(file_path)
-	file = strings.TrimSuffix(full, ext)
-	return
-}
 
-func FileExt(file_path string) (ext string) {
-	return path.Ext(file_path)
-}
+//func FileBase(file_path string) (file string) {
+//	full := FileName(file_path)
+//	ext := FileExt(file_path)
+//	file = strings.TrimSuffix(full, ext)
+//	return
+//}
 
-func Dir(file_path string) (dir string) {
-	return path.Dir(file_path)
-}
+//func FileExt(file_path string) (ext string) {
+//	return path.Ext(file_path)
+//}
 
-func IsAbs(file_path string) (b bool) {
-	if strings.HasPrefix(file_path, "/") || strings.Contains(file_path, ":/") { //windows D:/... linux /root/...
-		return true
-	}
-	return path.IsAbs(file_path)
-}
+//func Dir(file_path string) (dir string) {
+//	return path.Dir(file_path)
+//}
 
-func Join(elem ...string) (file_path string) {
-	return path.Join(elem...)
-}
+//func IsAbs(file_path string) (b bool) {
+//	if strings.HasPrefix(file_path, "/") || strings.Contains(file_path, ":/") { //windows D:/... linux /root/...
+//		return true
+//	}
+//	return path.IsAbs(file_path)
+//}
 
-func Match(pattern, name string) (matched bool, err error) {
-	return path.Match(pattern, name)
-}
+//func Join(elem ...string) (file_path string) {
+//	return path.Join(elem...)
+//}
 
-func WorkDir() (dir string) {
-	dir, _ = os.Getwd()
-	dir = FormatPath(dir)
-	return
-}
+//func Match(pattern, name string) (matched bool, err error) {
+//	return path.Match(pattern, name)
+//}

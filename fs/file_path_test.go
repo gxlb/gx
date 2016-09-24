@@ -3,12 +3,14 @@ package fs
 import (
 	"fmt"
 	"math"
+	"path/filepath"
+	//"path"
 	"testing"
 )
 
 func TestFilePath(t *testing.T) {
-	path := "d:/base\\debug/app.go"
-	fp := ToFilePath(path)
+	_path := "d:/base\\debug/app.go"
+	fp := FilePath(_path)
 	fmt.Println(fp)
 	fp.Set("c:/db\\ab.txt")
 	fmt.Println(fp)
@@ -25,7 +27,5 @@ func TestFilePath(t *testing.T) {
 	fmt.Println(f)
 	fmt.Println(RelateGoPath(f))
 	fmt.Println(RelatePath(f, "E:/dev"))
-	fmt.Println(WorkDir())
-	fmt.Println(GoPath())
-	fmt.Println(RelateGoPath(WorkDir()))
+	fmt.Println(filepath.Clean("E:/dev/../app/hello\\x.txt"))
 }
