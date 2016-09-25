@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type FileMode uint
@@ -49,15 +50,6 @@ func (this filePath) SplitList() []string {
 
 func (this filePath) Split() (dir, file string) {
 	return filepath.Split(string(this))
-}
-
-func Join(elem ...string) string {
-	s := filepath.Join(elem...)
-	return FormatPath(s)
-}
-
-func (this filePath) Join(elem ...string) string {
-	return Join(elem...)
 }
 
 func (this filePath) Ext() string {
@@ -111,6 +103,42 @@ func (this filePath) HasPrefix(prefix string) bool {
 	return filepath.HasPrefix(string(this), FormatPath(prefix))
 }
 
+////////////////////////////////
+func (this filePath) SplitAll() []string {
+	s := this.String()
+	maxn := strings.Count(s, "/") + 1
+	b := make([]string, maxn, maxn)
+	i := maxn - 1
+	for ; i >= 0; i-- {
+		p, f := filepath.Split(s)
+		s = strings.TrimSuffix(p, "/")
+		if f != "" {
+			b[i] = f
+		} else {
+			if p != "" {
+				b[i] = p
+			} else {
+				i++
+			}
+			break
+		}
+	}
+	return b[i:]
+}
+
+func Joins(elem ...string) string {
+	s := filepath.Join(elem...)
+	return FilePath(s).String()
+}
+
+func (this filePath) Joins(elem ...string) string {
+	return Joins(elem...)
+}
+
+func (this filePath) Join(child string) string {
+	return Joins(this.String(), child)
+}
+
 /////////////////////////////////////////////////////////////////
 
 //func (this filePath) Tree()  {
@@ -154,6 +182,6 @@ func (this filePath) Statistic() (nDir, nFile int, size uint64, info string) {
 	})
 	info = buf.String()
 
-	fmt.Printf("%s\n[%s] %ddir(s) %dfile(s) %s\n", info, this.StringSys(), nDir, nFile, FileSize(size))
+	//fmt.Printf("%s\n[%s] %ddir(s) %dfile(s) %s\n", info, this.StringSys(), nDir, nFile, FileSize(size))
 	return
 }

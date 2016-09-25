@@ -60,7 +60,7 @@ func CollectSubs(dir string, opt FsOption) (subs []string, err error) {
 			_has_sub_dir := false
 			for _, _v := range _subs {
 				_sub_name := _v.Name()
-				_fullsubname := Join(dir, _sub_name)
+				_fullsubname := Joins(dir, _sub_name)
 
 				if _v.IsDir() {
 					if _sub_name == "." || _sub_name == ".." {

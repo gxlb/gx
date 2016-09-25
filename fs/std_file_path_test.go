@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestStdFilePath(t *testing.T) {
+func __TestStdFilePath(t *testing.T) {
 
 	dirs := []string{"e:/", "//localhost/share/", "\\\\localhost\\share\\", "https://github.com/vipally/../allydale/"}
 	for _, v := range dirs {
