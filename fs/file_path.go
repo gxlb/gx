@@ -2,7 +2,6 @@ package fs
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -30,11 +29,10 @@ func FilePath(str string) filePath {
 
 //set value
 func (this *filePath) Set(str string) {
-
 	*this = filePath(filepath.ToSlash(filepath.Clean(str)))
 }
 
-//show string
+//show as string
 func (this filePath) String() string {
 	return string(this)
 }
@@ -65,7 +63,7 @@ func (this filePath) Abs() (string, error) {
 }
 
 func (this filePath) Relate(root string) filePath {
-	s, _ := filepath.Rel(FormatPath(root), string(this))
+	s, _ := filepath.Rel(FilePath(root).String(), string(this))
 	return FilePath(s)
 }
 
@@ -74,7 +72,7 @@ func (this filePath) RelateGoPath() filePath {
 	return FilePath(s)
 }
 
-func (this filePath) RelateWorkPath(root string) filePath {
+func (this filePath) RelateWorkPath() filePath {
 	s, _ := filepath.Rel(WorkPath(), string(this))
 	return FilePath(s)
 }
@@ -100,7 +98,7 @@ func (this filePath) Match(pattern string) (matched bool, err error) {
 }
 
 func (this filePath) HasPrefix(prefix string) bool {
-	return filepath.HasPrefix(string(this), FormatPath(prefix))
+	return filepath.HasPrefix(string(this), FilePath(prefix).String())
 }
 
 ////////////////////////////////
@@ -149,19 +147,6 @@ func (this filePath) Join(child string) string {
 //}
 
 //OS operation
-func (this filePath) Open() {
-}
-func (this filePath) Create() {
-}
-func (this filePath) Delete() {
-}
-func (this filePath) Rename() {
-}
-
-func (this filePath) CreateAll(perm os.FileMode) error {
-	return os.MkdirAll(string(this), perm)
-}
-
 func (this filePath) Statistic() (nDir, nFile int, size uint64, info string) {
 	var buf bytes.Buffer
 	this.Walk(func(path string, info os.FileInfo, err error) error {
@@ -184,4 +169,39 @@ func (this filePath) Statistic() (nDir, nFile int, size uint64, info string) {
 
 	//fmt.Printf("%s\n[%s] %ddir(s) %dfile(s) %s\n", info, this.StringSys(), nDir, nFile, FileSize(size))
 	return
+}
+
+func (this filePath) Remove() error {
+	return os.Remove(string(this))
+}
+
+func (this filePath) RemoveAll() error {
+	return os.RemoveAll(string(this))
+}
+
+func (this filePath) Rename(newname string) (newPath filePath, err error) {
+	n := FilePath(newname)
+	if n.VolumeName() == "" { //related path, then calculate from this.Dir
+		n.Set(Joins(this.Dir(), n.String()))
+	}
+	return n, os.Rename(string(this), n.String())
+}
+func (this filePath) Truncate(size int64) error {
+	return os.Truncate(string(this), size)
+}
+
+func (this filePath) MkdirAll(perm os.FileMode) error {
+	return os.MkdirAll(string(this), perm)
+}
+
+func (this filePath) Open() {
+}
+func (this filePath) Create() {
+}
+
+func (this filePath) Copy(path string) error {
+	return nil
+}
+func (this filePath) Move(path string) error {
+	return nil
 }

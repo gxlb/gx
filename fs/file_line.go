@@ -25,7 +25,7 @@ func FileLine() (file string, line int) {
 	return
 }
 
-//the caller's file/line info
+//the caller's file/line relate GoPath
 func RelateFileLine() (file string, line int) {
 	if _, __file, __line, __ok := runtime.Caller(myCallerFrame); __ok {
 		file, line = RelateGoPath(__file), __line
@@ -69,12 +69,22 @@ func WorkPath() (dir string) {
 
 //path related to GoPath
 func RelateGoPath(file_path string) string {
-	return RelatePath(file_path, GoPath())
+	return FilePath(file_path).RelateGoPath().String()
+}
+
+//path related to WorkPath
+func RelateWorkPath(file_path string) string {
+	return FilePath(file_path).RelateWorkPath().String()
 }
 
 //path related to root
 func RelatePath(file_path, root string) string {
-	return strings.TrimPrefix(file_path, root)
+	return FilePath(file_path).Relate(root).String()
+}
+
+//temp dir
+func TempDir() string {
+	return os.TempDir()
 }
 
 //to format "\\" with "/"

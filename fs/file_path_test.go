@@ -2,6 +2,7 @@ package fs
 
 import (
 	"fmt"
+	//"os"
 	"testing"
 )
 
@@ -25,9 +26,13 @@ func TestFilePath(t *testing.T) {
 	//	fmt.Println(RelateGoPath(f))
 	//	fmt.Println(RelatePath(f, "E:/dev"))
 	//	fmt.Println(filepath.Clean("E:/dev/../app/hello\\x.txt"))
-	p := FilePath("e:\\")
-	fmt.Println(p)
-	p.Statistic()
+	p := FilePath("//localhost/share/share_dir/share_file_in_share_dir.txt")
+	//fmt.Println(p.Rename("share_file_in_share_dir2.txt"))
+	//fmt.Println(p.Truncate(20))
+	fmt.Println(p.Statistic())
+	//	fmt.Println(os.Getegid(), os.Geteuid(), os.Getpid(), os.Getpagesize())
+	//	fmt.Println(os.Hostname())
+	//	p.Statistic()
 
 	//	dirs := []string{"e:/", "//localhost/share/", "\\\\localhost\\share\\", "\\\\localhost\\share\\share_dir\\xx.txt\\yy\\zz\\aa.txt", "c:/;d:/;e:"}
 	//	for _, v := range dirs {
