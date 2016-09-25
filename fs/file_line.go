@@ -68,26 +68,33 @@ func WorkPath() (dir string) {
 }
 
 //path related to GoPath
-func RelateGoPath(file_path string) string {
-	return FilePath(file_path).RelateGoPath().String()
+func RelateGoPath(filePath string) string {
+	return FilePath(filePath).RelateGoPath().String()
 }
 
 //path related to WorkPath
-func RelateWorkPath(file_path string) string {
-	return FilePath(file_path).RelateWorkPath().String()
+func RelateWorkPath(filePath string) string {
+	return FilePath(filePath).RelateWorkPath().String()
 }
 
 //path related to root
-func RelatePath(file_path, root string) string {
-	return FilePath(file_path).Relate(root).String()
+func RelatePath(filePath, root string) string {
+	return FilePath(filePath).Relate(root).String()
 }
 
 //temp dir
 func TempDir() string {
-	return os.TempDir()
+	return FormatPath(os.TempDir())
+}
+
+func Chdir(filePath string) (err error) {
+	if err = os.Chdir(FormatPath(filePath)); err == nil {
+		gWorkPath = workPath() //refresh this lib
+	}
+	return
 }
 
 //to format "\\" with "/"
-func FormatPath(filepath string) string {
-	return FilePath(filepath).String()
+func FormatPath(filePath string) string {
+	return FilePath(filePath).String()
 }
