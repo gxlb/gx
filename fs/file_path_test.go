@@ -1,14 +1,6 @@
 package fs
 
 import (
-	"fmt"
-	"os"
-	"path"
-	"path/filepath"
-	//"fmt"
-	//"math"
-	//"path/filepath"
-	//"path"
 	"testing"
 )
 
@@ -35,23 +27,5 @@ func TestFilePath(t *testing.T) {
 	//p := FilePath("e:\\")
 	//fmt.Println(p)
 	//p.Statistic()
-
-	dirs := []string{"e://", "\\localhost\\temp\\"}
-	for _, v := range dirs {
-		dirPath := path.Clean(v)
-		dirFilePath := filepath.Clean(v)
-		fmt.Printf("path.Clean([%s])=[%s]\n", v, dirPath)
-		fmt.Printf("filepath.Clean([%s])=[%s]\n", v, dirFilePath)
-		filepath.Walk(dirPath, func(path string, info os.FileInfo, err error) error {
-			if err == nil {
-				if info.IsDir() {
-					fmt.Printf("walk [%s] name=[%s] size=%d\n", path, info.Name(), info.Size())
-				}
-			} else {
-				fmt.Println(err)
-			}
-			return nil
-		})
-	}
 
 }
