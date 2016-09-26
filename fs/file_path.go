@@ -72,6 +72,11 @@ func (me FilePathObject) String() string {
 	return string(me)
 }
 
+//short for String()
+func (me FilePathObject) S() string {
+	return string(me)
+}
+
 //system-related string format
 func (me FilePathObject) StringSys() string {
 	return filepath.FromSlash(string(me))
@@ -123,9 +128,18 @@ func (me FilePathObject) RelateWorkPath() FilePathObject {
 	return FilePath(s)
 }
 
+//adapt for os.FileInfo
+type FileInfo os.FileInfo
+
+//walk func, adapt for fitlepath.WalkFunc
+type WalkFunc func(path string, info FileInfo, err error) error
+
 //adapt for filepath.Walk
-func (me FilePathObject) Walk(walkFn filepath.WalkFunc) error {
-	return filepath.Walk(string(me), walkFn)
+func (me FilePathObject) Walk(walkFn WalkFunc) error {
+	return filepath.Walk(
+		string(me), func(path string, info os.FileInfo, err error) error {
+			return walkFn(path, FileInfo(info), err)
+		})
 }
 
 //adapt for filepath.Base
@@ -319,7 +333,7 @@ func (me FilePathObject) destPath(_destPath string) FilePathObject {
 //OS statistic infomation
 func (me FilePathObject) Statistic() (nDir, nFile int, size uint64, info string) {
 	var buf bytes.Buffer
-	me.Walk(func(path string, info os.FileInfo, err error) error {
+	me.Walk(func(path string, info FileInfo, err error) error {
 		if err == nil {
 			if info.IsDir() {
 				nDir++
