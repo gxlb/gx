@@ -17,7 +17,7 @@ import (
 
 type FileMode os.FileMode
 
-func (this FileMode) os() os.FileMode { return os.FileMode(this) }
+func (me FileMode) os() os.FileMode { return os.FileMode(me) }
 
 const (
 	// The single letters are the abbreviations
@@ -46,99 +46,118 @@ const (
 //	ModeTruncate
 //)
 
-//file path object, to differentiate from common string
-//file-path treat all paths separated with "/"
-//StringSys return system-related string format
-type filePath string
+//
+// !!! NEVER USE THIS TYPE TO CAST STRINGS DIRECTLY !!!
+//  File-path object, to deal-with filepath or Urls as string.
+//  file-path object treat all paths separated with "/".
+//  StringSys return system-related string format.
+//  Function FilePath() is used to create this object from raw-string.
+type FilePathObject string
 
-//to file-path object
-func FilePath(str string) filePath {
-	var f filePath
+//convert file-path object from string
+func FilePath(str string) FilePathObject {
+	var f FilePathObject
 	f.Set(str)
 	return f
 }
 
 //set value
-func (this *filePath) Set(newPath string) {
-	*this = filePath(filepath.ToSlash(filepath.Clean(newPath)))
+func (this *FilePathObject) Set(newPath string) {
+	*this = FilePathObject(filepath.ToSlash(filepath.Clean(newPath)))
 }
 
 //show as string
-func (this filePath) String() string {
-	return string(this)
+func (me FilePathObject) String() string {
+	return string(me)
 }
 
 //system-related string format
-func (this filePath) StringSys() string {
-	return filepath.FromSlash(string(this))
+func (me FilePathObject) StringSys() string {
+	return filepath.FromSlash(string(me))
 }
 
 /////////////////////////////
 //from std.filepath
 
-func (this filePath) SplitList() []string {
-	return filepath.SplitList(string(this))
+//adapt for filepath.SplitList
+func (me FilePathObject) SplitList() []string {
+	return filepath.SplitList(string(me))
 }
 
-func (this filePath) Split() (dir, file string) {
-	return filepath.Split(string(this))
+//adapt for filepath.Split
+func (me FilePathObject) Split() (dir, file string) {
+	return filepath.Split(string(me))
 }
 
-func (this filePath) Ext() string {
-	return filepath.Ext(string(this))
+//adapt for filepath.Ext
+func (me FilePathObject) Ext() string {
+	return filepath.Ext(string(me))
 }
 
-func (this filePath) EvalSymlinks() (string, error) {
-	return filepath.EvalSymlinks(string(this))
+//adapt for filepath.EvalSymlinks
+func (me FilePathObject) EvalSymlinks() (string, error) {
+	return filepath.EvalSymlinks(string(me))
 }
 
-func (this filePath) Abs() (string, error) {
-	return filepath.Abs(string(this))
+//adapt for filepath.Abs
+func (me FilePathObject) Abs() (string, error) {
+	return filepath.Abs(string(me))
 }
 
-func (this filePath) Relate(root string) filePath {
-	s, _ := filepath.Rel(FilePath(root).String(), string(this))
+//adapt for filepath.Rel
+func (me FilePathObject) Relate(root string) FilePathObject {
+	s, _ := filepath.Rel(FilePath(root).String(), string(me))
 	return FilePath(s)
 }
 
-func (this filePath) RelateGoPath() filePath {
-	s, _ := filepath.Rel(GoPath(), string(this))
+//related from GoPath
+func (me FilePathObject) RelateGoPath() FilePathObject {
+	s, _ := filepath.Rel(GoPath(), string(me))
 	return FilePath(s)
 }
 
-func (this filePath) RelateWorkPath() filePath {
-	s, _ := filepath.Rel(WorkPath(), string(this))
+//related from current working path
+func (me FilePathObject) RelateWorkPath() FilePathObject {
+	s, _ := filepath.Rel(WorkPath(), string(me))
 	return FilePath(s)
 }
 
-func (this filePath) Walk(walkFn filepath.WalkFunc) error {
-	return filepath.Walk(string(this), walkFn)
+//adapt for filepath.Walk
+func (me FilePathObject) Walk(walkFn filepath.WalkFunc) error {
+	return filepath.Walk(string(me), walkFn)
 }
 
-func (this filePath) Base() string {
-	return filepath.Base(string(this))
+//adapt for filepath.Base
+func (me FilePathObject) Base() string {
+	return filepath.Base(string(me))
 }
 
-func (this filePath) Dir() string {
-	return filepath.Dir(string(this))
+//adapt for filepath.Dir
+func (me FilePathObject) Dir() string {
+	return filepath.Dir(string(me))
 }
 
-func (this filePath) VolumeName() string {
-	return filepath.VolumeName(string(this))
+//adapt for filepath.VolumeName
+func (me FilePathObject) VolumeName() string {
+	return filepath.VolumeName(string(me))
 }
 
-func (this filePath) Match(pattern string) (matched bool, err error) {
-	return filepath.Match(pattern, string(this))
+//adapt for filepath.Match
+func (me FilePathObject) Match(pattern string) (matched bool, err error) {
+	return filepath.Match(pattern, string(me))
 }
 
-func (this filePath) HasPrefix(prefix string) bool {
-	return filepath.HasPrefix(string(this), FilePath(prefix).String())
+//adapt for filepath.HasPrefix
+func (me FilePathObject) HasPrefix(prefix string) bool {
+	return filepath.HasPrefix(string(me), FilePath(prefix).String())
 }
 
 ////////////////////////////////
 //more
-func (this filePath) SplitAll() []string {
-	s := this.String()
+
+//split all path elments
+func (me FilePathObject) SplitAll() []string {
+	s := me.String()
 	maxn := strings.Count(s, "/") + 1
 	b := make([]string, maxn, maxn)
 	i := maxn - 1
@@ -159,18 +178,21 @@ func (this filePath) SplitAll() []string {
 	return b[i:]
 }
 
+//adapt for filepath.Join
 func Joins(elem ...string) string {
 	s := filepath.Join(elem...)
 	return FilePath(s).String()
 }
 
-func (this filePath) Joins(elem ...string) string {
-	s := append([]string{this.String()}, elem...)
+//join elements after me
+func (me FilePathObject) Joins(elem ...string) string {
+	s := append([]string{me.String()}, elem...)
 	return Joins(s...)
 }
 
-func (this filePath) Join(child string) string {
-	return Joins(this.String(), child)
+//join child after me
+func (me FilePathObject) Join(child string) string {
+	return Joins(me.String(), child)
 }
 
 /////////////////////////////////////////////////////////////////
@@ -179,102 +201,124 @@ func (this filePath) Join(child string) string {
 //////////////////////////
 //from std.os
 
-func (this filePath) Chmod(mod FileMode) error {
-	return os.Chmod(string(this), mod.os())
+//adapt for os.Chmod
+func (me FilePathObject) Chmod(mod FileMode) error {
+	return os.Chmod(string(me), mod.os())
 }
-func (this filePath) Chown(uid, gid int) error {
-	return os.Chown(string(this), uid, gid)
+
+//adapt for os.Chown
+func (me FilePathObject) Chown(uid, gid int) error {
+	return os.Chown(string(me), uid, gid)
 }
-func (this filePath) Chtimes(atime, mtime time.Time) error {
-	return os.Chtimes(string(this), atime, mtime)
+
+//adapt for os.Chtimes
+func (me FilePathObject) Chtimes(atime, mtime time.Time) error {
+	return os.Chtimes(string(me), atime, mtime)
 }
-func (this filePath) Lchown(uid, gid int) error {
-	return os.Lchown(string(this), uid, gid)
+
+//adapt for os.Lchown
+func (me FilePathObject) Lchown(uid, gid int) error {
+	return os.Lchown(string(me), uid, gid)
 }
-func (this filePath) Link(linkname string) (n filePath, err error) {
-	n = this.destPath(linkname)
-	err = os.Link(string(this), n.String())
+
+//adapt for os.Link, if linkname is not absolute, it will relate from me.Dir
+func (me FilePathObject) Link(linkname string) (n FilePathObject, err error) {
+	n = me.destPath(linkname)
+	err = os.Link(string(me), n.String())
 	return
 }
-func (this filePath) Mkdir(perm FileMode) error {
-	return os.Mkdir(string(this), perm.os())
+
+//adapt for os.Mkdir
+func (me FilePathObject) Mkdir(perm FileMode) error {
+	return os.Mkdir(string(me), perm.os())
 }
 
-//create full path dir
-func (this filePath) MkdirAll(perm FileMode) error {
-	return os.MkdirAll(string(this), perm.os())
-}
-func (this filePath) Readlink() (target string, err error) {
-	return os.Readlink(string(this))
+//adapt for os.MkdirAll
+func (me FilePathObject) MkdirAll(perm FileMode) error {
+	return os.MkdirAll(string(me), perm.os())
 }
 
-//remove this file or dir
-func (this filePath) Remove() error {
-	return os.Remove(string(this))
+//adapt for os.Readlink
+func (me FilePathObject) Readlink() (target string, err error) {
+	return os.Readlink(string(me))
 }
 
+//adapt for os.Remove
+func (me FilePathObject) Remove() error {
+	return os.Remove(string(me))
+}
+
+//adapt for os.RemoveAll
 //remove this dir no mater whether it is empty
-func (this filePath) RemoveAll() error {
-	return os.RemoveAll(string(this))
+func (me FilePathObject) RemoveAll() error {
+	return os.RemoveAll(string(me))
 }
 
+//adapt for os.Rename, if newname is not absolute, it will relate from me.Dir
 //move to another path name,but never cross disk
-func (this filePath) Rename(newname string) (newPath filePath, err error) {
-	n := this.destPath(newname)
-	return n, os.Rename(string(this), n.String())
+func (me FilePathObject) Rename(newname string) (newPath FilePathObject, err error) {
+	n := me.destPath(newname)
+	return n, os.Rename(string(me), n.String())
 }
 
-func (this filePath) Symlink(newname string) (n filePath, err error) {
-	n = this.destPath(newname)
-	err = os.Symlink(string(this), n.String())
+//adapt for os.Symlink, if linkname is not absolute, it will relate from me.Dir
+func (me FilePathObject) Symlink(newname string) (n FilePathObject, err error) {
+	n = me.destPath(newname)
+	err = os.Symlink(string(me), n.String())
 	return
 }
 
-//resize this file
-func (this filePath) Truncate(size int64) error {
-	return os.Truncate(string(this), size)
+//adapt for os.Truncate
+func (me FilePathObject) Truncate(size int64) error {
+	return os.Truncate(string(me), size)
 }
 
-func (this filePath) Create() (*os.File, error) {
-	return os.Create(string(this))
+//adapt for os.Create
+func (me FilePathObject) Create() (*os.File, error) {
+	return os.Create(string(me))
 }
 
-func (this filePath) NewFile(fd uintptr) *os.File {
-	return os.NewFile(fd, string(this))
+//adapt for os.NewFile
+func (me FilePathObject) NewFile(fd uintptr) *os.File {
+	return os.NewFile(fd, string(me))
 }
 
-func (this filePath) Open() (*os.File, error) {
-	return os.Create(string(this))
+//adapt for os.Open
+func (me FilePathObject) Open() (*os.File, error) {
+	return os.Open(string(me))
 }
 
-func (this filePath) OpenFile(flag int, perm FileMode) (*os.File, error) {
-	return os.OpenFile(string(this), flag, perm.os())
+//adapt for os.OpenFile
+func (me FilePathObject) OpenFile(flag int, perm FileMode) (*os.File, error) {
+	return os.OpenFile(string(me), flag, perm.os())
 }
 
-func (this filePath) Lstat() (os.FileInfo, error) {
-	return os.Lstat(string(this))
+//adapt for os.Lstat
+func (me FilePathObject) Lstat() (os.FileInfo, error) {
+	return os.Lstat(string(me))
 }
 
-func (this filePath) Stat() (os.FileInfo, error) {
-	return os.Stat(string(this))
+//adapt for os.Stat
+func (me FilePathObject) Stat() (os.FileInfo, error) {
+	return os.Stat(string(me))
 }
 
 //////////////////////////////////////////////////////
 //more
 
-//if _destPath is related path, then calculate from this.Dir
-func (this filePath) destPath(_destPath string) filePath {
+//if _destPath is related path, then calculate from me.Dir
+func (me FilePathObject) destPath(_destPath string) FilePathObject {
 	n := FilePath(_destPath)
-	if n.VolumeName() == "" { //related path, then calculate from this.Dir
-		n.Set(Joins(this.Dir(), n.String()))
+	if n.VolumeName() == "" { //related path, then calculate from me.Dir
+		n.Set(Joins(me.Dir(), n.String()))
 	}
 	return n
 }
 
 //OS statistic infomation
-func (this filePath) Statistic() (nDir, nFile int, size uint64, info string) {
+func (me FilePathObject) Statistic() (nDir, nFile int, size uint64, info string) {
 	var buf bytes.Buffer
-	this.Walk(func(path string, info os.FileInfo, err error) error {
+	me.Walk(func(path string, info os.FileInfo, err error) error {
 		if err == nil {
 			if info.IsDir() {
 				nDir++
@@ -292,33 +336,33 @@ func (this filePath) Statistic() (nDir, nFile int, size uint64, info string) {
 	})
 	info = buf.String()
 
-	//fmt.Printf("%s\n[%s] %ddir(s) %dfile(s) %s\n", info, this.StringSys(), nDir, nFile, FileSize(size))
+	//fmt.Printf("%s\n[%s] %ddir(s) %dfile(s) %s\n", info, me.StringSys(), nDir, nFile, FileSize(size))
 	return
 }
 
 //copy to destPath
-func (this filePath) Copy(destPath string) (filePath, error) {
-	//n := this.destPath(newname)
+func (me FilePathObject) Copy(destPath string) (FilePathObject, error) {
+	//n := me.destPath(newname)
 	return "", nil
 }
 
 //move to destPath
-func (this filePath) Move(destPath string) (filePath, error) {
-	n := this.destPath(destPath)
-	if this.VolumeName() == n.VolumeName() { //not cross disk,use rename operation
-		return this.Rename(n.String())
+func (me FilePathObject) Move(destPath string) (FilePathObject, error) {
+	n := me.destPath(destPath)
+	if me.VolumeName() == n.VolumeName() { //not cross disk,use rename operation
+		return me.Rename(n.String())
 	}
 	return "", nil
 }
 
 //calculate file hash
-func (this filePath) Hash(method, salt string) string {
+func (me FilePathObject) Hash(method, salt string) string {
 	return ""
 }
 
-//func (this filePath) Tree()  {
-//	return this
+//func (me filePath) Tree()  {
+//	return me
 //}
-//func (this filePath) CollectSubs(opt FsOption) (subs []string, err error) {
-//	return this
+//func (me filePath) CollectSubs(opt FsOption) (subs []string, err error) {
+//	return me
 //}

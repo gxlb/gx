@@ -3,12 +3,13 @@ package time
 
 //to speed up, must remove lock
 
-//import (
-//	"fmt"
-//	"sync"
-//	"time"
-//	"vipally.gmail.com/basic/goroutine"
-//)
+import (
+	"fmt"
+	"sync"
+	"time"
+
+	"vipally.gmail.com/basic/goroutine"
+)
 
 //var (
 //	G_DEBUG   = false

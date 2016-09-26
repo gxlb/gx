@@ -1,3 +1,4 @@
+//package fs implements file-system related path and file operations
 package fs
 
 import (
