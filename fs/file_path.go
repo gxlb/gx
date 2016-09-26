@@ -54,10 +54,11 @@ const (
 //  Function FilePath() is used to create this object from raw-string.
 type FilePathObject string
 
-//convert file-path object from string
-func FilePath(str string) FilePathObject {
+//  create file-path object from raw-string.
+//  !!!NEVER USE FilePathObject TO CAST STRINGS DIRECTLY!!!
+func FilePath(strPath string) FilePathObject {
 	var f FilePathObject
-	f.Set(str)
+	f.Set(strPath)
 	return f
 }
 
