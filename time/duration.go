@@ -23,7 +23,7 @@ const (
 
 	////////////////////////////////////////////////////////
 	//re-export std.Duration.consts
-	//THIS MAKE MY EXTEND CODE UGLY
+	//THIS LOOKS A LITTLE UGLY
 
 	Nanosecond  Duration = Duration(time.Nanosecond)
 	Microsecond          = Duration(time.Microsecond)
@@ -63,18 +63,7 @@ func (d Duration) String() string {
 
 ////////////////////////////////////////////////////////
 //re-export std.Duration.methods
-//THIS MAKE MY EXTEND CODE UGLY
-
-//re-export std.time.ParseDuration
-func ParseDuration(s string) (Duration, error) {
-	d, err := time.ParseDuration(s)
-	return Duration(d), err
-}
-
-//re-export std.time.Since
-func Since(t time.Time) Duration {
-	return Duration(time.Since(t))
-}
+//THIS LOOKS A LITTLE UGLY
 
 //re-export std.Duration.Seconds
 func (d Duration) Seconds() float64 {
@@ -89,6 +78,17 @@ func (d Duration) Minutes() float64 {
 //re-export std.Duration.Hours
 func (d Duration) Hours() float64 {
 	return d.Std().Hours()
+}
+
+//re-export std.time.ParseDuration
+func ParseDuration(s string) (Duration, error) {
+	d, err := time.ParseDuration(s)
+	return Duration(d), err
+}
+
+//re-export std.time.Since
+func Since(t time.Time) Duration {
+	return Duration(time.Since(t))
 }
 
 ////////////////////////////////////////////////////////
