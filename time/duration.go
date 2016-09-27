@@ -1,6 +1,7 @@
 // to extend std.time.Duration
 // and hide std.time for clients
 
+//packge time expand std.time and hide std.time depend for client
 package time
 
 import (

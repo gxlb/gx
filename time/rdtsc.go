@@ -1,4 +1,5 @@
-//Package time implement some time function such as RDTSC() from C
+// export some C time function such as RDTSC() from cgo
+
 package time
 
 /*
