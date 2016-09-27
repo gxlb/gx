@@ -7,7 +7,7 @@ import (
 type Uint64 uint64
 
 func (me Uint64) CommaString() string {
-	r := 1000
+	r := Uint64(1000)
 	l := me
 	s := ""
 	for l >= r {

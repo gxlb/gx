@@ -4,7 +4,7 @@ import (
 	//	"os"
 	//	"testing"
 
-	_ "github.com/vipally/gogp" //auto run gogp tool in test process
+	_ "github.com/vipally/gogp" //auto run gogp tool at current path in test process
 )
 
 //func TestCallGogp(t *testing.T) {

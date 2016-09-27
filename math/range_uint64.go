@@ -8,12 +8,12 @@ package math
 import (
 	"fmt"
 	"math"
-	aerr "vipally.gmail.com/basic/errors"
+	//aerr "vipally.gmail.com/basic/errors"
 )
 
 var (
-	errid_ru64_full, _     = aerr.Reg("[RangeUInt64] out of range")
-	errid_min_max_error, _ = aerr.Reg("[min > max error]")
+//errid_ru64_full, _     = aerr.Reg("[RangeUInt64] out of range")
+//errid_min_max_error, _ = aerr.Reg("[min > max error]")
 )
 
 //ranged uint64 object
@@ -47,7 +47,7 @@ func (me *RangeUInt64) Init(_val, _min, _max uint64) (err error) {
 
 func (me *RangeUInt64) Add(other uint64) (r uint64, err error) {
 	if math.MaxUint64-other < me.val {
-		return me.min, aerr.Newf(errid_ru64_full, "Add(%d) will cause out of range :%s", other, me.Info())
+		//return me.min, aerr.Newf(errid_ru64_full, "Add(%d) will cause out of range :%s", other, me.Info())
 	}
 	v := me.val + other
 	r, err = v, me.verify(v)
@@ -55,7 +55,7 @@ func (me *RangeUInt64) Add(other uint64) (r uint64, err error) {
 }
 func (me *RangeUInt64) Sub(other uint64) (r uint64, err error) {
 	if me.val < other {
-		return me.min, aerr.Newf(errid_ru64_full, "Sub(%d) will cause out of range :%s", other, me.Info())
+		//return me.min, aerr.Newf(errid_ru64_full, "Sub(%d) will cause out of range :%s", other, me.Info())
 	}
 	v := me.val - other
 	r, err = v, me.verify(v)
@@ -64,7 +64,7 @@ func (me *RangeUInt64) Sub(other uint64) (r uint64, err error) {
 
 func (me *RangeUInt64) Mul(other uint64) (r uint64, err error) {
 	if other > 0 && math.MaxUint64/other < me.val {
-		return me.min, aerr.Newf(errid_ru64_full, "Mul(%d) will cause out of range :%s", other, me.Info())
+		//return me.min, aerr.Newf(errid_ru64_full, "Mul(%d) will cause out of range :%s", other, me.Info())
 	}
 	v := me.val * other
 	r, err = v, me.verify(v)
@@ -72,7 +72,7 @@ func (me *RangeUInt64) Mul(other uint64) (r uint64, err error) {
 }
 func (me *RangeUInt64) Div(other uint64) (r uint64, err error) {
 	if 0 == other {
-		return me.min, aerr.Newf(errid_ru64_full, "Div(%d) error:%s", other, me.Info())
+		//return me.min, aerr.Newf(errid_ru64_full, "Div(%d) error:%s", other, me.Info())
 	}
 	v := me.val / other
 	r, err = v, me.verify(v)
@@ -80,7 +80,7 @@ func (me *RangeUInt64) Div(other uint64) (r uint64, err error) {
 }
 func (me *RangeUInt64) Mod(other uint64) (r uint64, err error) {
 	if 0 == other {
-		return me.min, fmt.Errorf("[RangeUInt64] Mod(%d) error:%s", other, me.Info())
+		//return me.min, fmt.Errorf("[RangeUInt64] Mod(%d) error:%s", other, me.Info())
 	}
 	v := me.val % other
 	r, err = v, me.verify(v)
@@ -88,14 +88,14 @@ func (me *RangeUInt64) Mod(other uint64) (r uint64, err error) {
 }
 func (me *RangeUInt64) Inc() (r uint64, err error) {
 	if math.MaxUint64 == me.val {
-		return me.min, aerr.Newf(errid_ru64_full, "Inc() will cause out of range :%s", me.Info())
+		//return me.min, aerr.Newf(errid_ru64_full, "Inc() will cause out of range :%s", me.Info())
 	}
 	r, err = me.Set(me.val + 1)
 	return
 }
 func (me *RangeUInt64) Dec(other uint64) (r uint64, err error) {
 	if 0 == me.val {
-		return me.min, aerr.Newf(errid_ru64_full, "Dec() will cause out of range :%s", me.Info())
+		//return me.min, aerr.Newf(errid_ru64_full, "Dec() will cause out of range :%s", me.Info())
 	}
 	r, err = me.Set(me.val - 1)
 	return
@@ -136,18 +136,16 @@ func (me *RangeUInt64) Info() string {
 
 func (me *RangeUInt64) verify(_val uint64) (err error) {
 	if !me.InRange(_val) {
-		err = aerr.Newf(errid_ru64_full, "val(%d) out of range[%d,%d]",
-			_val, me.min, me.max)
+		//err = aerr.Newf(errid_ru64_full, "val(%d) out of range[%d,%d]", _val, me.min, me.max)
 	}
 	return
 }
 
 func verifyRangeUInt64(_val, _min, _max uint64) (err error) {
 	if _min > _max {
-		err = aerr.New(errid_min_max_error)
+		//err = aerr.New(errid_min_max_error)
 	} else if _val < _min || _val > _max {
-		err = aerr.Newf(errid_ru64_full, "val(%d) out of range[%d,%d]",
-			_val, _min, _max)
+		//err = aerr.Newf(errid_ru64_full, "val(%d) out of range[%d,%d]", _val, _min, _max)
 	}
 	return
 }
