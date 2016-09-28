@@ -43,8 +43,11 @@ func Func() (f string) {
 }
 
 func goPath() (p string) {
-	f, _ := FileLine()
-	p = strings.TrimSuffix(f, thisFile)
+	//get GoPath
+	s := os.Getenv("GOPATH")
+	if ss := strings.Split(s, ";"); ss != nil && len(ss) > 0 {
+		p = FormatPath(ss[0] + "/src/")
+	}
 	return
 }
 
