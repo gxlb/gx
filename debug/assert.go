@@ -8,3 +8,4 @@ func Assert(b bool) bool {
 }
 
 //do nothing, used to avoid compile error
+func Nothing(elem ...interface{}) {}
