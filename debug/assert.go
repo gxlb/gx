@@ -6,3 +6,5 @@ func Assert(b bool) bool {
 	}
 	return b
 }
+
+//do nothing, used to avoid compile error
