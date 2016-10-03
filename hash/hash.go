@@ -20,6 +20,7 @@ const (
 	SHA512
 	CRC32
 	CRC64
+	FINGERPRINT //finger print, use md5+sha1+crc64
 )
 
 var (
@@ -41,6 +42,8 @@ func (me HashType) New() (h hash.Hash) {
 		h = crc32.NewIEEE()
 	case CRC64:
 		h = crc64.New(gCrc6ISO4Table)
+	case FINGERPRINT:
+		h = NewFingerprint()
 	}
 	return
 }

@@ -26,13 +26,24 @@ func TestFilePath(t *testing.T) {
 	//	fmt.Println(RelateGoPath(f))
 	//	fmt.Println(RelatePath(f, "E:/dev"))
 	//	fmt.Println(filepath.Clean("E:/dev/../app/hello\\x.txt"))
-	p := FilePath("//localhost/share/share_dir/share_file_in_share_dir.txt")
+	p := FilePath("E:/temp")
+	//p := FilePath("//localhost/share/share_dir/share_file_in_share_dir.txt")
 	//fmt.Println(p.Rename("share_file_in_share_dir2.txt"))
 	//fmt.Println(p.Truncate(20))
-	fmt.Println(p.Statistic())
-	fmt.Println(FilePath(WorkPath()).RelateGoPath())
-	fmt.Println(WorkPath())
-	fmt.Println(FilePath("E:/dev/gocode/trunk/src/github.com/vipally/gx/fs/x/h.txt").RelateWorkPath())
+	//	fmt.Println(p.Statistic())
+	//	fmt.Println(FilePath(WorkPath()).RelateGoPath())
+	//	fmt.Println(WorkPath())
+	//	fmt.Println(FilePath("E:/dev/gocode/trunk/src/github.com/vipally/gx/fs/x/h.txt").RelateWorkPath())
+	//	fmt.Println(WorkPath())
+	if n, e := p.Fingerprint(); e == nil {
+		l := n.All()
+		for _, v := range l {
+			fmt.Println(v.Fingerprint, v.Path, v.Size)
+		}
+	} else {
+		fmt.Println(e)
+	}
+
 	//	fmt.Println(os.Getegid(), os.Geteuid(), os.Getpid(), os.Getpagesize())
 	//	fmt.Println(os.Hostname())
 	//	p.Statistic()

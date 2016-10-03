@@ -9,10 +9,14 @@ package fs
 
 import (
 	"bytes"
+	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
+
+	xhash "github.com/vipally/gx/hash"
 )
 
 type FileMode os.FileMode
@@ -355,9 +359,98 @@ func (me FilePathObject) Statistic() (nDir, nFile int, size uint64, info string)
 	return
 }
 
+type FileFingerprint struct {
+	Path, Fingerprint string
+	Size              int64
+}
+
+//finger print object
+type FileFingerprintNode struct {
+	FileFingerprint
+	Subs []*FileFingerprintNode
+}
+
+func (this *FileFingerprintNode) String() string {
+	return this.Fingerprint
+}
+func (this *FileFingerprintNode) All() (list []FileFingerprint) {
+	list = append(list, this.FileFingerprint)
+	for _, v := range this.Subs {
+		list = append(list, v.All()...)
+	}
+	return
+}
+
+//for sort
+type sortFingerprint struct {
+	list []*FileFingerprintNode
+}
+
+func (this *sortFingerprint) push(v *FileFingerprintNode) int {
+	if v.Fingerprint != "" {
+		this.list = append(this.list, v)
+	}
+	return this.Len()
+}
+
+func (this *sortFingerprint) Len() int {
+	return len(this.list)
+}
+
+//sort by Fingerprint decend,the larger one first
+func (this *sortFingerprint) Less(i, j int) bool {
+	l, r := this.list[i], this.list[j]
+	return l.Fingerprint > r.Fingerprint
+}
+func (this *sortFingerprint) Swap(i, j int) {
+	this.list[i], this.list[j] = this.list[j], this.list[i]
+}
+
 //get fingerprint of a filepath
-func (me FilePathObject) Fingerprint() (string, error) {
-	return "", nil
+func (me FilePathObject) Fingerprint() (fp *FileFingerprintNode, err error) {
+	var f *os.File
+	if f, err = me.Open(); err == nil {
+		defer f.Close()
+		var fi os.FileInfo
+		fp = &FileFingerprintNode{}
+		if fi, err = f.Stat(); err == nil {
+			h := xhash.NewFingerprint()
+			if fi.IsDir() {
+				var dirs []os.FileInfo
+				if dirs, err = f.Readdir(0); err == nil {
+					var sortlist sortFingerprint
+					for _, v := range dirs {
+						_sub := v.Name()
+						if _sub != "." && _sub != ".." {
+							_subfullname := me.Join(_sub)
+							var sub *FileFingerprintNode
+							if sub, err = FilePath(_subfullname).Fingerprint(); err == nil {
+								sortlist.push(sub)
+							} else {
+								return
+							}
+						}
+					}
+					sort.Sort(&sortlist)
+					for _, v := range sortlist.list {
+						r := strings.NewReader(v.Fingerprint)
+						io.Copy(h, r)
+						fp.Size += v.Size
+					}
+					fp.Subs = sortlist.list
+				}
+			} else {
+				r := io.Reader(f)
+				io.Copy(h, r)
+				fp.Size = fi.Size()
+			}
+			h.Resetsize(fp.Size)
+			p := h.String()
+			fp.Path = me.String()
+			fp.Fingerprint = p
+		}
+	}
+	return
 }
 
 //copy to destPath
