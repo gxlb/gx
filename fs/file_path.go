@@ -238,7 +238,7 @@ func (me FilePathObject) Lchown(uid, gid int) error {
 
 //adapt for os.Link, if linkname is not absolute, it will relate from me.Dir
 func (me FilePathObject) Link(linkname string) (n FilePathObject, err error) {
-	n = me.destPath(linkname)
+	n = me.relateThisPath(linkname)
 	err = os.Link(string(me), n.String())
 	return
 }
@@ -272,13 +272,13 @@ func (me FilePathObject) RemoveAll() error {
 //adapt for os.Rename, if newname is not absolute, it will relate from me.Dir
 //move to another path name,but never cross disk
 func (me FilePathObject) Rename(newname string) (newPath FilePathObject, err error) {
-	n := me.destPath(newname)
+	n := me.relateThisPath(newname)
 	return n, os.Rename(string(me), n.String())
 }
 
 //adapt for os.Symlink, if linkname is not absolute, it will relate from me.Dir
 func (me FilePathObject) Symlink(newname string) (n FilePathObject, err error) {
-	n = me.destPath(newname)
+	n = me.relateThisPath(newname)
 	err = os.Symlink(string(me), n.String())
 	return
 }
@@ -322,7 +322,7 @@ func (me FilePathObject) Stat() (os.FileInfo, error) {
 //more
 
 //if _destPath is related path, then calculate from me.Dir
-func (me FilePathObject) destPath(_destPath string) FilePathObject {
+func (me FilePathObject) relateThisPath(_destPath string) FilePathObject {
 	n := FilePath(_destPath)
 	if n.VolumeName() == "" { //related path, then calculate from me.Dir
 		n.Set(Joins(me.Dir(), n.String()))
@@ -355,6 +355,11 @@ func (me FilePathObject) Statistic() (nDir, nFile int, size uint64, info string)
 	return
 }
 
+//get fingerprint of a filepath
+func (me FilePathObject) Fingerprint() (string, error) {
+	return "", nil
+}
+
 //copy to destPath
 func (me FilePathObject) Copy(destPath string) (FilePathObject, error) {
 	//n := me.destPath(newname)
@@ -363,7 +368,7 @@ func (me FilePathObject) Copy(destPath string) (FilePathObject, error) {
 
 //move to destPath
 func (me FilePathObject) Move(destPath string) (FilePathObject, error) {
-	n := me.destPath(destPath)
+	n := me.relateThisPath(destPath)
 	if me.VolumeName() == n.VolumeName() { //not cross disk,use rename operation
 		return me.Rename(n.String())
 	}
