@@ -7,11 +7,11 @@ import (
 )
 
 var (
-	gId uint64
+	gId uint32
 )
 
 type NoneHash struct {
-	id uint64
+	id uint32
 }
 
 func NewNoneHash() hash.Hash {
@@ -30,7 +30,7 @@ func (this *NoneHash) Write(p []byte) (n int, err error) {
 func (this *NoneHash) Sum(b []byte) []byte {
 	buf := bytes.NewBuffer(nil)
 	id := this.id
-	for i := uint(8); i > 0; i-- {
+	for i := uint(4); i > 0; i-- {
 		buf.WriteByte(byte(id >> ((i - 1) * 8) & 0xff))
 	}
 	return buf.Bytes()
