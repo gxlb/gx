@@ -35,11 +35,27 @@ func TestFilePath(t *testing.T) {
 	//	fmt.Println(WorkPath())
 	//	fmt.Println(FilePath("E:/dev/gocode/trunk/src/github.com/vipally/gx/fs/x/h.txt").RelateWorkPath())
 	//	fmt.Println(WorkPath())
-	if n, e := p.Fingerprint(); e == nil {
+	if n, e := p.Hash(NONE, ""); e == nil {
 		l := n.All()
 		for _, v := range l {
-			fmt.Println(v.Fingerprint, v.Path, v.Size)
+			fmt.Println(v.Hash, v.Path, v.Size)
 		}
+		//		{
+		//			v := n.Visitor()
+		//			for v.Next() {
+		//				g := v.Get()
+		//				fmt.Println(g.Hash, g.Path, g.Size)
+		//			}
+		//		}
+		fmt.Println("visiting...")
+		{
+			v := n.Visitor()
+			for v.Prev() {
+				g := v.Get()
+				fmt.Println(g.Hash, g.Path, g.Size)
+			}
+		}
+
 	} else {
 		fmt.Println(e)
 	}

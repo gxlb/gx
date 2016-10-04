@@ -9,6 +9,7 @@ package fs
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -42,6 +43,17 @@ const (
 	// Mask for the type bits. For regular files, none will be set.
 	ModeType = FileMode(os.ModeType)
 	ModePerm = FileMode(os.ModePerm) // Unix permission bits
+)
+
+const ( //re-export consts for hash
+	NONE        = xhash.NONE
+	MD5         = xhash.MD5
+	SHA1        = xhash.SHA1
+	SHA256      = xhash.SHA256
+	SHA512      = xhash.SHA512
+	CRC32       = xhash.CRC32
+	CRC64       = xhash.CRC64
+	FINGERPRINT = xhash.FINGERPRINT
 )
 
 //const (
@@ -359,71 +371,194 @@ func (me FilePathObject) Statistic() (nDir, nFile int, size uint64, info string)
 	return
 }
 
-type FileFingerprint struct {
-	Path, Fingerprint string
-	Size              int64
+type FileHash struct {
+	Path, Hash string
+	Size       FileSize
+	IsDir      bool
 }
 
 //finger print object
-type FileFingerprintNode struct {
-	FileFingerprint
-	Subs []*FileFingerprintNode
+type FileHashNode struct {
+	FileHash
+	Children []*FileHashNode
 }
 
-func (this *FileFingerprintNode) String() string {
-	return this.Fingerprint
+//visit all FileHashNode node
+type FileHashNodeVisitor struct {
+	node         *FileHashNode
+	parents      []*FileHashNode
+	brotherIdxes []int
+	//visit order? this?child?brother?
 }
-func (this *FileFingerprintNode) All() (list []FileFingerprint) {
-	list = append(list, this.FileFingerprint)
-	for _, v := range this.Subs {
+
+func (this *FileHashNodeVisitor) push(n *FileHashNode, bIdx int) {
+	this.parents = append(this.parents, n)
+	this.brotherIdxes = append(this.brotherIdxes, bIdx)
+}
+
+func (this *FileHashNodeVisitor) pop() (n *FileHashNode, bIdx int) {
+	l := len(this.parents)
+	if l > 0 {
+		n, bIdx = this.tail()
+		this.parents = this.parents[:l-1]
+		this.brotherIdxes = this.brotherIdxes[:l-1]
+	}
+	return
+}
+
+func (this *FileHashNodeVisitor) tail() (n *FileHashNode, bIdx int) {
+	l := len(this.parents)
+	if l > 0 {
+		n = this.parents[l-1]
+		bIdx = this.brotherIdxes[l-1]
+	}
+	return
+}
+
+func (this *FileHashNodeVisitor) depth() int {
+	return len(this.parents)
+}
+
+func (this *FileHashNodeVisitor) update_tail(bIdx int) bool {
+	l := len(this.parents)
+	if l > 0 {
+		this.brotherIdxes[l-1] = bIdx
+		return true
+	}
+	return false
+}
+
+func (this *FileHashNodeVisitor) top_right(n *FileHashNode) (p *FileHashNode) {
+	if n != nil {
+		l := len(n.Children)
+		for l > 0 {
+			this.push(n, l-1)
+			n = n.Children[l-1]
+			l = len(n.Children)
+		}
+		p = n
+	}
+	return
+}
+
+func (this *FileHashNodeVisitor) Next() bool {
+	if this.node != nil { //check if has any children
+		if len(this.node.Children) > 0 {
+			this.push(this.node, 0)
+			this.node = this.node.Children[0]
+		} else {
+			this.node = nil
+		}
+	}
+	for this.node == nil && this.depth() > 0 { //check if has any brothers or uncles
+		p, bIdx := this.tail()
+		if bIdx < 0 { //ref parent
+			this.node = p
+			this.pop()
+		} else if bIdx < len(p.Children)-1 { //next brother
+			bIdx++
+			this.node = p.Children[bIdx]
+			this.update_tail(bIdx)
+		} else { //no more brothers
+			this.pop()
+		}
+	}
+	return this.node != nil
+}
+
+func (this *FileHashNodeVisitor) Prev() bool {
+	if this.node == nil && this.depth() > 0 { //check if has any brothers or uncles
+		p, _ := this.pop()
+		this.node = this.top_right(p)
+		return this.node != nil
+	}
+
+	if this.node != nil { //check if has any children
+		p, bIdx := this.tail()
+		if bIdx > 0 {
+			bIdx--
+			this.update_tail(bIdx)
+			this.node = this.top_right(p.Children[bIdx])
+		} else {
+			this.node = p
+			this.pop()
+		}
+	}
+	return this.node != nil
+}
+
+func (this *FileHashNodeVisitor) Get() *FileHash {
+	return &this.node.FileHash
+}
+
+func (this *FileHashNode) Visitor() (v *FileHashNodeVisitor) {
+	v = &FileHashNodeVisitor{}
+	v.push(this, -1)
+	return
+}
+
+func (this *FileHashNode) String() string {
+	return this.Hash
+}
+
+func (this *FileHashNode) All() (list []FileHash) {
+	list = append(list, this.FileHash)
+	for _, v := range this.Children {
 		list = append(list, v.All()...)
 	}
 	return
 }
 
 //for sort
-type sortFingerprint struct {
-	list []*FileFingerprintNode
+type sortHash struct {
+	list []*FileHashNode
 }
 
-func (this *sortFingerprint) push(v *FileFingerprintNode) int {
-	if v.Fingerprint != "" {
-		this.list = append(this.list, v)
-	}
+func (this *sortHash) push(v *FileHashNode) int {
+	//if true || v.Hash != "" {
+	this.list = append(this.list, v)
+	//}
 	return this.Len()
 }
 
-func (this *sortFingerprint) Len() int {
+func (this *sortHash) Len() int {
 	return len(this.list)
 }
 
-//sort by Fingerprint decend,the larger one first
-func (this *sortFingerprint) Less(i, j int) bool {
+//sort by Hash decend,the larger one first
+func (this *sortHash) Less(i, j int) bool {
 	l, r := this.list[i], this.list[j]
-	return l.Fingerprint > r.Fingerprint
+	if l.Hash > r.Hash {
+		return true
+	}
+	if l.Size > r.Size {
+		return true
+	}
+	return false
 }
-func (this *sortFingerprint) Swap(i, j int) {
+
+func (this *sortHash) Swap(i, j int) {
 	this.list[i], this.list[j] = this.list[j], this.list[i]
 }
 
-//get fingerprint of a filepath
-func (me FilePathObject) Fingerprint() (fp *FileFingerprintNode, err error) {
+//Fingerprint get fingerprint of a file or dir
+func (me FilePathObject) Fingerprint() (fp *FileHashNode, err error) {
 	var f *os.File
 	if f, err = me.Open(); err == nil {
 		defer f.Close()
 		var fi os.FileInfo
-		fp = &FileFingerprintNode{}
+		fp = &FileHashNode{}
 		if fi, err = f.Stat(); err == nil {
 			h := xhash.NewFingerprint()
 			if fi.IsDir() {
 				var dirs []os.FileInfo
 				if dirs, err = f.Readdir(0); err == nil {
-					var sortlist sortFingerprint
+					var sortlist sortHash
 					for _, v := range dirs {
 						_sub := v.Name()
 						if _sub != "." && _sub != ".." {
 							_subfullname := me.Join(_sub)
-							var sub *FileFingerprintNode
+							var sub *FileHashNode
 							if sub, err = FilePath(_subfullname).Fingerprint(); err == nil {
 								sortlist.push(sub)
 							} else {
@@ -433,21 +568,72 @@ func (me FilePathObject) Fingerprint() (fp *FileFingerprintNode, err error) {
 					}
 					sort.Sort(&sortlist)
 					for _, v := range sortlist.list {
-						r := strings.NewReader(v.Fingerprint)
+						r := strings.NewReader(v.Hash)
 						io.Copy(h, r)
 						fp.Size += v.Size
 					}
-					fp.Subs = sortlist.list
+					fp.Children = sortlist.list
+					fp.IsDir = true
 				}
 			} else {
 				r := io.Reader(f)
 				io.Copy(h, r)
-				fp.Size = fi.Size()
+				fp.Size = FileSize(fi.Size())
 			}
-			h.Resetsize(fp.Size)
+			h.Resetsize(int64(fp.Size))
 			p := h.String()
 			fp.Path = me.String()
-			fp.Fingerprint = p
+			fp.Hash = p
+		}
+	}
+	return
+}
+
+//Fingerprint get hash of a file or dir by method
+func (me FilePathObject) Hash(method xhash.HashMethod, salt string) (hs *FileHashNode, err error) {
+	var f *os.File
+	if f, err = me.Open(); err == nil {
+		defer f.Close()
+		var fi os.FileInfo
+		hs = &FileHashNode{}
+		if fi, err = f.Stat(); err == nil {
+			h := method.New()
+			if salt != "" {
+				h.Write([]byte(salt))
+			}
+			if fi.IsDir() {
+				var dirs []os.FileInfo
+				if dirs, err = f.Readdir(0); err == nil {
+					var sortlist sortHash
+					for _, v := range dirs {
+						_sub := v.Name()
+						if _sub != "." && _sub != ".." {
+							_subfullname := me.Join(_sub)
+							var sub *FileHashNode
+							if sub, err = FilePath(_subfullname).Hash(method, salt); err == nil {
+								sortlist.push(sub)
+							} else {
+								return
+							}
+						}
+					}
+					sort.Sort(&sortlist)
+					for _, v := range sortlist.list {
+						r := strings.NewReader(v.Hash)
+						io.Copy(h, r)
+						hs.Size += v.Size
+					}
+					hs.Children = sortlist.list
+					hs.IsDir = true
+				}
+			} else {
+				r := io.Reader(f)
+				io.Copy(h, r)
+				hs.Size = FileSize(fi.Size())
+			}
+			p := fmt.Sprintf("%x", h.Sum(nil))
+			hs.Path = me.String()
+			hs.Hash = p
 		}
 	}
 	return
@@ -466,11 +652,6 @@ func (me FilePathObject) Move(destPath string) (FilePathObject, error) {
 		return me.Rename(n.String())
 	}
 	return "", nil
-}
-
-//calculate file hash
-func (me FilePathObject) Hash(method, salt string) string {
-	return ""
 }
 
 //func (me filePath) Tree()  {

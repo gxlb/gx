@@ -6,6 +6,7 @@ import (
 	"hash"
 )
 
+//finger print hash algorithm, use md5+sha1+crc64
 type Fingerprint struct {
 	hs1, hs2, hs3 hash.Hash
 	size          int64 //size wrote
@@ -18,9 +19,15 @@ func NewFingerprint() *Fingerprint {
 	fp.hs3 = CRC64.New()
 	return fp
 }
+
+func (this *Fingerprint) Hash() hash.Hash {
+	return this
+}
+
 func (this *Fingerprint) Resetsize(size int64) {
 	this.size = size
 }
+
 func (this *Fingerprint) String() string {
 	p := fmt.Sprintf("%012x-%x-%x-%x", this.size&0xFFFFFFFFFFFF, this.hs1.Sum(nil)[4:10], this.hs2.Sum(nil)[7:13], this.hs3.Sum(nil)[1:7])
 	return p
@@ -36,6 +43,7 @@ func (this *Fingerprint) Write(p []byte) (n int, err error) {
 	if n, err = this.hs3.Write(p); err != nil {
 		return
 	}
+	this.size += int64(n)
 	return
 }
 
@@ -50,14 +58,17 @@ func (this *Fingerprint) Sum(b []byte) []byte {
 	buf.Write(this.hs3.Sum(nil)[1:7])
 	return buf.Bytes()
 }
+
 func (this *Fingerprint) Reset() {
 	this.hs1.Reset()
 	this.hs2.Reset()
 	this.hs3.Reset()
 }
+
 func (this *Fingerprint) Size() int {
 	return int(this.size)
 }
+
 func (this *Fingerprint) BlockSize() int {
 	return 24
 }

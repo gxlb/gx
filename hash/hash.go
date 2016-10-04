@@ -11,10 +11,11 @@ import (
 	"hash/crc64"
 )
 
-type HashType uint
+type HashMethod uint
 
 const (
-	MD5 HashType = iota
+	NONE HashMethod = iota
+	MD5
 	SHA1
 	SHA256
 	SHA512
@@ -28,7 +29,7 @@ var (
 )
 
 //create a hash object
-func (me HashType) New() (h hash.Hash) {
+func (me HashMethod) New() (h hash.Hash) {
 	switch me {
 	case MD5:
 		h = md5.New()
@@ -44,11 +45,15 @@ func (me HashType) New() (h hash.Hash) {
 		h = crc64.New(gCrc6ISO4Table)
 	case FINGERPRINT:
 		h = NewFingerprint()
+	case NONE:
+		h = NewNoneHash()
+	default:
+		panic(me)
 	}
 	return
 }
 
 //create a hash object
-func New(t HashType) hash.Hash {
+func New(t HashMethod) hash.Hash {
 	return t.New()
 }
