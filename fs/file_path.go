@@ -377,188 +377,25 @@ type FileHash struct {
 	IsDir      bool
 }
 
-//sort by Hash, Size decend,the larger one first
+//sort by Size, Hash  decend,the larger one first
 func (this FileHash) Less(o FileHash) bool {
-	if this.Hash > o.Hash {
-		return true
-	}
 	if this.Size > o.Size {
 		return true
 	}
+	if this.Hash > o.Hash {
+		return true
+	}
+
 	return false
 }
 
-////finger print object
-//type FileHashNode struct {
-//	FileHash
-//	Children []*FileHashNode
-//}
-
-////visit all FileHashNode node
-//type FileHashNodeVisitor struct {
-//	node         *FileHashNode
-//	parents      []*FileHashNode
-//	brotherIdxes []int
-//	//visit order? this?child?brother?
-//}
-
-//func (this *FileHashNodeVisitor) push(n *FileHashNode, bIdx int) {
-//	this.parents = append(this.parents, n)
-//	this.brotherIdxes = append(this.brotherIdxes, bIdx)
-//}
-
-//func (this *FileHashNodeVisitor) pop() (n *FileHashNode, bIdx int) {
-//	l := len(this.parents)
-//	if l > 0 {
-//		n, bIdx = this.tail()
-//		this.parents = this.parents[:l-1]
-//		this.brotherIdxes = this.brotherIdxes[:l-1]
-//	}
-//	return
-//}
-
-//func (this *FileHashNodeVisitor) tail() (n *FileHashNode, bIdx int) {
-//	l := len(this.parents)
-//	if l > 0 {
-//		n = this.parents[l-1]
-//		bIdx = this.brotherIdxes[l-1]
-//	}
-//	return
-//}
-
-//func (this *FileHashNodeVisitor) depth() int {
-//	return len(this.parents)
-//}
-
-//func (this *FileHashNodeVisitor) update_tail(bIdx int) bool {
-//	l := len(this.parents)
-//	if l > 0 {
-//		this.brotherIdxes[l-1] = bIdx
-//		return true
-//	}
-//	return false
-//}
-
-//func (this *FileHashNodeVisitor) top_right(n *FileHashNode) (p *FileHashNode) {
-//	if n != nil {
-//		l := len(n.Children)
-//		for l > 0 {
-//			this.push(n, l-1)
-//			n = n.Children[l-1]
-//			l = len(n.Children)
-//		}
-//		p = n
-//	}
-//	return
-//}
-
-//func (this *FileHashNodeVisitor) Next() bool {
-//	if this.node != nil { //check if has any children
-//		if len(this.node.Children) > 0 {
-//			this.push(this.node, 0)
-//			this.node = this.node.Children[0]
-//		} else {
-//			this.node = nil
-//		}
-//	}
-//	for this.node == nil && this.depth() > 0 { //check if has any brothers or uncles
-//		p, bIdx := this.tail()
-//		if bIdx < 0 { //ref parent
-//			this.node = p
-//			this.pop()
-//		} else if bIdx < len(p.Children)-1 { //next brother
-//			bIdx++
-//			this.node = p.Children[bIdx]
-//			this.update_tail(bIdx)
-//		} else { //no more brothers
-//			this.pop()
-//		}
-//	}
-//	return this.node != nil
-//}
-
-//func (this *FileHashNodeVisitor) Prev() bool {
-//	if this.node == nil && this.depth() > 0 { //check if has any brothers or uncles
-//		p, _ := this.pop()
-//		this.node = this.top_right(p)
-//		return this.node != nil
-//	}
-
-//	if this.node != nil { //check if has any children
-//		p, bIdx := this.tail()
-//		if bIdx > 0 {
-//			bIdx--
-//			this.update_tail(bIdx)
-//			this.node = this.top_right(p.Children[bIdx])
-//		} else {
-//			this.node = p
-//			this.pop()
-//		}
-//	}
-//	return this.node != nil
-//}
-
-//func (this *FileHashNodeVisitor) Get() *FileHash {
-//	return &this.node.FileHash
-//}
-
-//func (this *FileHashNode) Visitor() (v *FileHashNodeVisitor) {
-//	v = &FileHashNodeVisitor{}
-//	v.push(this, -1)
-//	return
-//}
-
-//func (this *FileHashNode) String() string {
-//	return this.Hash
-//}
-
-//func (this *FileHashNode) All() (list []FileHash) {
-//	list = append(list, this.FileHash)
-//	for _, v := range this.Children {
-//		list = append(list, v.All()...)
-//	}
-//	return
-//}
-
-////for sort
-//type sortHash struct {
-//	list []*FileHashNode
-//}
-
-//func (this *sortHash) push(v *FileHashNode) int {
-//	//if true || v.Hash != "" {
-//	this.list = append(this.list, v)
-//	//}
-//	return this.Len()
-//}
-
-//func (this *sortHash) Len() int {
-//	return len(this.list)
-//}
-
-////sort by Hash decend,the larger one first
-//func (this *sortHash) Less(i, j int) bool {
-//	l, r := this.list[i], this.list[j]
-//	if l.Hash > r.Hash {
-//		return true
-//	}
-//	if l.Size > r.Size {
-//		return true
-//	}
-//	return false
-//}
-
-//func (this *sortHash) Swap(i, j int) {
-//	this.list[i], this.list[j] = this.list[j], this.list[i]
-//}
-
 //Fingerprint get fingerprint of a file or dir
-func (me FilePathObject) Fingerprint() (fp *FileHashTreeNode, err error) {
+func (me FilePathObject) Fingerprint() (root *FileHashTreeNode, err error) {
 	var f *os.File
 	if f, err = me.Open(); err == nil {
 		defer f.Close()
 		var fi os.FileInfo
-		fp = &FileHashTreeNode{}
+		root = &FileHashTreeNode{}
 		if fi, err = f.Stat(); err == nil {
 			h := xhash.NewFingerprint()
 			if fi.IsDir() {
@@ -570,41 +407,41 @@ func (me FilePathObject) Fingerprint() (fp *FileHashTreeNode, err error) {
 							_subfullname := me.Join(_sub)
 							var sub *FileHashTreeNode
 							if sub, err = FilePath(_subfullname).Fingerprint(); err == nil {
-								fp.Children.Push(sub)
+								root.Children.Push(sub)
 							} else {
 								return
 							}
 						}
 					}
-					fp.Children.Sort()
-					for _, v := range fp.Children {
+					root.Children.Sort()
+					for _, v := range root.Children {
 						r := strings.NewReader(v.Hash)
 						io.Copy(h, r)
-						fp.Size += v.Size
+						root.Size += v.Size
 					}
-					fp.IsDir = true
+					root.IsDir = true
 				}
 			} else {
 				r := io.Reader(f)
 				io.Copy(h, r)
-				fp.Size = FileSize(fi.Size())
+				root.Size = FileSize(fi.Size())
 			}
-			h.Resetsize(int64(fp.Size))
+			h.Resetsize(int64(root.Size))
 			p := h.String()
-			fp.Path = me.String()
-			fp.Hash = p
+			root.Path = me.String()
+			root.Hash = p
 		}
 	}
 	return
 }
 
 //Fingerprint get hash of a file or dir by method
-func (me FilePathObject) Hash(method xhash.HashMethod, salt string) (hs *FileHashTreeNode, err error) {
+func (me FilePathObject) Hash(method xhash.HashMethod, salt string) (root *FileHashTreeNode, err error) {
 	var f *os.File
 	if f, err = me.Open(); err == nil {
 		defer f.Close()
 		var fi os.FileInfo
-		hs = &FileHashTreeNode{}
+		root = &FileHashTreeNode{}
 		if fi, err = f.Stat(); err == nil {
 			h := method.New()
 			if salt != "" {
@@ -619,28 +456,28 @@ func (me FilePathObject) Hash(method xhash.HashMethod, salt string) (hs *FileHas
 							_subfullname := me.Join(_sub)
 							var sub *FileHashTreeNode
 							if sub, err = FilePath(_subfullname).Hash(method, salt); err == nil {
-								hs.Children.Push(sub)
+								root.Children.Push(sub)
 							} else {
 								return
 							}
 						}
 					}
-					hs.Children.Sort()
-					for _, v := range hs.Children {
+					root.Children.Sort()
+					for _, v := range root.Children {
 						r := strings.NewReader(v.Hash)
 						io.Copy(h, r)
-						hs.Size += v.Size
+						root.Size += v.Size
 					}
-					hs.IsDir = true
+					root.IsDir = true
 				}
 			} else {
 				r := io.Reader(f)
 				io.Copy(h, r)
-				hs.Size = FileSize(fi.Size())
+				root.Size = FileSize(fi.Size())
 			}
 			p := fmt.Sprintf("%x", h.Sum(nil))
-			hs.Path = me.String()
-			hs.Hash = p
+			root.Path = me.String()
+			root.Hash = p
 		}
 	}
 	return
