@@ -1,69 +1,212 @@
+
 package stl
 
-type TreeTravelOrder uint //walk tree order
+//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
+//
+//
+/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+//	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
+//
+//
+// This is not a real go code file
+// It is used to generate .gp file by gogp tool
+// Real go code file will be generated from .gp file
+//
+//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-const (
-	TravelDeep      = 1 << iota //deep first
-	TravelWide                  //wide first
-	TravelRootFirst             //if travel root first
-	TravelDefault   = TravelDeep | TravelRootFirst
+import (
+	"sort"
 )
 
-type TreeNode struct {
-	Content interface{}
-	//	Path    string
-	//	Dir     bool
-	//	Size    FileSize
+//GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
+//
+//these defines is used to make sure this dummy go file can be compiled correctlly
+//and they will be removed from real go files
 
-	parent   *TreeNode
-	children []*TreeNode
+type GOGPTreeNodeData int
+
+func (this GOGPTreeNodeData) Less(o GOGPTreeNodeData) bool {
+	return this < o
 }
 
-type TravelTreeFunc func(node *TreeNode) error
+//
+//GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-func (this *TreeNode) ForEach(fun TravelTreeFunc) error {
-	return nil
+//tree node
+type GOGPTreeNamePrefixTreeNode struct {
+	GOGPTreeNodeData
+	Children GOGPTreeNamePrefixSortSlice
 }
 
-//new iterator with default order(deep first)
-func (this *TreeNode) NewTraveler() *TreeTraveler {
-	return this.NewIteratorO(TravelDefault)
-}
-
-//new iterator with order
-func (this *TreeNode) NewTravelerO(order TreeTravelOrder) *TreeTraveler {
-	brotherId := -1
-	if order|TravelRootFirst == 0 { //travel root last
-		brotherId = -2
-	}
-	return &TreeTraveler{Node: this, order: order, brotherId: brotherId}
-}
-
-//build a path tree
-func Tree(path string) (n *TreeNode, e error) {
+//create a visitor
+func (this *GOGPTreeNamePrefixTreeNode) Visitor() (v *GOGPTreeNamePrefixTreeNodeVisitor) {
+	v = &GOGPTreeNamePrefixTreeNodeVisitor{}
+	v.push(this, -1)
 	return
 }
 
-//traveler
-type TreeTraveler struct {
-	Node      *TreeNode //this node
-	order     TreeTravelOrder
-	brotherId int //brother index in parent
+//get all node data
+func (this *GOGPTreeNamePrefixTreeNode) All() (list []GOGPTreeNodeData) {
+	list = append(list, this.GOGPTreeNodeData)
+	for _, v := range this.Children {
+		list = append(list, v.All()...)
+	}
+	return
 }
 
-//travel next node
-func (this *TreeTraveler) Next() *TreeNode {
-	if this.brotherId <= 0 {
-		this.brotherId++
-		return this.Node
-	}
-	return nil
+//tree node visitor
+type GOGPTreeNamePrefixTreeNodeVisitor struct {
+	node         *GOGPTreeNamePrefixTreeNode
+	parents      []*GOGPTreeNamePrefixTreeNode
+	brotherIdxes []int
+	//visit order? this?child?brother?
 }
 
-func (this *TreeTraveler) Prev() *TreeNode {
-	if this.brotherId <= 0 {
-		this.brotherId++
-		return this.Node
-	}
-	return nil
+func (this *GOGPTreeNamePrefixTreeNodeVisitor) push(n *GOGPTreeNamePrefixTreeNode, bIdx int) {
+	this.parents = append(this.parents, n)
+	this.brotherIdxes = append(this.brotherIdxes, bIdx)
 }
+
+func (this *GOGPTreeNamePrefixTreeNodeVisitor) pop() (n *GOGPTreeNamePrefixTreeNode, bIdx int) {
+	l := len(this.parents)
+	if l > 0 {
+		n, bIdx = this.tail()
+		this.parents = this.parents[:l-1]
+		this.brotherIdxes = this.brotherIdxes[:l-1]
+	}
+	return
+}
+
+func (this *GOGPTreeNamePrefixTreeNodeVisitor) tail() (n *GOGPTreeNamePrefixTreeNode, bIdx int) {
+	l := len(this.parents)
+	if l > 0 {
+		n = this.parents[l-1]
+		bIdx = this.brotherIdxes[l-1]
+	}
+	return
+}
+
+func (this *GOGPTreeNamePrefixTreeNodeVisitor) depth() int {
+	return len(this.parents)
+}
+
+func (this *GOGPTreeNamePrefixTreeNodeVisitor) update_tail(bIdx int) bool {
+	l := len(this.parents)
+	if l > 0 {
+		this.brotherIdxes[l-1] = bIdx
+		return true
+	}
+	return false
+}
+
+func (this *GOGPTreeNamePrefixTreeNodeVisitor) top_right(n *GOGPTreeNamePrefixTreeNode) (p *GOGPTreeNamePrefixTreeNode) {
+	if n != nil {
+		l := len(n.Children)
+		for l > 0 {
+			this.push(n, l-1)
+			n = n.Children[l-1]
+			l = len(n.Children)
+		}
+		p = n
+	}
+	return
+}
+
+//visit next node
+func (this *GOGPTreeNamePrefixTreeNodeVisitor) Next() bool {
+	if this.node != nil { //check if has any children
+		if len(this.node.Children) > 0 {
+			this.push(this.node, 0)
+			this.node = this.node.Children[0]
+		} else {
+			this.node = nil
+		}
+	}
+	for this.node == nil && this.depth() > 0 { //check if has any brothers or uncles
+		p, bIdx := this.tail()
+		if bIdx < 0 { //ref parent
+			this.node = p
+			this.pop()
+		} else if bIdx < len(p.Children)-1 { //next brother
+			bIdx++
+			this.node = p.Children[bIdx]
+			this.update_tail(bIdx)
+		} else { //no more brothers
+			this.pop()
+		}
+	}
+	return this.node != nil
+}
+
+//visit previous node
+func (this *GOGPTreeNamePrefixTreeNodeVisitor) Prev() bool {
+	if this.node == nil && this.depth() > 0 { //check if has any brothers or uncles
+		p, _ := this.pop()
+		this.node = this.top_right(p)
+		return this.node != nil
+	}
+
+	if this.node != nil { //check if has any children
+		p, bIdx := this.tail()
+		if bIdx > 0 {
+			bIdx--
+			this.update_tail(bIdx)
+			this.node = this.top_right(p.Children[bIdx])
+		} else {
+			this.node = p
+			this.pop()
+		}
+	}
+	return this.node != nil
+}
+
+//get node data
+func (this *GOGPTreeNamePrefixTreeNodeVisitor) Get() *GOGPTreeNodeData {
+	return &this.node.GOGPTreeNodeData
+}
+
+//for sort
+type GOGPTreeNamePrefixSortSlice []*GOGPTreeNamePrefixTreeNode
+
+func (this *GOGPTreeNamePrefixSortSlice) Sort() {
+	sort.Sort(this)
+}
+
+//data
+func (this *GOGPTreeNamePrefixSortSlice) D() []*GOGPTreeNamePrefixTreeNode {
+	return *this
+}
+
+//push
+func (this *GOGPTreeNamePrefixSortSlice) Push(v *GOGPTreeNamePrefixTreeNode) int {
+	*this = append(*this, v)
+	return this.Len()
+}
+
+func (this *GOGPTreeNamePrefixSortSlice) Pop() (r *GOGPTreeNamePrefixTreeNode) {
+	if len(*this) > 0 {
+		r = (*this)[len(*this)-1]
+	}
+	*this = (*this)[:len(*this)-1]
+	return
+}
+
+//len
+func (this *GOGPTreeNamePrefixSortSlice) Len() int {
+	return len(this.D())
+}
+
+//sort by Hash decend,the larger one first
+func (this *GOGPTreeNamePrefixSortSlice) Less(i, j int) bool {
+	l, r := (*this)[i], (*this)[j]
+	return l.Less(r.GOGPTreeNodeData)
+}
+
+//swap
+func (this *GOGPTreeNamePrefixSortSlice) Swap(i, j int) {
+	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
+}
+
+//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
+//*/
+//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
