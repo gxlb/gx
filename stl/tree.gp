@@ -1,3 +1,4 @@
+//this file defines a template tree structure just like file system
 
 <PACKAGE>
 
