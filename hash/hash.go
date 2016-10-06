@@ -6,6 +6,7 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
+	"fmt"
 	"hash"
 	"hash/crc32"
 	"hash/crc64"
@@ -52,6 +53,28 @@ func (me HashMethod) New() (h hash.Hash) {
 	}
 	return
 }
+
+//string hash with length
+func (me HashMethod) StringHashL(s string) (h string) {
+	_h := me.New()
+	if n, err := _h.Write([]byte(s)); err == nil {
+		h = fmt.Sprintf("%010d-%x", n, _h.Sum(nil))
+	}
+	return
+}
+
+//string hash
+func (me HashMethod) StringHash(s string) (h string) {
+	_h := me.New()
+	if n, err := _h.Write([]byte(s)); err == nil {
+		h = fmt.Sprintf("%x", _h.Sum(nil))
+	}
+	return
+}
+
+//func (me HashMethod) FileHash(path string) (h string, err error) {
+//	return
+//}
 
 //create a hash object
 func New(t HashMethod) hash.Hash {

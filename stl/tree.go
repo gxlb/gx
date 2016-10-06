@@ -60,7 +60,7 @@ type GOGPTreeNamePrefixTreeNodeVisitor struct {
 	node         *GOGPTreeNamePrefixTreeNode
 	parents      []*GOGPTreeNamePrefixTreeNode
 	brotherIdxes []int
-	//visit order? this?child?brother?
+	//visit order: this->child->brother
 }
 
 func (this *GOGPTreeNamePrefixTreeNodeVisitor) push(n *GOGPTreeNamePrefixTreeNode, bIdx int) {

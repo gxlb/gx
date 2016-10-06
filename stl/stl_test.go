@@ -4,12 +4,10 @@ import (
 	//"fmt"
 	//"regexp"
 
-	"github.com/vipally/gogp"
+	_ "github.com/vipally/gogp/auto"
 )
 
 func init() {
-	gogp.ReverseWork("github.com/vipally/gx/stl/tree.gpg")
-
 	//	s := []GOGPSliceElem{6, 7, 8, 3, 4, 6}
 	//	//MakeSlice(s).Sort()
 	//	ss := GOGPTreeNamePrefixSortSlice(s)
