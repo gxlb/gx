@@ -79,7 +79,7 @@ func TestFilePath(t *testing.T) {
 
 func TestFileLock(t *testing.T) {
 	_path := "e:/url.txt"
-	h, err := syscall.CreateFile(syscall.StringToUTF16Ptr(_path),
+	_, err := syscall.CreateFile(syscall.StringToUTF16Ptr(_path),
 		syscall.GENERIC_READ|syscall.GENERIC_WRITE,
 		syscall.FILE_SHARE_READ,
 		nil,
@@ -90,15 +90,15 @@ func TestFileLock(t *testing.T) {
 		fmt.Println("e0", err)
 		return
 	}
-	f := os.NewFile(uintptr(h), _path)
-	defer func() {
-		if err != nil {
-			f.Close()
-		}
-	}()
+	//	f := os.NewFile(uintptr(h), _path)
+	//	defer func() {
+	//		if err != nil {
+	//			f.Close()
+	//		}
+	//	}()
 	f0, e0 := os.OpenFile(_path, os.O_CREATE, os.ModePerm)
 	f1, e1 := os.Open(_path)
-	f.Close()
+	//f.Close()
 	f2, e2 := os.Open(_path)
 	if e0 == nil {
 		f0.Close()
