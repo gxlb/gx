@@ -66,7 +66,7 @@ func (me HashMethod) StringHashL(s string) (h string) {
 //string hash
 func (me HashMethod) StringHash(s string) (h string) {
 	_h := me.New()
-	if n, err := _h.Write([]byte(s)); err == nil {
+	if _, err := _h.Write([]byte(s)); err == nil {
 		h = fmt.Sprintf("%x", _h.Sum(nil))
 	}
 	return

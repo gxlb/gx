@@ -2,7 +2,8 @@ package fs
 
 import (
 	"fmt"
-	//"os"
+	"os"
+	"syscall"
 	"testing"
 )
 
@@ -74,4 +75,43 @@ func TestFilePath(t *testing.T) {
 	//		fmt.Println(fp.Join("a/b/hello.txt"))
 	//	}
 
+}
+
+func TestFileLock(t *testing.T) {
+	_path := "e:/url.txt"
+	h, err := syscall.CreateFile(syscall.StringToUTF16Ptr(_path),
+		syscall.GENERIC_READ|syscall.GENERIC_WRITE,
+		0,
+		nil,
+		syscall.OPEN_EXISTING,
+		syscall.FILE_ATTRIBUTE_NORMAL|syscall.FILE_FLAG_OVERLAPPED,
+		0)
+	if err != nil {
+		fmt.Println("e0", err)
+		return
+	}
+	f := os.NewFile(uintptr(h), _path)
+	defer func() {
+		if err != nil {
+			f.Close()
+		}
+	}()
+	f0, e0 := os.OpenFile(_path, os.O_CREATE, os.ModePerm)
+	f1, e1 := os.Open(_path)
+	f2, e2 := os.Open(_path)
+	if e0 == nil {
+		f0.Close()
+	} else {
+		fmt.Println("e0", e0)
+	}
+	if e1 == nil {
+		f1.Close()
+	} else {
+		fmt.Println("e1", e1)
+	}
+	if e2 == nil {
+		f2.Close()
+	} else {
+		fmt.Println("e2", e2)
+	}
 }
