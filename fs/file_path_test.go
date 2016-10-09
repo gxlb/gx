@@ -81,7 +81,7 @@ func TestFileLock(t *testing.T) {
 	_path := "e:/url.txt"
 	h, err := syscall.CreateFile(syscall.StringToUTF16Ptr(_path),
 		syscall.GENERIC_READ|syscall.GENERIC_WRITE,
-		0,
+		syscall.FILE_SHARE_READ,
 		nil,
 		syscall.OPEN_EXISTING,
 		syscall.FILE_ATTRIBUTE_NORMAL|syscall.FILE_FLAG_OVERLAPPED,
@@ -98,6 +98,7 @@ func TestFileLock(t *testing.T) {
 	}()
 	f0, e0 := os.OpenFile(_path, os.O_CREATE, os.ModePerm)
 	f1, e1 := os.Open(_path)
+	f.Close()
 	f2, e2 := os.Open(_path)
 	if e0 == nil {
 		f0.Close()
