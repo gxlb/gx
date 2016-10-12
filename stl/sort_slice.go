@@ -2,58 +2,80 @@
 
 package stl
 
-//import (
-//	"sort"
-//)
+//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
+//
+//
+/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+//	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
+//
+//
+// This is exactly not a real go code file
+// It is used to generate .gp file by gogp tool
+// Real go code file will be generated from .gp file
+//
+//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-////GOGPDummyDefineComment/*
-////these defines will never exists in real go files
-//type GOGPSliceElem int
+import (
+	"sort"
+)
 
-//func (this GOGPSliceElem) Less(o GOGPSliceElem) bool {
-//	return this < o
-//}
+//GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
+//
+//these defines is used to make sure this dummy go file can be compiled correctlly
+//and they will be removed from real go files
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-//GOGPDummyDefineComment*/
+type GOGPSliceElem int
 
-////for sort
-//type SortSliceGOGPNameSuffix []GOGPSliceElem
+func (this GOGPSliceElem) Less(o GOGPSliceElem) bool {
+	return this < o
+}
 
-//func (this *SortSliceGOGPNameSuffix) Sort() {
-//	sort.Sort(this)
-//}
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-////data
-//func (this *SortSliceGOGPNameSuffix) D() []GOGPSliceElem {
-//	return *this
-//}
+//for sort
+type GOGPNamePrefixSortSlice []GOGPSliceElem
 
-////push
-//func (this *SortSliceGOGPNameSuffix) Push(v GOGPSliceElem) int {
-//	*this = append(*this, v)
-//	return this.Len()
-//}
+func (this *GOGPNamePrefixSortSlice) Sort() {
+	sort.Sort(this)
+}
 
-//func (this *SortSliceGOGPNameSuffix) Pop() (r GOGPSliceElem) {
-//	if len(*this) > 0 {
-//		r = (*this)[len(*this)-1]
-//	}
-//	*this = (*this)[:len(*this)-1]
-//	return
-//}
+//data
+func (this *GOGPNamePrefixSortSlice) Slice() []GOGPSliceElem {
+	return *this
+}
 
-////len
-//func (this *SortSliceGOGPNameSuffix) Len() int {
-//	return len(this.D())
-//}
+//push
+func (this *GOGPNamePrefixSortSlice) Push(v GOGPSliceElem) int {
+	*this = append(*this, v)
+	return this.Len()
+}
 
-////sort by Hash decend,the larger one first
-//func (this *SortSliceGOGPNameSuffix) Less(i, j int) bool {
-//	l, r := (*this)[i], (*this)[j]
-//	return l.Less(r)
-//}
+func (this *GOGPNamePrefixSortSlice) Pop() (r GOGPSliceElem) {
+	if len(*this) > 0 {
+		r = (*this)[len(*this)-1]
+	}
+	*this = (*this)[:len(*this)-1]
+	return
+}
 
-////swap
-//func (this *SortSliceGOGPNameSuffix) Swap(i, j int) {
-//	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
-//}
+//len
+func (this *GOGPNamePrefixSortSlice) Len() int {
+	return len(this.Slice())
+}
+
+//sort by Hash decend,the larger one first
+func (this *GOGPNamePrefixSortSlice) Less(i, j int) bool {
+	l, r := (*this)[i], (*this)[j]
+	return l.Less(r)
+}
+
+//swap
+func (this *GOGPNamePrefixSortSlice) Swap(i, j int) {
+	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
+}
+
+//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
+//*/
+//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END
