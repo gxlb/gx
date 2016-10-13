@@ -1,10 +1,12 @@
 package stl
 
 import (
-	//"fmt"
+	"fmt"
+	"testing"
+	"time"
 	//"regexp"
 
-	_ "github.com/vipally/gogp/auto"
+	//_ "github.com/vipally/gogp/auto"
 )
 
 func init() {
@@ -16,4 +18,24 @@ func init() {
 	//	for _, v := range ss.D() {
 	//		fmt.Println(v)
 	//	}
+}
+
+func Fibonacci(n uint64) uint64 {
+	start := time.Now()
+
+	x := n
+	if n > 1 {
+		x = Fibonacci(n-1) + Fibonacci(n-2)
+	}
+	cost := time.Now().Sub(start)
+	fmt.Println(n, x, cost)
+	return x
+
+}
+
+func TestA1(t *testing.T) {
+	n := uint64(30)
+
+	Fibonacci(n)
+
 }
