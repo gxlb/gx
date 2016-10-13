@@ -36,7 +36,7 @@ func (this GOGPTreeNodeData) Less(o GOGPTreeNodeData) bool {
 //tree node
 type GOGPTreeNamePrefixTreeNode struct {
 	GOGPTreeNodeData
-	Children GOGPTreeNamePrefixSortSlice
+	children treeNodeSortSlice
 }
 
 //create a visitor
@@ -49,7 +49,7 @@ func (this *GOGPTreeNamePrefixTreeNode) Visitor() (v *GOGPTreeNamePrefixTreeNode
 //get all node data
 func (this *GOGPTreeNamePrefixTreeNode) All() (list []GOGPTreeNodeData) {
 	list = append(list, this.GOGPTreeNodeData)
-	for _, v := range this.Children {
+	for _, v := range this.children {
 		list = append(list, v.All()...)
 	}
 	return
@@ -102,11 +102,11 @@ func (this *GOGPTreeNamePrefixTreeNodeVisitor) update_tail(bIdx int) bool {
 
 func (this *GOGPTreeNamePrefixTreeNodeVisitor) top_right(n *GOGPTreeNamePrefixTreeNode) (p *GOGPTreeNamePrefixTreeNode) {
 	if n != nil {
-		l := len(n.Children)
+		l := len(n.children)
 		for l > 0 {
 			this.push(n, l-1)
-			n = n.Children[l-1]
-			l = len(n.Children)
+			n = n.children[l-1]
+			l = len(n.children)
 		}
 		p = n
 	}
@@ -116,9 +116,9 @@ func (this *GOGPTreeNamePrefixTreeNodeVisitor) top_right(n *GOGPTreeNamePrefixTr
 //visit next node
 func (this *GOGPTreeNamePrefixTreeNodeVisitor) Next() bool {
 	if this.node != nil { //check if has any children
-		if len(this.node.Children) > 0 {
+		if len(this.node.children) > 0 {
 			this.push(this.node, 0)
-			this.node = this.node.Children[0]
+			this.node = this.node.children[0]
 		} else {
 			this.node = nil
 		}
@@ -128,9 +128,9 @@ func (this *GOGPTreeNamePrefixTreeNodeVisitor) Next() bool {
 		if bIdx < 0 { //ref parent
 			this.node = p
 			this.pop()
-		} else if bIdx < len(p.Children)-1 { //next brother
+		} else if bIdx < len(p.children)-1 { //next brother
 			bIdx++
-			this.node = p.Children[bIdx]
+			this.node = p.children[bIdx]
 			this.update_tail(bIdx)
 		} else { //no more brothers
 			this.pop()
@@ -152,7 +152,7 @@ func (this *GOGPTreeNamePrefixTreeNodeVisitor) Prev() bool {
 		if bIdx > 0 {
 			bIdx--
 			this.update_tail(bIdx)
-			this.node = this.top_right(p.Children[bIdx])
+			this.node = this.top_right(p.children[bIdx])
 		} else {
 			this.node = p
 			this.pop()
@@ -167,24 +167,24 @@ func (this *GOGPTreeNamePrefixTreeNodeVisitor) Get() *GOGPTreeNodeData {
 }
 
 //for sort
-type GOGPTreeNamePrefixSortSlice []*GOGPTreeNamePrefixTreeNode
+type treeNodeSortSlice []*GOGPTreeNamePrefixTreeNode
 
-func (this *GOGPTreeNamePrefixSortSlice) Sort() {
+func (this *treeNodeSortSlice) Sort() {
 	sort.Sort(this)
 }
 
 //data
-func (this *GOGPTreeNamePrefixSortSlice) D() []*GOGPTreeNamePrefixTreeNode {
+func (this *treeNodeSortSlice) D() []*GOGPTreeNamePrefixTreeNode {
 	return *this
 }
 
 //push
-func (this *GOGPTreeNamePrefixSortSlice) Push(v *GOGPTreeNamePrefixTreeNode) int {
+func (this *treeNodeSortSlice) Push(v *GOGPTreeNamePrefixTreeNode) int {
 	*this = append(*this, v)
 	return this.Len()
 }
 
-func (this *GOGPTreeNamePrefixSortSlice) Pop() (r *GOGPTreeNamePrefixTreeNode) {
+func (this *treeNodeSortSlice) Pop() (r *GOGPTreeNamePrefixTreeNode) {
 	if len(*this) > 0 {
 		r = (*this)[len(*this)-1]
 	}
@@ -193,18 +193,18 @@ func (this *GOGPTreeNamePrefixSortSlice) Pop() (r *GOGPTreeNamePrefixTreeNode) {
 }
 
 //len
-func (this *GOGPTreeNamePrefixSortSlice) Len() int {
+func (this *treeNodeSortSlice) Len() int {
 	return len(this.D())
 }
 
 //sort by Hash decend,the larger one first
-func (this *GOGPTreeNamePrefixSortSlice) Less(i, j int) bool {
+func (this *treeNodeSortSlice) Less(i, j int) bool {
 	l, r := (*this)[i], (*this)[j]
 	return l.Less(r.GOGPTreeNodeData)
 }
 
 //swap
-func (this *GOGPTreeNamePrefixSortSlice) Swap(i, j int) {
+func (this *treeNodeSortSlice) Swap(i, j int) {
 	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
 }
 
