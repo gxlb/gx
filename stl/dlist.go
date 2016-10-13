@@ -15,7 +15,7 @@ package stl
 //
 //GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-//GOGPShowCommentimport show_bytes "bytes"
+//import here...
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
