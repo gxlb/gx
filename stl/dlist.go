@@ -111,6 +111,9 @@ func (this *GOGPListNamePrefixDList) MoveBefore(node, mark *GOGPListNamePrefixDL
 func (this *GOGPListNamePrefixDList) MoveAfter(node, mark *GOGPListNamePrefixDListNode) *GOGPListNamePrefixDListNode {
 	return nil
 }
+func (this *GOGPListNamePrefixDList) Sort() {
+	return
+}
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
