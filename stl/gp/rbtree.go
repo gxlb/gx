@@ -96,6 +96,9 @@ func (this *GOGPTreeNamePrefixRBTree) LowerBound(d GOGPRBTreeData) *GOGPTreeName
 func (this *GOGPTreeNamePrefixRBTree) UpperBound(d GOGPRBTreeData) *GOGPTreeNamePrefixRBTreeNode {
 	return nil
 }
+func (this *GOGPTreeNamePrefixRBTree) Find(d GOGPRBTreeData) *GOGPTreeNamePrefixRBTreeNode {
+	return nil
+}
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
