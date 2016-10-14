@@ -1,9 +1,9 @@
 package stl
 
 import (
-	"fmt"
-	"testing"
-	"time"
+	//"fmt"
+	//"testing"
+	//"time"
 	//"regexp"
 
 	_ "github.com/vipally/gogp/auto"
