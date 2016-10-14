@@ -1,6 +1,6 @@
 //this file define a template type for sort
 
-package stl
+package gp
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //

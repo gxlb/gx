@@ -1,6 +1,6 @@
 //this file defines a template tree structure just like file system
 
-package stl
+package gp
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //

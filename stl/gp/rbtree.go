@@ -1,6 +1,6 @@
 //rb-tree
 
-package stl
+package gp
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //

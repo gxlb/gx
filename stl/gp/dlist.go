@@ -1,6 +1,6 @@
 //double-way cycle link list
 
-package stl
+package gp
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
