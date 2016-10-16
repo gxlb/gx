@@ -66,9 +66,14 @@ func (this *GOGPNamePrefixSortSlice) Len() int {
 }
 
 //sort by Hash decend,the larger one first
-func (this *GOGPNamePrefixSortSlice) Less(i, j int) bool {
+func (this *GOGPNamePrefixSortSlice) Less(i, j int) (ok bool) {
 	l, r := (*this)[i], (*this)[j]
-	return l.Less(r)
+	//#if GOGP_HasLess
+	ok = l.Less(r)
+	//#else
+	ok = l < r
+	//#endif
+	return
 }
 
 //swap

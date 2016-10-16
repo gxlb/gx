@@ -5,7 +5,7 @@ package gp
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //
 //
-/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -198,9 +198,16 @@ func (this *treeNodeSortSlice) Len() int {
 }
 
 //sort by Hash decend,the larger one first
-func (this *treeNodeSortSlice) Less(i, j int) bool {
+func (this *treeNodeSortSlice) Less(i, j int) (ok bool) {
 	l, r := (*this)[i], (*this)[j]
-	return l.Less(r.GOGPTreeNodeData)
+
+	//#if GOGP_HasLess
+	ok = l.Less(r.GOGPTreeNodeData)
+	//#else
+	ok = l.GOGPTreeNodeData < r.GOGPTreeNodeData
+	//#endif
+
+	return
 }
 
 //swap
