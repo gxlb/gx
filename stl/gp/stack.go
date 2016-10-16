@@ -19,7 +19,7 @@ package gp
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
-//
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
 import (
 	dumy_fmt "fmt"
@@ -31,7 +31,7 @@ func (me GOGPStackElem) Show() string {
 	return dumy_fmt.Sprintf("%d", me)
 }
 
-//
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 //stack object
