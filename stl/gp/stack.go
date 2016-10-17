@@ -13,7 +13,7 @@ package gp
 //
 //GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-//GOGPShowCommentimport show_bytes "bytes"
+//import here...
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
@@ -35,30 +35,57 @@ func (me GOGPStackElem) Show() string {
 //GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 //stack object
-type GOGPStackNamePrefixStack []GOGPStackElem
+type GOGPStackNamePrefixStack struct {
+	d []GOGPStackElem
+}
 
 //new object
-func NewGOGPStackNamePrefixStack() *GOGPStackNamePrefixStack {
-	return &GOGPStackNamePrefixStack{}
+func NewGOGPStackNamePrefixStack(bufSize int) *GOGPStackNamePrefixStack {
+	r := &GOGPStackNamePrefixStack{}
+	r.Init(bufSize)
+	return r
+}
+
+//init
+func (this *GOGPStackNamePrefixStack) Init(bufSize int) {
+	if nil == this.d {
+		if -1 == bufSize {
+			bufSize = 10
+		}
+		if bufSize > 0 {
+			this.d = make([]GOGPStackElem, 0, bufSize)
+		}
+	}
+	this.d = this.d[:0]
+	return
+}
+
+//clear
+func (this *GOGPStackNamePrefixStack) Clear() {
+	this.Init(-1)
 }
 
 //push
-func (this *GOGPStackNamePrefixStack) Push(v GOGPStackElem) {
-	*this = append(*this, v)
+func (this *GOGPStackNamePrefixStack) Push(v GOGPStackElem) (ok bool) {
+	if ok = true; ok {
+		this.d = append(this.d, v)
+	}
+	return
 }
 
 //pop
 func (this *GOGPStackNamePrefixStack) Pop() (top GOGPStackElem, ok bool) {
 	if top, ok = this.Top(); ok {
-		*this = (*this)[:this.Depth()-1]
+		this.d = this.d[:this.Depth()-1]
 	}
 	return
 }
 
 //top
 func (this *GOGPStackNamePrefixStack) Top() (top GOGPStackElem, ok bool) {
-	if this.Depth() > 0 {
-		top = (*this)[this.Depth()-1]
+	d := this.Depth()
+	if d > 0 {
+		top = this.d[d-1]
 		ok = true
 	}
 	return
@@ -67,14 +94,19 @@ func (this *GOGPStackNamePrefixStack) Top() (top GOGPStackElem, ok bool) {
 
 //depth
 func (this *GOGPStackNamePrefixStack) Depth() int {
-	return len(*this)
+	return len(this.d)
+}
+
+//empty
+func (this *GOGPStackNamePrefixStack) Empty() bool {
+	return this.Depth() == 0
 }
 
 //GOGPShowComment//show
 //GOGPShowCommentfunc (this *GOGPStackNamePrefixStack) Show() string {
 //GOGPShowComment	var b show_bytes.Buffer
 //GOGPShowComment	b.WriteByte('[')
-//GOGPShowComment	for _, v := range *this {
+//GOGPShowComment	for _, v := range this.d {
 //GOGPShowComment		b.WriteString(v.Show())
 //GOGPShowComment		b.WriteByte(',')
 //GOGPShowComment	}
