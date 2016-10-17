@@ -65,7 +65,7 @@ func (this *GOGPStackNamePrefixStack) Clear() {
 	this.Init(-1)
 }
 
-//push
+//push v to top of stack
 func (this *GOGPStackNamePrefixStack) Push(v GOGPStackElem) (ok bool) {
 	if ok = true; ok {
 		this.d = append(this.d, v)
@@ -73,17 +73,17 @@ func (this *GOGPStackNamePrefixStack) Push(v GOGPStackElem) (ok bool) {
 	return
 }
 
-//pop
+//pop top of stack
 func (this *GOGPStackNamePrefixStack) Pop() (top GOGPStackElem, ok bool) {
 	if top, ok = this.Top(); ok {
-		this.d = this.d[:this.Depth()-1]
+		this.d = this.d[:this.Size()-1]
 	}
 	return
 }
 
-//top
+//get top of stack
 func (this *GOGPStackNamePrefixStack) Top() (top GOGPStackElem, ok bool) {
-	d := this.Depth()
+	d := this.Size()
 	if d > 0 {
 		top = this.d[d-1]
 		ok = true
@@ -92,14 +92,14 @@ func (this *GOGPStackNamePrefixStack) Top() (top GOGPStackElem, ok bool) {
 
 }
 
-//depth
-func (this *GOGPStackNamePrefixStack) Depth() int {
+//size of stack
+func (this *GOGPStackNamePrefixStack) Size() int {
 	return len(this.d)
 }
 
-//empty
+//is stack is empty
 func (this *GOGPStackNamePrefixStack) Empty() bool {
-	return this.Depth() == 0
+	return this.Size() == 0
 }
 
 //GOGPShowComment//show
