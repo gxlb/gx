@@ -34,7 +34,7 @@ func (me GOGPDequeElem) Show() string {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-//stack object
+//deque object
 type GOGPDequeNamePrefixDeque struct {
 	//real data is [head,tail)
 	//buffer d is cycle, that is to say, next(len(d)-1) = 0
@@ -74,7 +74,7 @@ func (this *GOGPDequeNamePrefixDeque) Clear() {
 	this.head, this.tail = 0, 0
 }
 
-//push to head of queue
+//push to front of deque
 func (this *GOGPDequeNamePrefixDeque) PushFront(v GOGPDequeElem) (ok bool) {
 	//	if ok = true; ok {
 	//		if nil == this.d { //init if needed
@@ -95,7 +95,7 @@ func (this *GOGPDequeNamePrefixDeque) PushFront(v GOGPDequeElem) (ok bool) {
 	return
 }
 
-//push to tail of queue
+//push to back of deque
 func (this *GOGPDequeNamePrefixDeque) PushBack(v GOGPDequeElem) (ok bool) {
 	if ok = true; ok {
 		if nil == this.d { //init if needed
@@ -130,7 +130,7 @@ func (this *GOGPDequeNamePrefixDeque) PushBack(v GOGPDequeElem) (ok bool) {
 	return
 }
 
-//pop front of queue
+//pop front of deque
 func (this *GOGPDequeNamePrefixDeque) PopFront() (front GOGPDequeElem, ok bool) {
 	if ok = this.head != this.tail; ok {
 		front = this.d[this.head]
@@ -141,7 +141,7 @@ func (this *GOGPDequeNamePrefixDeque) PopFront() (front GOGPDequeElem, ok bool) 
 	return
 }
 
-//pop back of queue
+//pop back of deque
 func (this *GOGPDequeNamePrefixDeque) PopBack() (back GOGPDequeElem, ok bool) {
 	if ok = this.head != this.tail; ok {
 		t := this.tail - 1
@@ -179,7 +179,7 @@ func (this *GOGPDequeNamePrefixDeque) Cap() int {
 	return len(this.d)
 }
 
-//size of queue
+//size of deque
 func (this *GOGPDequeNamePrefixDeque) Size() (size int) {
 	if this.tail >= this.head {
 		size = this.tail - this.head
@@ -189,7 +189,7 @@ func (this *GOGPDequeNamePrefixDeque) Size() (size int) {
 	return
 }
 
-//if queye is empty
+//if deque is empty
 func (this *GOGPDequeNamePrefixDeque) Empty() bool {
 	return this.Size() == 0
 }
