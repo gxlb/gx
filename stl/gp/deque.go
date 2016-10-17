@@ -3,7 +3,7 @@ package gp
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
-/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -25,9 +25,9 @@ import (
 	dumy_fmt "fmt"
 )
 
-type GOGPQueueElem int
+type GOGPDequeElem int
 
-func (me GOGPQueueElem) Show() string {
+func (me GOGPDequeElem) Show() string {
 	return dumy_fmt.Sprintf("%d", me)
 }
 
@@ -35,23 +35,24 @@ func (me GOGPQueueElem) Show() string {
 //GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 //stack object
-type GOGPQueueNamePrefixQueue struct {
+type GOGPDequeNamePrefixDeque struct {
 	//real data is [head,tail)
 	//buffer d is cycle, that is to say, next(len(d)-1) = 0
+	//if tail<head, data is [head, end, 0, tail)
 	head int
 	tail int
-	d    []GOGPQueueElem
+	d    []GOGPDequeElem
 }
 
 //new object
-func NewGOGPQueueNamePrefixQueue(bufSize int) *GOGPQueueNamePrefixQueue {
-	r := &GOGPQueueNamePrefixQueue{}
+func NewGOGPDequeNamePrefixDeque(bufSize int) *GOGPDequeNamePrefixDeque {
+	r := &GOGPDequeNamePrefixDeque{}
 	r.Init(bufSize)
 	return r
 }
 
 //init
-func (this *GOGPQueueNamePrefixQueue) Init(bufSize int) {
+func (this *GOGPDequeNamePrefixDeque) Init(bufSize int) {
 	if nil == this.d {
 		if bufSize <= 0 {
 			bufSize = 8 //default buffer size
@@ -62,28 +63,49 @@ func (this *GOGPQueueNamePrefixQueue) Init(bufSize int) {
 	return
 }
 
-func (this *GOGPQueueNamePrefixQueue) newBuf(bufSize int) {
+func (this *GOGPDequeNamePrefixDeque) newBuf(bufSize int) {
 	if bufSize > 0 {
-		this.d = make([]GOGPQueueElem, bufSize, bufSize) //the same cap and len
+		this.d = make([]GOGPDequeElem, bufSize, bufSize) //the same cap and len
 	}
 }
 
 //clear
-func (this *GOGPQueueNamePrefixQueue) Clear() {
+func (this *GOGPDequeNamePrefixDeque) Clear() {
 	this.head, this.tail = 0, 0
 }
 
 //push to head of queue
-func (this *GOGPQueueNamePrefixQueue) Push(v GOGPQueueElem) (ok bool) {
+func (this *GOGPDequeNamePrefixDeque) PushFront(v GOGPDequeElem) (ok bool) {
+	//	if ok = true; ok {
+	//		if nil == this.d { //init if needed
+	//			this.Init(-1)
+	//		}
+	//		t := this.head - 1
+	//		if t < 0 {
+	//			t = this.Cap() - 1
+	//		}
+	//		this.d[t] = v
+	//		if this.tail >= this.head { //normal order [head,tail)
+	//			if t == this.tail { //buffer full
+	//			} else {
+	//			}
+	//		} else { //this.tail < this.head, abnormal order [head, end, 0, tail)
+	//		}
+	//	}
+	return
+}
+
+//push to tail of queue
+func (this *GOGPDequeNamePrefixDeque) PushBack(v GOGPDequeElem) (ok bool) {
 	if ok = true; ok {
 		if nil == this.d { //init if needed
 			this.Init(-1)
 		}
 		if this.tail >= this.head { //normal order [head,tail)
-			if this.tail < len(this.d) {
+			if this.tail < this.Cap() {
 				this.d[this.tail] = v
 				this.tail++
-				if this.tail >= len(this.d) {
+				if this.tail >= this.Cap() {
 					if this.head >= 1 {
 						this.tail = 0
 					} else { //increase buffer
@@ -96,7 +118,7 @@ func (this *GOGPQueueNamePrefixQueue) Push(v GOGPQueueElem) (ok bool) {
 		} else { //this.tail < this.head, abnormal order [head, end, 0, tail)
 			this.d[this.tail] = v
 			if this.tail++; this.tail >= this.head { //buffer full,copy data as normal order, and of cause, the buffer will change
-				oldSize := len(this.d)
+				oldSize := this.Cap()
 				t := this.d
 				this.newBuf(oldSize * 2)
 				copy(this.d, t[:this.head])
@@ -109,50 +131,75 @@ func (this *GOGPQueueNamePrefixQueue) Push(v GOGPQueueElem) (ok bool) {
 }
 
 //pop front of queue
-func (this *GOGPQueueNamePrefixQueue) Pop() (front GOGPQueueElem, ok bool) {
-	if this.head != this.tail {
-		ok, front = true, this.d[this.head]
-		if this.head++; this.head >= len(this.d) && this.head != this.tail {
+func (this *GOGPDequeNamePrefixDeque) PopFront() (front GOGPDequeElem, ok bool) {
+	if ok = this.head != this.tail; ok {
+		front = this.d[this.head]
+		if this.head++; this.head >= this.Cap() && this.head != this.tail {
 			this.head = 0
 		}
 	}
 	return
 }
 
-func (this *GOGPDequeNamePrefixDeque) Front() (front GOGPDequeElem, ok bool) {
-	if this.head != this.tail {
-		ok, front = true, this.d[this.head]
-	}
-	return
-}
-func (this *GOGPDequeNamePrefixDeque) Back() (back GOGPDequeElem, ok bool) {
-	if this.head != this.tail {
-		ok, back = true, this.d[this.tail]
+//pop back of queue
+func (this *GOGPDequeNamePrefixDeque) PopBack() (back GOGPDequeElem, ok bool) {
+	if ok = this.head != this.tail; ok {
+		t := this.tail - 1
+		if t < 0 {
+			t = this.Cap() - 1
+		}
+		back = this.d[t]
+		this.tail = t
 	}
 	return
 }
 
+//front data
+func (this *GOGPDequeNamePrefixDeque) Front() (front GOGPDequeElem, ok bool) {
+	if ok = this.head != this.tail; ok {
+		front = this.d[this.head]
+	}
+	return
+}
+
+//back data
+func (this *GOGPDequeNamePrefixDeque) Back() (back GOGPDequeElem, ok bool) {
+	if ok = this.head != this.tail; ok {
+		t := this.tail - 1
+		if t < 0 {
+			t = this.Cap() - 1
+		}
+		back = this.d[t]
+	}
+	return
+}
+
+//cap
+func (this *GOGPDequeNamePrefixDeque) Cap() int {
+	return len(this.d)
+}
+
 //size of queue
-func (this *GOGPQueueNamePrefixQueue) Size() (size int) {
+func (this *GOGPDequeNamePrefixDeque) Size() (size int) {
 	if this.tail >= this.head {
 		size = this.tail - this.head
 	} else {
-		size = len(this.d) - this.head + this.tail
+		size = this.Cap() - this.head + this.tail
 	}
 	return
 }
 
 //if queye is empty
-func (this *GOGPQueueNamePrefixQueue) Empty() bool {
+func (this *GOGPDequeNamePrefixDeque) Empty() bool {
 	return this.Size() == 0
 }
 
 ////show
-//func (this *GOGPQueueNamePrefixQueue) Show() string {
+//func (this *GOGPDequeNamePrefixDeque) Show() string {
 //	var b show_bytes.Buffer
 //	b.WriteByte('[')
 //	for i := this.head; i != this.tail; i++ {
-//		if i >= len(this.d) {
+//		if i >= this.Cap() {
 //			i = 0
 //		}
 //		v = this.v[i]
