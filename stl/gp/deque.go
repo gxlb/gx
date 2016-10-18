@@ -21,7 +21,6 @@ import show_bytes "bytes" //#endif
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
 import (
 	dumy_fmt "fmt"
 )
@@ -30,8 +29,7 @@ type GOGPDequeElem int
 
 func (me GOGPDequeElem) Show() string {
 	return dumy_fmt.Sprintf("%d", me)
-}
-
+} //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
