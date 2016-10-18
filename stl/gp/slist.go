@@ -5,7 +5,7 @@ package gp
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
-/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -38,15 +38,15 @@ func (this *GOGPListNamePrefixSListNode) Get() *GOGPSListData {
 	return &this.GOGPSListData
 }
 
-type GOGPListNamePrefixSListNodeVisitor struct {
+type GOGPTreeNamePrefixRBTreeNodeVisitor struct {
 	node, head *GOGPListNamePrefixSListNode
 }
 
-func (this *GOGPListNamePrefixSListNodeVisitor) Next() bool {
+func (this *GOGPTreeNamePrefixRBTreeNodeVisitor) Next() bool {
 	return false
 }
 
-func (this *GOGPListNamePrefixSListNodeVisitor) Node() *GOGPListNamePrefixSListNode {
+func (this *GOGPTreeNamePrefixRBTreeNodeVisitor) Node() *GOGPListNamePrefixSListNode {
 	return nil
 }
 
