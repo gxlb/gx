@@ -3,7 +3,7 @@ package gp
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
-/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -38,6 +38,8 @@ type GOGPDequeNamePrefixDeque struct {
 	//real data is [head,tail)
 	//buffer d is cycle, that is to say, next(len(d)-1)=0, prev(0)=len(d)-1
 	//so if tail<head, data is [head, end, 0, tail)
+	//head point to the first elem  aviable for read
+	//tail point to the first space aviable for write
 	head int
 	tail int
 	d    []GOGPDequeElem
@@ -106,7 +108,7 @@ func (this *GOGPDequeNamePrefixDeque) PushBack(v GOGPDequeElem) (ok bool) {
 		this.d[this.tail] = v
 		if this.tail++; this.tail >= this.Cap() {
 			this.tail = 0
-			if this.tail == this.head { //tail catch up head, buffer full
+			if this.tail == this.head { //tail catches up head, buffer full
 				oldCap := this.Cap()
 				d := this.d
 				this.newBuf(oldCap * 2)
@@ -123,7 +125,7 @@ func (this *GOGPDequeNamePrefixDeque) PushBack(v GOGPDequeElem) (ok bool) {
 func (this *GOGPDequeNamePrefixDeque) PopFront() (front GOGPDequeElem, ok bool) {
 	if ok = this.head != this.tail; ok {
 		front = this.d[this.head]
-		if this.head++; this.head >= this.Cap() && this.head != this.tail {
+		if this.head++; this.head >= this.Cap() {
 			this.head = 0
 		}
 	}
@@ -133,12 +135,10 @@ func (this *GOGPDequeNamePrefixDeque) PopFront() (front GOGPDequeElem, ok bool) 
 //pop back of deque
 func (this *GOGPDequeNamePrefixDeque) PopBack() (back GOGPDequeElem, ok bool) {
 	if ok = this.head != this.tail; ok {
-		t := this.tail - 1
-		if t < 0 {
-			t = this.Cap() - 1
+		if this.tail--; this.tail < 0 {
+			this.tail = this.Cap() - 1
 		}
-		back = this.d[t]
-		this.tail = t
+		back = this.d[this.tail]
 	}
 	return
 }
