@@ -13,7 +13,8 @@ package gp
 //
 //GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-//import here...
+//#if GOGP_Show
+import show_bytes "bytes" //#endif
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
@@ -206,24 +207,25 @@ func (this *GOGPDequeNamePrefixDeque) Empty() bool {
 	return this.Size() == 0
 }
 
-////show
-//func (this *GOGPDequeNamePrefixDeque) Show() string {
-//	var b show_bytes.Buffer
-//	b.WriteByte('[')
-//	for i := this.head; i != this.tail; i++ {
-//		if i >= this.Cap() {
-//			i = 0
-//		}
-//		v = this.v[i]
-//		b.WriteString(v.Show())
-//		b.WriteByte(',')
-//	}
-//	if this.Depth() > 0 {
-//		b.Truncate(b.Len() - 1) //remove last ','
-//	}
-//	b.WriteByte(']')
-//	return b.String()
-//}
+//#if GOGP_Show
+//show
+func (this *GOGPDequeNamePrefixDeque) Show() string {
+	var b show_bytes.Buffer
+	b.WriteByte('[')
+	for i := this.head; i != this.tail; i++ {
+		if i >= this.Cap() {
+			i = 0
+		}
+		v := this.d[i]
+		b.WriteString(v.Show())
+		b.WriteByte(',')
+	}
+	if this.Size() > 0 {
+		b.Truncate(b.Len() - 1) //remove last ','
+	}
+	b.WriteByte(']')
+	return b.String()
+} //#endif //GOGP_Show
 
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
