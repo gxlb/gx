@@ -83,9 +83,7 @@ func (this *GOGPDequeNamePrefixDeque) PushFront(v GOGPDequeElem) (ok bool) {
 			this.Init(-1)
 		}
 
-		if this.head--; this.head < 0 { //move head to prev empty space
-			this.head = this.Cap() - 1
-		}
+		this.head = this.prev(this.head) //move head to prev empty space
 		this.d[this.head] = v
 		if this.head == this.tail { //head reaches tail, buffer full
 			oldCap := this.Cap()
@@ -106,16 +104,14 @@ func (this *GOGPDequeNamePrefixDeque) PushBack(v GOGPDequeElem) (ok bool) {
 			this.Init(-1)
 		}
 		this.d[this.tail] = v
-		if this.tail++; this.tail >= this.Cap() {
-			this.tail = 0
-			if this.tail == this.head { //tail catches up head, buffer full
-				oldCap := this.Cap()
-				d := this.d
-				this.newBuf(oldCap * 2)
-				h := copy(this.d, d[this.head:])
-				t := copy(this.d[:h], d[:this.tail])
-				this.head, this.tail = 0, h+t
-			}
+		this.tail = this.next(this.tail)
+		if this.tail == this.head { //tail catches up head, buffer full
+			oldCap := this.Cap()
+			d := this.d
+			this.newBuf(oldCap * 2)
+			h := copy(this.d, d[this.head:])
+			t := copy(this.d[:h], d[:this.tail])
+			this.head, this.tail = 0, h+t
 		}
 	}
 	return
@@ -125,9 +121,7 @@ func (this *GOGPDequeNamePrefixDeque) PushBack(v GOGPDequeElem) (ok bool) {
 func (this *GOGPDequeNamePrefixDeque) PopFront() (front GOGPDequeElem, ok bool) {
 	if ok = this.head != this.tail; ok {
 		front = this.d[this.head]
-		if this.head++; this.head >= this.Cap() {
-			this.head = 0
-		}
+		this.head = this.next(this.head)
 	}
 	return
 }
@@ -135,9 +129,7 @@ func (this *GOGPDequeNamePrefixDeque) PopFront() (front GOGPDequeElem, ok bool) 
 //pop back of deque
 func (this *GOGPDequeNamePrefixDeque) PopBack() (back GOGPDequeElem, ok bool) {
 	if ok = this.head != this.tail; ok {
-		if this.tail--; this.tail < 0 {
-			this.tail = this.Cap() - 1
-		}
+		this.tail = this.prev(this.tail)
 		back = this.d[this.tail]
 	}
 	return
@@ -154,10 +146,7 @@ func (this *GOGPDequeNamePrefixDeque) Front() (front GOGPDequeElem, ok bool) {
 //back data
 func (this *GOGPDequeNamePrefixDeque) Back() (back GOGPDequeElem, ok bool) {
 	if ok = this.head != this.tail; ok {
-		t := this.tail - 1
-		if t < 0 {
-			t = this.Cap() - 1
-		}
+		t := this.prev(this.tail)
 		back = this.d[t]
 	}
 	return
@@ -195,7 +184,7 @@ func (this *GOGPDequeNamePrefixDeque) Size() (size int) {
 	if this.tail >= this.head {
 		size = this.tail - this.head
 	} else {
-		size = this.Cap() - this.head + this.tail
+		size = this.Cap() - (this.head - this.tail)
 	}
 	return
 }
@@ -203,6 +192,22 @@ func (this *GOGPDequeNamePrefixDeque) Size() (size int) {
 //if deque is empty
 func (this *GOGPDequeNamePrefixDeque) Empty() bool {
 	return this.Size() == 0
+}
+
+//next buff
+func (this *GOGPDequeNamePrefixDeque) next(idx int) (r int) {
+	if r = idx + 1; r >= this.Cap() {
+		r = 0
+	}
+	return
+}
+
+//prev buff
+func (this *GOGPDequeNamePrefixDeque) prev(idx int) (r int) {
+	if r = idx - 1; r < 0 {
+		r = this.Cap() - 1
+	}
+	return
 }
 
 //#if GOGP_Show
