@@ -38,8 +38,8 @@ type GOGPDequeNamePrefixDeque struct {
 	//real data is [head,tail)
 	//buffer d is cycle, that is to say, next(len(d)-1)=0, prev(0)=len(d)-1
 	//so if tail<head, data is [head, end, 0, tail)
-	//head point to the first elem  aviable for read
-	//tail point to the first space aviable for write
+	//head point to the first elem  available for read
+	//tail point to the first space available for write
 	head int
 	tail int
 	d    []GOGPDequeElem
@@ -158,7 +158,7 @@ func (this *GOGPDequeNamePrefixDeque) Shrink() (ok bool) {
 	oldSize := this.Size()
 	if ok := oldCap > 8 && oldCap >= 3*oldSize; ok { //leave at least 8 elem space
 		d := this.d
-		this.newBuf(oldSize / 2)
+		this.newBuf(oldCap / 2)
 		if this.tail >= this.head {
 			copy(this.d, d[this.head:this.tail])
 			this.tail -= this.head
