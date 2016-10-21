@@ -48,15 +48,7 @@ type GOGPHeapNamePrefixHeap struct {
 //push heap value
 func (this *GOGPHeapNamePrefixHeap) PushHeap(d []GOGPHeapElem, v GOGPHeapElem) []GOGPHeapElem {
 	d = append(d, v)
-	idx := len(d) - 1
-	parent := this.parent(idx)
-	for ; idx > 0; idx, parent = parent, this.parent(parent) {
-		if this.cmpV(d[idx], d[parent]) {
-			d[idx], d[parent] = d[parent], d[idx]
-		} else {
-			break
-		}
-	}
+	this.adjustUp(d, len(d)-1, v)
 	return d
 }
 
@@ -67,15 +59,69 @@ func (this *GOGPHeapNamePrefixHeap) PopHeap(d []GOGPHeapElem) (h []GOGPHeapElem,
 		top = d[0]
 		if l > 1 {
 			d[0], d[l-1] = d[l-1], d[0]
-			this.adjust(d[:l-1], 0, d[0])
+			this.adjustDown(d[:l-1], 0, d[0])
 		}
 		h = d[:l-1]
 	}
 	return
 }
 
+//check if d is a valid heap
+func (this *GOGPHeapNamePrefixHeap) CheckHeap(d []GOGPHeapElem) bool {
+	for i := len(d) - 1; i > 0; i-- {
+		p := this.parent(i)
+		if !this.cmpV(d[i], d[p]) {
+			return false
+		}
+	}
+	return true
+}
+
 //adjust heap to select a proper hole to set v
-func (this *GOGPHeapNamePrefixHeap) adjust(d []GOGPHeapElem, hole int, v GOGPHeapElem) {}
+func (this *GOGPHeapNamePrefixHeap) adjustDown(d []GOGPHeapElem, hole int, v GOGPHeapElem) {
+	size := len(d)
+	for l := this.lchild(hole); l < size; l = this.lchild(hole) {
+		c := l                                              //index that need compare with hole
+		if r := l + 1; r < size && !this.cmpV(d[r], d[l]) { //let the most proper child to compare with v
+			c = r
+		}
+		if this.cmpV(d[c], v) { //v is the most proper root, finish adjust
+			break
+		} else { //c is the most proper root, swap with hole, and continue adjust
+			d[hole] = d[c]
+			hole = c
+		}
+	}
+	d[hole] = v //put v to last hole
+}
+
+//stl's adjust down algorithm, low efficient
+func (this *GOGPHeapNamePrefixHeap) adjustDownSTL(d []GOGPHeapElem, hole int, v GOGPHeapElem) {
+	size := len(d)
+	for l := this.lchild(hole); l < size; l = this.lchild(hole) {
+		c := l                                              //index that need to be new root
+		if r := l + 1; r < size && !this.cmpV(d[r], d[l]) { //let the most proper child to compare with v
+			c = r
+		}
+		d[hole] = d[c]
+		hole = c
+	}
+	this.adjustUp(d, hole, v) //adjust up from leaf hole
+}
+
+//adjust heap to select a proper hole to set v
+func (this *GOGPHeapNamePrefixHeap) adjustUp(d []GOGPHeapElem, hole int, v GOGPHeapElem) {
+	for hole > 0 {
+		parent := this.parent(hole)
+		if !this.cmpV(v, d[parent]) {
+			d[hole] = d[parent]
+			hole = parent
+		} else {
+			break
+		}
+	}
+	d[hole] = v //put v to last hole
+}
 
 //make d as h heap
 func (this *GOGPHeapNamePrefixHeap) MakeHeap(d []GOGPHeapElem) {
@@ -190,9 +236,15 @@ func (this *GOGPHeapNamePrefixHeap) lchild(idx int) int {
 }
 
 //get right child index
-func (this *GOGPHeapNamePrefixHeap) rchild(idx int) int {
-	return 2*idx + 2
-}
+//func (this *GOGPHeapNamePrefixHeap) rchild(idx int) int {
+//	return 2*idx + 2
+//}
+
+//func (this *GOGPHeapNamePrefixHeap) children(idx int) (l, r int) {
+//	l = 2*idx + 1
+//	r = l + 1
+//	return
+//}
 
 //size
 func (this *GOGPHeapNamePrefixHeap) Size() int {
