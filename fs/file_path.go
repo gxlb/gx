@@ -407,14 +407,14 @@ func (me FilePathObject) Fingerprint() (root *FileHashTreeNode, err error) {
 							_subfullname := me.Join(_sub)
 							var sub *FileHashTreeNode
 							if sub, err = FilePath(_subfullname).Fingerprint(); err == nil {
-								root.Children.Push(sub)
+								root.AddChildNode(sub, -1)
 							} else {
 								return
 							}
 						}
 					}
-					root.Children.Sort()
-					for _, v := range root.Children {
+					root.SortChildren()
+					for _, v := range root.Children() {
 						r := strings.NewReader(v.Hash)
 						io.Copy(h, r)
 						root.Size += v.Size
@@ -456,14 +456,14 @@ func (me FilePathObject) Hash(method xhash.HashMethod, salt string) (root *FileH
 							_subfullname := me.Join(_sub)
 							var sub *FileHashTreeNode
 							if sub, err = FilePath(_subfullname).Hash(method, salt); err == nil {
-								root.Children.Push(sub)
+								root.AddChildNode(sub, -1)
 							} else {
 								return
 							}
 						}
 					}
-					root.Children.Sort()
-					for _, v := range root.Children {
+					root.SortChildren()
+					for _, v := range root.Children() {
 						r := strings.NewReader(v.Hash)
 						io.Copy(h, r)
 						root.Size += v.Size
