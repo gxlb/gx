@@ -5,7 +5,7 @@ package gp
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //
 //
-///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -33,7 +33,7 @@ func (this GOGPValueType) Less(o GOGPValueType) bool {
 //
 //GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-//tree node
+//tree strture
 type GOGPContainerNamePrefixTree struct {
 	root *GOGPContainerNamePrefixTreeNode
 }
@@ -46,7 +46,7 @@ func NewGOGPContainerNamePrefixTree() *GOGPContainerNamePrefixTree {
 //tree node
 type GOGPContainerNamePrefixTreeNode struct {
 	GOGPValueType
-	children _GOGPContainerNamePrefixTreeNodeSortSlice
+	children __GOGPContainerNamePrefixTreeNodeSortSlice
 }
 
 func (this *GOGPContainerNamePrefixTreeNode) SortChildren() {
@@ -233,24 +233,24 @@ func (this *GOGPContainerNamePrefixTreeNodeVisitor) Get() *GOGPValueType {
 }
 
 //for sort
-type _GOGPContainerNamePrefixTreeNodeSortSlice []*GOGPContainerNamePrefixTreeNode
+type __GOGPContainerNamePrefixTreeNodeSortSlice []*GOGPContainerNamePrefixTreeNode
 
-func (this *_GOGPContainerNamePrefixTreeNodeSortSlice) Sort() {
+func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Sort() {
 	sort.Sort(this)
 }
 
 //data
-func (this *_GOGPContainerNamePrefixTreeNodeSortSlice) Buffer() []*GOGPContainerNamePrefixTreeNode {
+func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Buffer() []*GOGPContainerNamePrefixTreeNode {
 	return *this
 }
 
 //push
-func (this *_GOGPContainerNamePrefixTreeNodeSortSlice) Push(v *GOGPContainerNamePrefixTreeNode) int {
+func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Push(v *GOGPContainerNamePrefixTreeNode) int {
 	*this = append(*this, v)
 	return this.Len()
 }
 
-func (this *_GOGPContainerNamePrefixTreeNodeSortSlice) Pop() (r *GOGPContainerNamePrefixTreeNode) {
+func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Pop() (r *GOGPContainerNamePrefixTreeNode) {
 	if len(*this) > 0 {
 		r = (*this)[len(*this)-1]
 	}
@@ -259,12 +259,12 @@ func (this *_GOGPContainerNamePrefixTreeNodeSortSlice) Pop() (r *GOGPContainerNa
 }
 
 //len
-func (this *_GOGPContainerNamePrefixTreeNodeSortSlice) Len() int {
+func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Len() int {
 	return len(this.Buffer())
 }
 
 //sort by Hash decend,the larger one first
-func (this *_GOGPContainerNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
+func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
 	l, r := (*this)[i], (*this)[j]
 
 	//#if GOGP_HasLess
@@ -277,7 +277,7 @@ func (this *_GOGPContainerNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) 
 }
 
 //swap
-func (this *_GOGPContainerNamePrefixTreeNodeSortSlice) Swap(i, j int) {
+func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Swap(i, j int) {
 	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
 }
 
