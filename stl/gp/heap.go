@@ -3,7 +3,7 @@ package gp
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
-/*   <----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   <----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -59,7 +59,7 @@ func (this *GOGPHeapNamePrefixHeap) PopHeap(b []GOGPHeapElem) (h []GOGPHeapElem,
 		top = b[0]
 		if l > 1 {
 			b[0], b[l-1] = b[l-1], b[0]
-			this.adjustDownSTL(b[:l-1], 0, b[0])
+			this.adjustDown(b[:l-1], 0, b[0])
 		}
 		h = b[:l-1]
 	}
@@ -79,17 +79,10 @@ func (this *GOGPHeapNamePrefixHeap) CheckHeap(b []GOGPHeapElem) bool {
 
 //adjust heap to select a proper hole to set v
 func (this *GOGPHeapNamePrefixHeap) adjustDown(b []GOGPHeapElem, hole int, v GOGPHeapElem) {
-	if true { //use stl's adjust down algorithm
-		this.adjustDownSTL(b, hole, v)
-	} else {
-		this.adjustDownImprove(b, hole, v)
-	}
-}
-
-//try to improve STL's adjust down algorithm
-//adjust heap to select a proper hole to set v
-func (this *GOGPHeapNamePrefixHeap) adjustDownImprove(b []GOGPHeapElem, hole int, v GOGPHeapElem) {
 	size := len(b)
+	//#if Gogp_ImproveHeap
+	//try to improve STL's adjust down algorithm
+	//adjust heap to select a proper hole to set v
 	for l := this.lchild(hole); l < size; l = this.lchild(hole) {
 		c := l                                              //index that need compare with hole
 		if r := l + 1; r < size && !this.cmpV(b[r], b[l]) { //let the most proper child to compare with v
@@ -102,12 +95,9 @@ func (this *GOGPHeapNamePrefixHeap) adjustDownImprove(b []GOGPHeapElem, hole int
 		}
 	}
 	b[hole] = v //put v to last hole
-}
-
-//C++ stl's adjust down algorithm
-//it seems to cost more move, to get probably less cmpare
-func (this *GOGPHeapNamePrefixHeap) adjustDownSTL(b []GOGPHeapElem, hole int, v GOGPHeapElem) {
-	size := len(b)
+	//#else
+	//C++ stl's adjust down algorithm
+	//it seems to cost more move, to get probably less cmpare
 	for l := this.lchild(hole); l < size; l = this.lchild(hole) {
 		c := l                                              //index that need to be new root
 		if r := l + 1; r < size && !this.cmpV(b[r], b[l]) { //let the most proper child to compare with v
@@ -116,6 +106,7 @@ func (this *GOGPHeapNamePrefixHeap) adjustDownSTL(b []GOGPHeapElem, hole int, v 
 		b[hole], hole = b[c], c
 	}
 	this.adjustUp(b, hole, v) //adjust up from leaf hole
+	//#endif
 }
 
 //adjust heap to select a proper hole to set v

@@ -11,7 +11,7 @@ package gp //
 //GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
-/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -34,18 +34,52 @@ type GOGPValueType int
 func (this GOGPValueType) Less(o GOGPValueType) bool {
 	return this < o
 }
+func (this GOGPValueType) Great(o GOGPValueType) bool {
+	return this > o
+}
 
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
+type ComparerGOGPValueType interface {
+	F(left, right GOGPValueType) bool
+}
 
-type Lesser int
+type ComparerGOGPValueTypeCreator int
 
-func (this *Lesser) F(left, right GOGPValueType) (ok bool) {
+const (
+	LESSER_GOGPValueType ComparerGOGPValueTypeCreator = iota
+	GREATER_GOGPValueType
+)
+
+func (me ComparerGOGPValueTypeCreator) Create() (cmp ComparerGOGPValueType) {
+	switch me {
+	case LESSER_GOGPValueType:
+		cmp = LesserGOGPValueType(0)
+	case GREATER_GOGPValueType:
+		cmp = GreaterGOGPValueType(0)
+	}
+	return
+}
+
+type LesserGOGPValueType byte
+
+func (this LesserGOGPValueType) F(left, right GOGPValueType) (ok bool) {
 	//#if GOGP_HasLess
 	ok = left.Less(right)
 	//#else
 	ok = left < right
+	//#endif
+	return
+}
+
+type GreaterGOGPValueType byte
+
+func (this GreaterGOGPValueType) F(left, right GOGPValueType) (ok bool) {
+	//#if GOGP_HasGreat
+	ok = left.Great(right)
+	//#else
+	ok = left > right
 	//#endif
 	return
 }
