@@ -1,6 +1,6 @@
 package gp
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
 ///*   <----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
@@ -11,11 +11,11 @@ package gp
 // It is used to generate .gp file by gogp tool
 // Real go code file will be generated from .gp file
 //
-//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
 //import...
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
@@ -36,7 +36,7 @@ func (me GOGPHeapElem) Show() string {
 }
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
+//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 //container object
 type GOGPHeapNamePrefixHeap struct {
@@ -80,7 +80,7 @@ func (this *GOGPHeapNamePrefixHeap) CheckHeap(b []GOGPHeapElem) bool {
 //adjust heap to select a proper hole to set v
 func (this *GOGPHeapNamePrefixHeap) adjustDown(b []GOGPHeapElem, hole int, v GOGPHeapElem) {
 	size := len(b)
-	//#if Gogp_ImproveHeap
+	//#GOGP_IFDEF Gogp_ImproveHeap
 	//try to improve STL's adjust down algorithm
 	//adjust heap to select a proper hole to set v
 	for l := this.lchild(hole); l < size; l = this.lchild(hole) {
@@ -95,7 +95,7 @@ func (this *GOGPHeapNamePrefixHeap) adjustDown(b []GOGPHeapElem, hole int, v GOG
 		}
 	}
 	b[hole] = v //put v to last hole
-	//#else
+	//#GOGP_ELSE
 	//C++ stl's adjust down algorithm
 	//it seems to cost more move, to get probably less cmpare
 	for l := this.lchild(hole); l < size; l = this.lchild(hole) {
@@ -106,7 +106,7 @@ func (this *GOGPHeapNamePrefixHeap) adjustDown(b []GOGPHeapElem, hole int, v GOG
 		b[hole], hole = b[c], c
 	}
 	this.adjustUp(b, hole, v) //adjust up from leaf hole
-	//#endif
+	//#GOGP_ENDIF
 }
 
 //adjust heap to select a proper hole to set v
@@ -196,19 +196,19 @@ func (this *GOGPHeapNamePrefixHeap) Top() (top GOGPHeapElem, ok bool) {
 
 //cmpare value
 func (this *GOGPHeapNamePrefixHeap) cmpV(c, p GOGPHeapElem) (ok bool) {
-	//#if GOGP_HasLess==true
+	//#GOGP_IFDEF GOGP_HasLess
 	if this.maxTop {
 		ok = !p.Less(c)
 	} else {
 		ok = !c.Less(p)
 	}
-	//#else
+	//#GOGP_ELSE
 	if this.maxTop {
 		ok = !(p < c)
 	} else {
 		ok = !(c < p)
 	}
-	//#endif
+	//#GOGP_ENDIF
 	return
 }
 
@@ -243,6 +243,6 @@ func (this *GOGPHeapNamePrefixHeap) Empty() bool {
 	return this.Size() == 0
 }
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
-//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END
+//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END

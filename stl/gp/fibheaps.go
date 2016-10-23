@@ -2,7 +2,7 @@
 
 package gp
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
 /*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
@@ -13,11 +13,11 @@ package gp
 // It is used to generate .gp file by gogp tool
 // Real go code file will be generated from .gp file
 //
-//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
 //import here...
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
@@ -32,7 +32,7 @@ func (me GOGPFibHeapElem) Show() string {
 	return dumy_fmt.Sprintf("%d", me)
 } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
+//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 //heap node
 type GOGPHeapNamePrefixFibheapNode struct {
@@ -51,6 +51,6 @@ type GOGPHeapNamePrefixFibheap struct {
 	cons      **GOGPHeapNamePrefixFibheapNode
 }
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
-//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END
+//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END

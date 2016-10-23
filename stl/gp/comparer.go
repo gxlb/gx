@@ -1,14 +1,14 @@
 //import from github.com/vipally/gx/stl/gp/comparer.go begin
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-//GOGP_IGNORE_BEGIN
+//#GOGP_IGNORE_BEGIN
 //this file is used to import by other gp files
 //it cannot use independently
 //simulation C++ stl functors
 package gp //
-//GOGP_IGNORE_END
+//#GOGP_IGNORE_END
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
 ///*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
@@ -19,11 +19,11 @@ package gp //
 // It is used to generate .gp file by gogp tool
 // Real go code file will be generated from .gp file
 //
-//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
 //
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
@@ -40,7 +40,8 @@ func (this GOGPValueType) Great(o GOGPValueType) bool {
 
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
+//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
+
 type ComparerGOGPValueType interface {
 	F(left, right GOGPValueType) bool
 }
@@ -65,25 +66,25 @@ func (me ComparerGOGPValueTypeCreator) Create() (cmp ComparerGOGPValueType) {
 type LesserGOGPValueType byte
 
 func (this LesserGOGPValueType) F(left, right GOGPValueType) (ok bool) {
-	//#if GOGP_HasLess
+	//#GOGP_IFDEF GOGP_HasLess
 	ok = left.Less(right)
-	//#else
+	//#GOGP_ELSE
 	ok = left < right
-	//#endif
+	//#GOGP_ENDIF
 	return
 }
 
 type GreaterGOGPValueType byte
 
 func (this GreaterGOGPValueType) F(left, right GOGPValueType) (ok bool) {
-	//#if GOGP_HasGreat
+	//#GOGP_IFDEF GOGP_HasGreat
 	ok = left.Great(right)
-	//#else
+	//#GOGP_ELSE
 	ok = left > right
-	//#endif
+	//#GOGP_ENDIF
 	return
 }
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
-//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END
+//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END

@@ -2,7 +2,7 @@
 
 package gp
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //
 //
 /*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
@@ -13,13 +13,13 @@ package gp
 // It is used to generate .gp file by gogp tool
 // Real go code file will be generated from .gp file
 //
-//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
 import (
 	"sort"
 )
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
@@ -31,7 +31,7 @@ func (this GOGPValueType) Less(o GOGPValueType) bool {
 }
 
 //
-//GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
+//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 //tree strture
 type GOGPContainerNamePrefixTree struct {
@@ -267,11 +267,11 @@ func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Len() int {
 func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
 	l, r := (*this)[i], (*this)[j]
 
-	//#if GOGP_HasLess
+	//#GOGP_IFDEF GOGP_HasLess
 	ok = l.Less(r.GOGPValueType)
-	//#else
+	//#GOGP_ELSE
 	ok = l.GOGPValueType < r.GOGPValueType
-	//#endif
+	//#GOGP_ENDIF
 
 	return
 }
@@ -281,6 +281,6 @@ func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Swap(i, j int) {
 	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
 }
 
-//GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
-//GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
