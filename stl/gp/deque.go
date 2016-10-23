@@ -210,7 +210,7 @@ func (this *GOGPDequeNamePrefixDeque) prev(idx int) (r int) {
 	return
 }
 
-//#GOGP_IFDEF Gogp_Show
+//#GOGP_IFDEF GOGP_Show
 //show
 func (this *GOGPDequeNamePrefixDeque) Show() string {
 	var b show_bytes.Buffer

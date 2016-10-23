@@ -38,6 +38,8 @@ func (me GOGPHeapElem) Show() string {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
+//#GOGP_REQUIRE(./comparer)
+
 //container object
 type GOGPHeapNamePrefixHeap struct {
 	b      []GOGPHeapElem //data buffer
@@ -80,7 +82,7 @@ func (this *GOGPHeapNamePrefixHeap) CheckHeap(b []GOGPHeapElem) bool {
 //adjust heap to select a proper hole to set v
 func (this *GOGPHeapNamePrefixHeap) adjustDown(b []GOGPHeapElem, hole int, v GOGPHeapElem) {
 	size := len(b)
-	//#GOGP_IFDEF Gogp_ImproveHeap
+	//#GOGP_IFDEF GOGP_ImproveHeap
 	//try to improve STL's adjust down algorithm
 	//adjust heap to select a proper hole to set v
 	for l := this.lchild(hole); l < size; l = this.lchild(hole) {
