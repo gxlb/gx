@@ -1,9 +1,7 @@
-//#GOGP_IGNORE_BEGIN
 //this file is used to import by other gp files
 //it cannot use independently
 //simulation C++ stl functors
-package gp //
-//#GOGP_IGNORE_END
+package gp
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
@@ -17,8 +15,6 @@ package gp //
 // Real go code file will be generated from .gp file
 //
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
-
-//
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
@@ -39,30 +35,30 @@ func (this GOGPValueType) Great(o GOGPValueType) bool {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-type ComparerGOGPValueType interface {
+type ComparerGOGPGlobalNamePartPart interface {
 	F(left, right GOGPValueType) bool
 }
 
-type ComparerGOGPValueTypeCreator int
+type ComparerGOGPGlobalNamePartCreator int
 
 const (
-	LESSER_GOGPValueType ComparerGOGPValueTypeCreator = iota
-	GREATER_GOGPValueType
+	LESSER_GOGPGlobalNamePart ComparerGOGPGlobalNamePartCreator = iota
+	GREATER_GOGPGlobalNamePart
 )
 
-func (me ComparerGOGPValueTypeCreator) Create() (cmp ComparerGOGPValueType) {
+func (me ComparerGOGPGlobalNamePartCreator) Create() (cmp ComparerGOGPGlobalNamePart) {
 	switch me {
-	case LESSER_GOGPValueType:
-		cmp = LesserGOGPValueType(0)
-	case GREATER_GOGPValueType:
-		cmp = GreaterGOGPValueType(0)
+	case LESSER_GOGPGlobalNamePart:
+		cmp = LesserGOGPGlobalNamePart(0)
+	case GREATER_GOGPGlobalNamePart:
+		cmp = GreaterGOGPGlobalNamePart(0)
 	}
 	return
 }
 
-type LesserGOGPValueType byte
+type LesserGOGPGlobalNamePart byte
 
-func (this LesserGOGPValueType) F(left, right GOGPValueType) (ok bool) {
+func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 	//#GOGP_IFDEF GOGP_HasLess
 	ok = left.Less(right)
 	//#GOGP_ELSE
@@ -71,9 +67,9 @@ func (this LesserGOGPValueType) F(left, right GOGPValueType) (ok bool) {
 	return
 }
 
-type GreaterGOGPValueType byte
+type GreaterGOGPGlobalNamePart byte
 
-func (this GreaterGOGPValueType) F(left, right GOGPValueType) (ok bool) {
+func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 	//#GOGP_IFDEF GOGP_HasGreat
 	ok = left.Great(right)
 	//#GOGP_ELSE
