@@ -1,6 +1,3 @@
-//import from github.com/vipally/gx/stl/gp/comparer.go begin
-//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
 //#GOGP_IGNORE_BEGIN
 //this file is used to import by other gp files
 //it cannot use independently
