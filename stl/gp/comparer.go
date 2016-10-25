@@ -35,7 +35,7 @@ func (this GOGPValueType) Great(o GOGPValueType) bool {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-type ComparerGOGPGlobalNamePartPart interface {
+type ComparerGOGPGlobalNamePart interface {
 	F(left, right GOGPValueType) bool
 }
 
