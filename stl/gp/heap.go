@@ -36,11 +36,7 @@ func (me GOGPHeapElem) Show() string {
 }
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
-
-//#GOGP_REQUIRE(./comparer)
-
-//container object
+//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine//container object
 type GOGPHeapNamePrefixHeap struct {
 	b      []GOGPHeapElem //data buffer
 	limitN int            //if limitN>0, heap size must<=limitN
