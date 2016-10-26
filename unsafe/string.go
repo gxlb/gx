@@ -5,22 +5,34 @@ import (
 	"unsafe"
 )
 
-type StringBytesT []byte
-type UnsafeString string
+var (
+	//dynamic data address
+	firstPointer = uintptr(unsafe.Pointer(new(int))) >> 7
+)
+
+type Bytes []byte
+type String string
 
 //how to do this?
-func (this *StringBytesT) Writeable() bool {
-	return false
+func (me Bytes) Writeable() bool {
+	addr := uintptr(BytesPointer(me))
+	return addr < firstPointer
+}
+
+//check if a string's buffer is writeable
+func (me String) Writeable() bool {
+	p := uintptr(StringPointer(string(me)))
+	return p < firstPointer
 }
 
 //return GoString's buffer slice(enable modify string)
-func StringBytes(s string) StringBytesT {
-	return *(*StringBytesT)(unsafe.Pointer(&s))
+func StringBytes(s string) Bytes {
+	return *(*Bytes)(unsafe.Pointer(&s))
 }
 
 // convert b to string without copy
-func BytesString(b []byte) UnsafeString {
-	return *(*UnsafeString)(unsafe.Pointer(&b))
+func BytesString(b []byte) String {
+	return *(*String)(unsafe.Pointer(&b))
 }
 
 // returns &s[0], which is not allowed in go
