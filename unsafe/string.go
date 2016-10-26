@@ -16,13 +16,21 @@ type String string
 //how to do this?
 func (me Bytes) Writeable() bool {
 	addr := uintptr(BytesPointer(me))
-	return addr < firstPointer
+	return addr > firstPointer
+}
+
+func (me Bytes) Pointer() unsafe.Pointer {
+	return BytesPointer(me)
 }
 
 //check if a string's buffer is writeable
 func (me String) Writeable() bool {
 	p := uintptr(StringPointer(string(me)))
-	return p < firstPointer
+	return p > firstPointer
+}
+
+func (me String) Pointer() unsafe.Pointer {
+	return StringPointer(string(me))
 }
 
 //return GoString's buffer slice(enable modify string)

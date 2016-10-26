@@ -34,4 +34,7 @@ func TestString(t *testing.T) {
 	c2 := "hello"
 	c3 := "hello2"
 	fmt.Println(unsafe.StringPointer(c), unsafe.StringPointer(c2), unsafe.StringPointer(c3))
+	x := "hello"
+	xb := []byte(x)
+	fmt.Println(unsafe.StringPointer(x), unsafe.BytesPointer(xb), unsafe.BytesPointer(unsafe.StringBytes(x)))
 }
