@@ -29,4 +29,9 @@ func TestString(t *testing.T) {
 	bs[0] = 'a'
 	fmt.Println(string(bs))
 	fmt.Println(unsafe.StringBytes(s).Writeable(), unsafe.StringBytes(s2).Writeable())
+
+	c := "hello"
+	c2 := "hello"
+	c3 := "hello2"
+	fmt.Println(unsafe.StringPointer(c), unsafe.StringPointer(c2), unsafe.StringPointer(c3))
 }
