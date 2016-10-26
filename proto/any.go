@@ -6,7 +6,19 @@ import (
 
 var (
 	gTypeMap map[string]*reflect.Type
+
+//typeID?
 )
+
+type TypeId uint
+
+//func (me TypeId) New() Any {}
+
+//register a type, return it's unique id
+//this TypeId can use to create new values of this type
+func RegType(name string, i interface{}) TypeId {
+	return 0
+}
 
 type Kind reflect.Kind
 
@@ -58,4 +70,5 @@ type BoolValue bool
 type StructValue struct {
 	fieldsMap map[string]int
 	fields    []Any
+	v         reflect.Value
 }
