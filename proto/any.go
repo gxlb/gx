@@ -46,20 +46,16 @@ func Unpack([]byte) (any Any) {
 
 type Any interface {
 	String() string
-	Int() int
-	Bool() bool
-	FromInt(int)
 	FromString(string)
-	FromBool(bool)
 	Kind() Kind
-	Size() int
 	Pack(b []byte) []byte
+	Unpack([]byte) Any
 }
 
 type IntValue int
 type StringValue string
 type BoolValue bool
-type Other struct {
-	value []byte
-	kind  Kind
+type StructValue struct {
+	fieldsMap map[string]int
+	fields    []Any
 }
