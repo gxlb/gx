@@ -6,6 +6,7 @@ import (
 )
 
 type StringBytesT []byte
+type UnsafeString string
 
 //how to do this?
 func (this *StringBytesT) Writeable() bool {
@@ -18,8 +19,8 @@ func StringBytes(s string) StringBytesT {
 }
 
 // convert b to string without copy
-func BytesString(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
+func BytesString(b []byte) UnsafeString {
+	return *(*UnsafeString)(unsafe.Pointer(&b))
 }
 
 // returns &s[0], which is not allowed in go
