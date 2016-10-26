@@ -13,10 +13,13 @@ var (
 type TypeId uint
 
 //func (me TypeId) New() Any {}
+//func (me TypeId) Load(b []byte) Any {}
+
+//func NewTypeRegister()
 
 //register a type, return it's unique id
 //this TypeId can use to create new values of this type
-func RegType(name string, i interface{}) TypeId {
+func RegType(name string, i interface{}) TypeId { //TypeId=hash(name)?
 	return 0
 }
 
