@@ -26,33 +26,36 @@ func RegType(name string, i interface{}) TypeId { //TypeId=hash(name)?
 type Kind reflect.Kind
 
 const (
-	Invalid       = Kind(reflect.Invalid)
-	Bool          = Kind(reflect.Bool)
-	Int           = Kind(reflect.Int)
-	Int8          = Kind(reflect.Int8)
-	Int16         = Kind(reflect.Int16)
-	Int32         = Kind(reflect.Int32)
-	Int64         = Kind(reflect.Int64)
-	Uint          = Kind(reflect.Uint)
-	Uint8         = Kind(reflect.Uint8)
-	Uint16        = Kind(reflect.Uint16)
-	Uint32        = Kind(reflect.Uint32)
-	Uint64        = Kind(reflect.Uint64)
-	Uintptr       = Kind(reflect.Uintptr)
-	Float32       = Kind(reflect.Float32)
-	Float64       = Kind(reflect.Float64)
-	Complex64     = Kind(reflect.Complex64)
-	Complex128    = Kind(reflect.Complex128)
-	Array         = Kind(reflect.Array)
-	Chan          = Kind(reflect.Chan)
-	Func          = Kind(reflect.Func)
-	Interface     = Kind(reflect.Interface)
-	Map           = Kind(reflect.Map)
-	Ptr           = Kind(reflect.Ptr)
-	Slice         = Kind(reflect.Slice)
-	String        = Kind(reflect.String)
-	Struct        = Kind(reflect.Struct)
-	UnsafePointer = Kind(reflect.UnsafePointer)
+	Invalid    = Kind(reflect.Invalid)    //0
+	Bool       = Kind(reflect.Bool)       //1
+	Int        = Kind(reflect.Int)        //2
+	Int8       = Kind(reflect.Int8)       //3
+	Int16      = Kind(reflect.Int16)      //4
+	Int32      = Kind(reflect.Int32)      //5
+	Int64      = Kind(reflect.Int64)      //6
+	Uint       = Kind(reflect.Uint)       //7
+	Uint8      = Kind(reflect.Uint8)      //8
+	Uint16     = Kind(reflect.Uint16)     //9
+	Uint32     = Kind(reflect.Uint32)     //10
+	Uint64     = Kind(reflect.Uint64)     //11
+	Float32    = Kind(reflect.Float32)    //13
+	Float64    = Kind(reflect.Float64)    //14
+	Complex64  = Kind(reflect.Complex64)  //15
+	Complex128 = Kind(reflect.Complex128) //16
+
+	Array  = Kind(reflect.Array)  //17
+	Map    = Kind(reflect.Map)    //21
+	Slice  = Kind(reflect.Slice)  //23
+	String = Kind(reflect.String) //24
+	Struct = Kind(reflect.Struct) //25
+
+	//these kind will not support Pack/Unpack
+	Uintptr       = Kind(reflect.Uintptr)       //12
+	Chan          = Kind(reflect.Chan)          //18
+	Func          = Kind(reflect.Func)          //19
+	Interface     = Kind(reflect.Interface)     //20
+	Ptr           = Kind(reflect.Ptr)           //22
+	UnsafePointer = Kind(reflect.UnsafePointer) //26
 )
 
 func Unpack([]byte) (any Any) {
