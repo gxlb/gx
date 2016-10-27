@@ -1,3 +1,5 @@
+package proto
+
 type Integer int64
 type UInteger uint64
 
