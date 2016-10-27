@@ -14,6 +14,7 @@ type Pointer unsafe.Pointer
 type Bytes []byte
 type String string
 
+//invalid receiver type Pointer
 //func (me Pointer) Writeable() bool {
 //	addr := uintptr(me)
 //	return addr >= firstPointer
