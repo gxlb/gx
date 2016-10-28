@@ -1,4 +1,4 @@
-package complex
+package cplx
 
 type Cplx64 complex64
 
