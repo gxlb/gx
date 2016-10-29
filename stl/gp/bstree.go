@@ -22,12 +22,11 @@ package gp
 type GOGPValueType int                                //
 func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
 func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
-func (this GOGPValueType) Show() string               { return "" }
-
+func (this GOGPValueType) Show() string               { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//#GOGP_IGNORE_END//required from(./fake)
+//#GOGP_IGNORE_END //required from(./fake)
 
-////add import here..........
+//add import here..........
 //
 //
 ////#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine

@@ -32,7 +32,6 @@ package gp //#GOGP_IGNORE_END
 //these defines is used to make sure this fake go file can be compiled correctlly
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
 //#GOGP_IFDEF GOGP_HasKeyType
 type GOGPKeyType int                              //
 func (this GOGPKeyType) Less(o GOGPKeyType) bool  { return this < o }
@@ -43,8 +42,7 @@ func (this GOGPKeyType) Show() string             { return "" } //
 type GOGPValueType int                                //
 func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
 func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
-func (this GOGPValueType) Show() string               { return "" }
-
+func (this GOGPValueType) Show() string               { return "" }//
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
