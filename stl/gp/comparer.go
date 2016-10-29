@@ -16,6 +16,8 @@ package gp
 //
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
+
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly

@@ -22,6 +22,11 @@ package gp
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
+type GOGPKeyType int                              //
+func (this GOGPKeyType) Less(o GOGPKeyType) bool  { return this < o }
+func (this GOGPKeyType) Great(o GOGPKeyType) bool { return this > o }
+func (this GOGPKeyType) Show() string             { return "" } //
+
 type GOGPValueType int                                //
 func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
 func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
@@ -39,6 +44,10 @@ func (this GOGPValueType) Show() string               { return "" } //
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
+
+type GOGPGlobalNamePrefixTree struct {
+	root *GOGPGlobalNamePrefixTreeNode
+}
 
 type GOGPGlobalNamePrefixTreeNode struct{}
 
