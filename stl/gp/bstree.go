@@ -13,7 +13,7 @@ package gp
 //
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-//import...
+//import here...
 //
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
@@ -92,11 +92,11 @@ func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-type GOGPGlobalNamePrefixTree struct {
+type GOGPGlobalNamePrefixBSTree struct {
 	root *GOGPGlobalNamePrefixTreeNode
 }
 
-type GOGPGlobalNamePrefixTreeNode struct{}
+type GOGPGlobalNamePrefixBSTreeNode struct{}
 
 //
 //add file body here..........
