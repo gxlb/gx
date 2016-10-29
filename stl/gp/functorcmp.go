@@ -1,12 +1,11 @@
 //this file is used to import by other gp files
-//it cannot use independently
-//simulation C++ stl functors
+//it cannot use independently, simulation C++ stl functors
 package gp
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
-///*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -17,21 +16,23 @@ package gp
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
+//these defines is used to make sure this fake go file can be compiled correctlly
+//and they will be removed from real go files
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+type GOGPValueType int                                //
+func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
+func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
+func (this GOGPValueType) Show() string               { return "" } //
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-type GOGPValueType int
-
-func (this GOGPValueType) Less(o GOGPValueType) bool {
-	return this < o
-}
-func (this GOGPValueType) Great(o GOGPValueType) bool {
-	return this > o
-}
 
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
