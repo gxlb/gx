@@ -13,8 +13,11 @@ package gp
 //
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-//##GOGP_REQUIRE(./fake,_)
-//#GOGP_IGNORE_BEGIN //required from(./fake)
+//import...
+//
+
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
 //these defines is used to make sure this fake go file can be compiled correctlly
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -24,11 +27,8 @@ func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
 func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
 func (this GOGPValueType) Show() string               { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//#GOGP_IGNORE_END //required from(./fake)
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
-//add import here..........
-//
-//
 ////#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly

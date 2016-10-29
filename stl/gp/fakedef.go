@@ -1,4 +1,4 @@
-//#GOGP_IFDEF GOGP_DoNotHasThisDefine__
+//#GOGP_IFDEF GOGP_DO_NOT_HAS_THIS_DEFINE__
 //this is a fake types for other gp file //#GOGP_ENDIF
 
 //#GOGP_IGNORE_BEGIN
