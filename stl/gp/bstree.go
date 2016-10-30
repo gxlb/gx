@@ -17,69 +17,10 @@ package gp
 //
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
-//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
-//these defines is used to make sure this fake go file can be compiled correctlly
-//and they will be removed from real go files
-//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-type GOGPKeyType int                             //
-func (this GOGPKeyType) Less(o GOGPKeyType) bool { return this < o }
-func (this GOGPKeyType) Show() string            { return "" } //
-
-type GOGPValueType int                               //
-func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
-func (this GOGPValueType) Show() string              { return "" } //
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
 
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
-//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
-//this file is used to import by other gp files
-//it cannot use independently, simulation C++ stl functors
-//package gp
-
-type ComparerGOGPGlobalNamePart interface {
-	F(left, right GOGPValueType) bool
-}
-
-//create cmp object by name
-func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNamePart) {
-	switch cmpName {
-	case "": //default Lesser
-		fallthrough
-	case "Lesser":
-		r = LesserGOGPGlobalNamePart{}
-	case "Greater":
-		r = GreaterGOGPGlobalNamePart{}
-	default: //unsupport name
-		panic(cmpName)
-	}
-	return
-}
-
-//Lesser
-type LesserGOGPGlobalNamePart struct{}
-
-func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
-
-	ok = left < right
-
-	return
-}
-
-//Greater
-type GreaterGOGPGlobalNamePart struct{}
-
-func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
-
-	ok = left > right
-
-	return
-}
-
-//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
 ////#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
