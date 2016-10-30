@@ -3,7 +3,7 @@ package gp
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
-///*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -33,6 +33,8 @@ func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
 func (this GOGPValueType) Show() string               { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
+
+
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)

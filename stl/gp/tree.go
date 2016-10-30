@@ -5,7 +5,7 @@ package gp
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //
 //
-/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -19,52 +19,110 @@ import (
 	"sort"
 )
 
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
+//these defines is used to make sure this fake go file can be compiled correctlly
+//and they will be removed from real go files
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+type GOGPValueType int                                //
+func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
+func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
+func (this GOGPValueType) Show() string               { return "" } //
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
+
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
+//this file is used to import by other gp files
+//it cannot use independently, simulation C++ stl functors
+//package gp
+
+type ComparerGOGPGlobalNamePart interface {
+	F(left, right GOGPValueType) bool
+}
+
+type ComparerGOGPGlobalNamePartCreator int
+
+const (
+	LESSER_GOGPGlobalNamePart ComparerGOGPGlobalNamePartCreator = iota
+	GREATER_GOGPGlobalNamePart
+)
+
+func (me ComparerGOGPGlobalNamePartCreator) Create() (cmp ComparerGOGPGlobalNamePart) {
+	switch me {
+	case LESSER_GOGPGlobalNamePart:
+		cmp = LesserGOGPGlobalNamePart(0)
+	case GREATER_GOGPGlobalNamePart:
+		cmp = GreaterGOGPGlobalNamePart(0)
+	}
+	return
+}
+
+type LesserGOGPGlobalNamePart byte
+
+func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+
+	ok = left.Less(right)
+
+	return
+}
+
+type GreaterGOGPGlobalNamePart byte
+
+func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+
+	ok = left > right
+
+	return
+}
+
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
+
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
-
-type GOGPValueType int
-
-func (this GOGPValueType) Less(o GOGPValueType) bool {
-	return this < o
-}
-
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 //
+//add dummy defines here..........
+//
+//
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 //tree strture
-type GOGPContainerNamePrefixTree struct {
-	root *GOGPContainerNamePrefixTreeNode
+type GOGPGlobalNamePrefixTree struct {
+	root *GOGPGlobalNamePrefixTreeNode
 }
 
 //new container
-func NewGOGPContainerNamePrefixTree() *GOGPContainerNamePrefixTree {
-	return &GOGPContainerNamePrefixTree{}
+func NewGOGPGlobalNamePrefixTree() *GOGPGlobalNamePrefixTree {
+	return &GOGPGlobalNamePrefixTree{}
 }
 
 //tree node
-type GOGPContainerNamePrefixTreeNode struct {
+type GOGPGlobalNamePrefixTreeNode struct {
 	GOGPValueType
-	children __GOGPContainerNamePrefixTreeNodeSortSlice
+	children __GOGPGlobalNamePrefixTreeNodeSortSlice
 }
 
-func (this *GOGPContainerNamePrefixTreeNode) SortChildren() {
+func (this *GOGPGlobalNamePrefixTreeNode) SortChildren() {
 	this.children.Sort()
 }
 
-func (this *GOGPContainerNamePrefixTreeNode) Children() []*GOGPContainerNamePrefixTreeNode {
+func (this *GOGPGlobalNamePrefixTreeNode) Children() []*GOGPGlobalNamePrefixTreeNode {
 	return this.children.Buffer()
 }
 
 //add a child
-func (this *GOGPContainerNamePrefixTreeNode) AddChild(v GOGPValueType, idx int) (child *GOGPContainerNamePrefixTreeNode) {
-	n := &GOGPContainerNamePrefixTreeNode{GOGPValueType: v, children: nil}
+func (this *GOGPGlobalNamePrefixTreeNode) AddChild(v GOGPValueType, idx int) (child *GOGPGlobalNamePrefixTreeNode) {
+	n := &GOGPGlobalNamePrefixTreeNode{GOGPValueType: v, children: nil}
 	return this.AddChildNode(n, idx)
 }
 
 //add a child node
-func (this *GOGPContainerNamePrefixTreeNode) AddChildNode(node *GOGPContainerNamePrefixTreeNode, idx int) (child *GOGPContainerNamePrefixTreeNode) {
+func (this *GOGPGlobalNamePrefixTreeNode) AddChildNode(node *GOGPGlobalNamePrefixTreeNode, idx int) (child *GOGPGlobalNamePrefixTreeNode) {
 	if idx >= 0 && idx < len(this.children) {
 		right := this.children[idx+1:]
 		this.children = append(this.children[:idx], node)
@@ -76,12 +134,12 @@ func (this *GOGPContainerNamePrefixTreeNode) AddChildNode(node *GOGPContainerNam
 }
 
 //cound of children
-func (this *GOGPContainerNamePrefixTreeNode) NumChildren() int {
+func (this *GOGPGlobalNamePrefixTreeNode) NumChildren() int {
 	return len(this.children)
 }
 
 //get child
-func (this *GOGPContainerNamePrefixTreeNode) GetChild(idx int) (child *GOGPContainerNamePrefixTreeNode, ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNode) GetChild(idx int) (child *GOGPGlobalNamePrefixTreeNode, ok bool) {
 	if ok = idx >= 0 && idx < len(this.children); ok {
 		child = this.children[idx]
 	}
@@ -89,7 +147,7 @@ func (this *GOGPContainerNamePrefixTreeNode) GetChild(idx int) (child *GOGPConta
 }
 
 //remove child
-func (this *GOGPContainerNamePrefixTreeNode) RemoveChild(idx int) (child *GOGPContainerNamePrefixTreeNode, ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNode) RemoveChild(idx int) (child *GOGPGlobalNamePrefixTreeNode, ok bool) {
 	if child, ok = this.GetChild(idx); ok {
 		this.children = append(this.children[:idx], this.children[idx+1:]...)
 	}
@@ -97,14 +155,14 @@ func (this *GOGPContainerNamePrefixTreeNode) RemoveChild(idx int) (child *GOGPCo
 }
 
 //create a visitor
-func (this *GOGPContainerNamePrefixTreeNode) Visitor() (v *GOGPContainerNamePrefixTreeNodeVisitor) {
-	v = &GOGPContainerNamePrefixTreeNodeVisitor{}
+func (this *GOGPGlobalNamePrefixTreeNode) Visitor() (v *GOGPGlobalNamePrefixTreeNodeVisitor) {
+	v = &GOGPGlobalNamePrefixTreeNodeVisitor{}
 	v.push(this, -1)
 	return
 }
 
 //get all node data
-func (this *GOGPContainerNamePrefixTreeNode) All() (list []GOGPValueType) {
+func (this *GOGPGlobalNamePrefixTreeNode) All() (list []GOGPValueType) {
 	list = append(list, this.GOGPValueType)
 	for _, v := range this.children {
 		list = append(list, v.All()...)
@@ -113,19 +171,19 @@ func (this *GOGPContainerNamePrefixTreeNode) All() (list []GOGPValueType) {
 }
 
 //tree node visitor
-type GOGPContainerNamePrefixTreeNodeVisitor struct {
-	node         *GOGPContainerNamePrefixTreeNode
-	parents      []*GOGPContainerNamePrefixTreeNode
+type GOGPGlobalNamePrefixTreeNodeVisitor struct {
+	node         *GOGPGlobalNamePrefixTreeNode
+	parents      []*GOGPGlobalNamePrefixTreeNode
 	brotherIdxes []int
 	//visit order: this->child->brother
 }
 
-func (this *GOGPContainerNamePrefixTreeNodeVisitor) push(n *GOGPContainerNamePrefixTreeNode, bIdx int) {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) push(n *GOGPGlobalNamePrefixTreeNode, bIdx int) {
 	this.parents = append(this.parents, n)
 	this.brotherIdxes = append(this.brotherIdxes, bIdx)
 }
 
-func (this *GOGPContainerNamePrefixTreeNodeVisitor) pop() (n *GOGPContainerNamePrefixTreeNode, bIdx int) {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) pop() (n *GOGPGlobalNamePrefixTreeNode, bIdx int) {
 	l := len(this.parents)
 	if l > 0 {
 		n, bIdx = this.tail()
@@ -135,7 +193,7 @@ func (this *GOGPContainerNamePrefixTreeNodeVisitor) pop() (n *GOGPContainerNameP
 	return
 }
 
-func (this *GOGPContainerNamePrefixTreeNodeVisitor) tail() (n *GOGPContainerNamePrefixTreeNode, bIdx int) {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) tail() (n *GOGPGlobalNamePrefixTreeNode, bIdx int) {
 	l := len(this.parents)
 	if l > 0 {
 		n = this.parents[l-1]
@@ -144,11 +202,11 @@ func (this *GOGPContainerNamePrefixTreeNodeVisitor) tail() (n *GOGPContainerName
 	return
 }
 
-func (this *GOGPContainerNamePrefixTreeNodeVisitor) depth() int {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) depth() int {
 	return len(this.parents)
 }
 
-func (this *GOGPContainerNamePrefixTreeNodeVisitor) update_tail(bIdx int) bool {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) update_tail(bIdx int) bool {
 	l := len(this.parents)
 	if l > 0 {
 		this.brotherIdxes[l-1] = bIdx
@@ -157,7 +215,7 @@ func (this *GOGPContainerNamePrefixTreeNodeVisitor) update_tail(bIdx int) bool {
 	return false
 }
 
-func (this *GOGPContainerNamePrefixTreeNodeVisitor) top_right(n *GOGPContainerNamePrefixTreeNode) (p *GOGPContainerNamePrefixTreeNode) {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) top_right(n *GOGPGlobalNamePrefixTreeNode) (p *GOGPGlobalNamePrefixTreeNode) {
 	if n != nil {
 		l := len(n.children)
 		for l > 0 {
@@ -171,7 +229,7 @@ func (this *GOGPContainerNamePrefixTreeNodeVisitor) top_right(n *GOGPContainerNa
 }
 
 //visit next node
-func (this *GOGPContainerNamePrefixTreeNodeVisitor) Next() (data *GOGPValueType, ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Next() (data *GOGPValueType, ok bool) {
 	if this.node != nil { //check if has any children
 		if len(this.node.children) > 0 {
 			this.push(this.node, 0)
@@ -200,7 +258,7 @@ func (this *GOGPContainerNamePrefixTreeNodeVisitor) Next() (data *GOGPValueType,
 }
 
 //visit previous node
-func (this *GOGPContainerNamePrefixTreeNodeVisitor) Prev() (data *GOGPValueType, ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Prev() (data *GOGPValueType, ok bool) {
 	if this.node == nil && this.depth() > 0 { //check if has any brothers or uncles
 		p, _ := this.pop()
 		this.node = this.top_right(p)
@@ -228,29 +286,29 @@ func (this *GOGPContainerNamePrefixTreeNodeVisitor) Prev() (data *GOGPValueType,
 }
 
 //get node data
-func (this *GOGPContainerNamePrefixTreeNodeVisitor) Get() *GOGPValueType {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Get() *GOGPValueType {
 	return &this.node.GOGPValueType
 }
 
 //for sort
-type __GOGPContainerNamePrefixTreeNodeSortSlice []*GOGPContainerNamePrefixTreeNode
+type __GOGPGlobalNamePrefixTreeNodeSortSlice []*GOGPGlobalNamePrefixTreeNode
 
-func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Sort() {
+func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Sort() {
 	sort.Sort(this)
 }
 
 //data
-func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Buffer() []*GOGPContainerNamePrefixTreeNode {
+func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Buffer() []*GOGPGlobalNamePrefixTreeNode {
 	return *this
 }
 
 //push
-func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Push(v *GOGPContainerNamePrefixTreeNode) int {
+func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Push(v *GOGPGlobalNamePrefixTreeNode) int {
 	*this = append(*this, v)
 	return this.Len()
 }
 
-func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Pop() (r *GOGPContainerNamePrefixTreeNode) {
+func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNode) {
 	if len(*this) > 0 {
 		r = (*this)[len(*this)-1]
 	}
@@ -259,12 +317,12 @@ func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Pop() (r *GOGPContainerN
 }
 
 //len
-func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Len() int {
+func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Len() int {
 	return len(this.Buffer())
 }
 
 //sort by Hash decend,the larger one first
-func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
+func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
 	l, r := (*this)[i], (*this)[j]
 
 	//#GOGP_IFDEF GOGP_HasLess
@@ -277,7 +335,7 @@ func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool)
 }
 
 //swap
-func (this *__GOGPContainerNamePrefixTreeNodeSortSlice) Swap(i, j int) {
+func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Swap(i, j int) {
 	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
 }
 
