@@ -5,7 +5,7 @@ package gp
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //
 //
-/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -31,27 +31,23 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
-
-
-//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
-//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/funccmp)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/funccmp)
 //this file is used to import by other gp files
 //it cannot use independently, simulation C++ stl functors
 //package gp
 
-type ComparerGOGPGlobalNamePart interface {
-	F(left, right GOGPValueType) bool
-}
+type CmpFuncGOGPGlobalNamePart func(left, right GOGPValueType) bool
 
 //create cmp object by name
-func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNamePart) {
+func GetCmpFuncGOGPGlobalNamePart(cmpName string) (r CmpFuncGOGPGlobalNamePart) {
 	switch cmpName {
 	case "": //default Lesser
 		fallthrough
 	case "Lesser":
-		r = LesserGOGPGlobalNamePart{}
+		r = LessGOGPGlobalNamePart
 	case "Greater":
-		r = GreaterGOGPGlobalNamePart{}
+		r = GreatGOGPGlobalNamePart
 	default: //unsupport name
 		panic(cmpName)
 	}
@@ -59,9 +55,7 @@ func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNameP
 }
 
 //Lesser
-type LesserGOGPGlobalNamePart struct{}
-
-func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+func LessGOGPGlobalNamePart(left, right GOGPValueType) (ok bool) {
 
 	ok = left < right
 
@@ -69,16 +63,14 @@ func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 }
 
 //Greater
-type GreaterGOGPGlobalNamePart struct{}
-
-func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+func GreatGOGPGlobalNamePart(left, right GOGPValueType) (ok bool) {
 
 	ok = left > right
 
 	return
 }
 
-//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/funccmp)
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
@@ -93,24 +85,24 @@ func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 func init() {
-	gGOGPGlobalNamePrefixGbl.cmp = CreateComparerGOGPGlobalNamePart("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+	gGOGPGlobalNamePrefixTreeGbl.cmp = GetCmpFuncGOGPGlobalNamePart("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
 }
 
-var gGOGPGlobalNamePrefixGbl struct {
-	cmp ComparerGOGPGlobalNamePart
+var gGOGPGlobalNamePrefixTreeGbl struct {
+	cmp CmpFuncGOGPGlobalNamePart
 }
 
 //tree strture
 type GOGPGlobalNamePrefixTree struct {
-	cmp  ComparerGOGPGlobalNamePart
+	cmp  CmpFuncGOGPGlobalNamePart
 	root *GOGPGlobalNamePrefixTreeNode
 }
 
 //new container
 func NewGOGPGlobalNamePrefixTree(cmpType string) *GOGPGlobalNamePrefixTree {
-	p := &GOGPGlobalNamePrefixTree{cmp: gGOGPGlobalNamePrefixGbl.cmp}
+	p := &GOGPGlobalNamePrefixTree{cmp: gGOGPGlobalNamePrefixTreeGbl.cmp}
 	if cmpType != "" {
-		p.cmp = CreateComparerGOGPGlobalNamePart(cmpType)
+		p.cmp = GetCmpFuncGOGPGlobalNamePart(cmpType)
 	}
 	return p
 }
@@ -338,7 +330,7 @@ func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Len() int {
 //sort by Hash decend,the larger one first
 func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
 	l, r := (*this)[i], (*this)[j]
-	return gGOGPGlobalNamePrefixGbl.cmp.F(l.GOGPValueType, r.GOGPValueType)
+	return gGOGPGlobalNamePrefixTreeGbl.cmp(l.GOGPValueType, r.GOGPValueType)
 }
 
 //swap

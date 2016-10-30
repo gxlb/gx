@@ -19,66 +19,137 @@ import (
 	"sort"
 )
 
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
+//these defines is used to make sure this fake go file can be compiled correctlly
+//and they will be removed from real go files
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+type GOGPValueType int                               //
+func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
+func (this GOGPValueType) Show() string              { return "" } //
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
+
+
+
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
+//this file is used to import by other gp files
+//it cannot use independently, simulation C++ stl functors
+//package gp
+
+type ComparerGOGPGlobalNamePart interface {
+	F(left, right GOGPValueType) bool
+}
+
+//create cmp object by name
+func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNamePart) {
+	switch cmpName {
+	case "": //default Lesser
+		fallthrough
+	case "Lesser":
+		r = LesserGOGPGlobalNamePart{}
+	case "Greater":
+		r = GreaterGOGPGlobalNamePart{}
+	default: //unsupport name
+		panic(cmpName)
+	}
+	return
+}
+
+//Lesser
+type LesserGOGPGlobalNamePart struct{}
+
+func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+
+	ok = left < right
+
+	return
+}
+
+//Greater
+type GreaterGOGPGlobalNamePart struct{}
+
+func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+
+	ok = left > right
+
+	return
+}
+
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
+
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-type GOGPSliceElem int
-
-func (this GOGPSliceElem) Less(o GOGPSliceElem) bool {
-	return this < o
-}
-
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-//for sort
-type GOGPNamePrefixSortSlice []GOGPSliceElem
+func init() {
+	gGOGPGlobalNamePrefixSortSliceGbl.cmp = CreateComparerGOGPGlobalNamePart("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+}
 
-func (this *GOGPNamePrefixSortSlice) Sort() {
+var gGOGPGlobalNamePrefixSortSliceGbl struct {
+	cmp ComparerGOGPGlobalNamePart
+}
+
+func NewGOGPGlobalNamePrefixSortSlice(cmpName string) *GOGPGlobalNamePrefixSortSlice {
+	p := &GOGPGlobalNamePrefixSortSlice{}
+	p.Init(cmpName)
+	return p
+}
+
+//for sort
+type GOGPGlobalNamePrefixSortSlice struct {
+	cmp ComparerGOGPGlobalNamePart
+	d   []GOGPValueType
+}
+
+func (this *GOGPGlobalNamePrefixSortSlice) Init(cmpName string) {
+	this.cmp = CreateComparerGOGPGlobalNamePart(cmpName)
+}
+
+func (this *GOGPGlobalNamePrefixSortSlice) Sort() {
 	sort.Sort(this)
 }
 
 //data
-func (this *GOGPNamePrefixSortSlice) Slice() []GOGPSliceElem {
-	return *this
+func (this *GOGPGlobalNamePrefixSortSlice) Slice() []GOGPValueType {
+	return this.d
 }
 
 //push
-func (this *GOGPNamePrefixSortSlice) Push(v GOGPSliceElem) int {
-	*this = append(*this, v)
+func (this *GOGPGlobalNamePrefixSortSlice) Push(v GOGPValueType) int {
+	this.d = append(this.d, v)
 	return this.Len()
 }
 
-func (this *GOGPNamePrefixSortSlice) Pop() (r GOGPSliceElem) {
-	if len(*this) > 0 {
-		r = (*this)[len(*this)-1]
+func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r GOGPValueType) {
+	if len(this.d) > 0 {
+		r = (this.d)[len(this.d)-1]
 	}
-	*this = (*this)[:len(*this)-1]
+	this.d = (this.d)[:len(this.d)-1]
 	return
 }
 
 //len
-func (this *GOGPNamePrefixSortSlice) Len() int {
+func (this *GOGPGlobalNamePrefixSortSlice) Len() int {
 	return len(this.Slice())
 }
 
 //sort by Hash decend,the larger one first
-func (this *GOGPNamePrefixSortSlice) Less(i, j int) (ok bool) {
-	l, r := (*this)[i], (*this)[j]
-	//#GOGP_IFDEF GOGP_HasLess
-	ok = l.Less(r)
-	//#GOGP_ELSE
-	ok = l < r
-	//#GOGP_ENDIF
-	return
+func (this *GOGPGlobalNamePrefixSortSlice) Less(i, j int) (ok bool) {
+	l, r := (this.d)[i], (this.d)[j]
+	return this.cmp.F(l, r)
 }
 
 //swap
-func (this *GOGPNamePrefixSortSlice) Swap(i, j int) {
-	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
+func (this *GOGPGlobalNamePrefixSortSlice) Swap(i, j int) {
+	(this.d)[i], (this.d)[j] = (this.d)[j], (this.d)[i]
 }
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile

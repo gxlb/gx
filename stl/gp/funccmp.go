@@ -4,7 +4,7 @@ package gp
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 // #GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
-// #GOGP_REQUIRE(github.com/vipally/gx/stl/gp/factorcmp)
+// #GOGP_REQUIRE(github.com/vipally/gx/stl/gp/faccmp)
 //
 //
 /*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
@@ -40,19 +40,17 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-type ComparerGOGPGlobalNamePart interface {
-	F(left, right GOGPValueType) bool
-}
+type CmpFuncGOGPGlobalNamePart func(left, right GOGPValueType) bool
 
 //create cmp object by name
-func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNamePart) {
+func GetCmpFuncGOGPGlobalNamePart(cmpName string) (r CmpFuncGOGPGlobalNamePart) {
 	switch cmpName {
 	case "": //default Lesser
 		fallthrough
 	case "Lesser":
-		r = LesserGOGPGlobalNamePart{}
+		r = LessGOGPGlobalNamePart
 	case "Greater":
-		r = GreaterGOGPGlobalNamePart{}
+		r = GreatGOGPGlobalNamePart
 	default: //unsupport name
 		panic(cmpName)
 	}
@@ -60,9 +58,7 @@ func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNameP
 }
 
 //Lesser
-type LesserGOGPGlobalNamePart struct{}
-
-func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+func LessGOGPGlobalNamePart(left, right GOGPValueType) (ok bool) {
 	//#GOGP_IFDEF GOGP_HasCmpFunc
 	ok = left.Less(right)
 	//#GOGP_ELSE
@@ -72,9 +68,7 @@ func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 }
 
 //Greater
-type GreaterGOGPGlobalNamePart struct{}
-
-func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+func GreatGOGPGlobalNamePart(left, right GOGPValueType) (ok bool) {
 	//#GOGP_IFDEF GOGP_HasCmpFunc
 	ok = right.Less(left)
 	//#GOGP_ELSE
