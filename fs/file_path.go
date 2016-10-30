@@ -379,10 +379,10 @@ type FileHash struct {
 
 //sort by Size, Hash  decend,the larger one first
 func (this FileHash) Less(o FileHash) bool {
-	if this.Size > o.Size {
+	if this.Size < o.Size {
 		return true
 	}
-	if this.Hash > o.Hash {
+	if this.Size == o.Size && this.Hash < o.Hash {
 		return true
 	}
 

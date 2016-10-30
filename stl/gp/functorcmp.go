@@ -21,10 +21,9 @@ package gp
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-type GOGPValueType int                                //
-func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
-func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
-func (this GOGPValueType) Show() string               { return "" } //
+type GOGPValueType int                               //
+func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
+func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
@@ -42,27 +41,26 @@ type ComparerGOGPGlobalNamePart interface {
 	F(left, right GOGPValueType) bool
 }
 
-type ComparerGOGPGlobalNamePartCreator int
-
-const (
-	LESSER_GOGPGlobalNamePart ComparerGOGPGlobalNamePartCreator = iota
-	GREATER_GOGPGlobalNamePart
-)
-
-func (me ComparerGOGPGlobalNamePartCreator) Create() (cmp ComparerGOGPGlobalNamePart) {
-	switch me {
-	case LESSER_GOGPGlobalNamePart:
-		cmp = LesserGOGPGlobalNamePart(0)
-	case GREATER_GOGPGlobalNamePart:
-		cmp = GreaterGOGPGlobalNamePart(0)
+//create cmp object by name
+func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNamePart) {
+	switch cmpName {
+	case "": //default Lesser
+		fallthrough
+	case "Lesser":
+		r = LesserGOGPGlobalNamePart{}
+	case "Greater":
+		r = GreaterGOGPGlobalNamePart{}
+	default: //unsupport name
+		panic(cmpName)
 	}
 	return
 }
 
-type LesserGOGPGlobalNamePart byte
+//Lesser
+type LesserGOGPGlobalNamePart struct{}
 
 func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
-	//#GOGP_IFDEF GOGP_HasLess
+	//#GOGP_IFDEF GOGP_HasCmpFunc
 	ok = left.Less(right)
 	//#GOGP_ELSE
 	ok = left < right
@@ -70,11 +68,12 @@ func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 	return
 }
 
-type GreaterGOGPGlobalNamePart byte
+//Greater
+type GreaterGOGPGlobalNamePart struct{}
 
 func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
-	//#GOGP_IFDEF GOGP_HasGreat
-	ok = left.Great(right)
+	//#GOGP_IFDEF GOGP_HasCmpFunc
+	ok = right.Less(left)
 	//#GOGP_ELSE
 	ok = left > right
 	//#GOGP_ENDIF

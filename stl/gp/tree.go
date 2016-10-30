@@ -25,10 +25,9 @@ import (
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-type GOGPValueType int                                //
-func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
-func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
-func (this GOGPValueType) Show() string               { return "" } //
+type GOGPValueType int                               //
+func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
+func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
@@ -42,33 +41,33 @@ type ComparerGOGPGlobalNamePart interface {
 	F(left, right GOGPValueType) bool
 }
 
-type ComparerGOGPGlobalNamePartCreator int
-
-const (
-	LESSER_GOGPGlobalNamePart ComparerGOGPGlobalNamePartCreator = iota
-	GREATER_GOGPGlobalNamePart
-)
-
-func (me ComparerGOGPGlobalNamePartCreator) Create() (cmp ComparerGOGPGlobalNamePart) {
-	switch me {
-	case LESSER_GOGPGlobalNamePart:
-		cmp = LesserGOGPGlobalNamePart(0)
-	case GREATER_GOGPGlobalNamePart:
-		cmp = GreaterGOGPGlobalNamePart(0)
+//create cmp object by name
+func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNamePart) {
+	switch cmpName {
+	case "": //default Lesser
+		fallthrough
+	case "Lesser":
+		r = LesserGOGPGlobalNamePart{}
+	case "Greater":
+		r = GreaterGOGPGlobalNamePart{}
+	default: //unsupport name
+		panic(cmpName)
 	}
 	return
 }
 
-type LesserGOGPGlobalNamePart byte
+//Lesser
+type LesserGOGPGlobalNamePart struct{}
 
 func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 
-	ok = left.Less(right)
+	ok = left < right
 
 	return
 }
 
-type GreaterGOGPGlobalNamePart byte
+//Greater
+type GreaterGOGPGlobalNamePart struct{}
 
 func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 
@@ -91,14 +90,27 @@ func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
+func init() {
+	gGOGPGlobalNamePrefixGbl.cmp = CreateComparerGOGPGlobalNamePart("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+}
+
+var gGOGPGlobalNamePrefixGbl struct {
+	cmp ComparerGOGPGlobalNamePart
+}
+
 //tree strture
 type GOGPGlobalNamePrefixTree struct {
+	cmp  ComparerGOGPGlobalNamePart
 	root *GOGPGlobalNamePrefixTreeNode
 }
 
 //new container
-func NewGOGPGlobalNamePrefixTree() *GOGPGlobalNamePrefixTree {
-	return &GOGPGlobalNamePrefixTree{}
+func NewGOGPGlobalNamePrefixTree(cmpType string) *GOGPGlobalNamePrefixTree {
+	p := &GOGPGlobalNamePrefixTree{cmp: gGOGPGlobalNamePrefixGbl.cmp}
+	if cmpType != "" {
+		p.cmp = CreateComparerGOGPGlobalNamePart(cmpType)
+	}
+	return p
 }
 
 //tree node
@@ -324,14 +336,7 @@ func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Len() int {
 //sort by Hash decend,the larger one first
 func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
 	l, r := (*this)[i], (*this)[j]
-
-	//#GOGP_IFDEF GOGP_HasLess
-	ok = l.Less(r.GOGPValueType)
-	//#GOGP_ELSE
-	ok = l.GOGPValueType < r.GOGPValueType
-	//#GOGP_ENDIF
-
-	return
+	return gGOGPGlobalNamePrefixGbl.cmp.F(l.GOGPValueType, r.GOGPValueType)
 }
 
 //swap

@@ -35,13 +35,11 @@ package gp //#GOGP_IGNORE_END
 //#GOGP_IFDEF GOGP_HasKeyType
 type GOGPKeyType int                              //
 func (this GOGPKeyType) Less(o GOGPKeyType) bool  { return this < o }
-func (this GOGPKeyType) Great(o GOGPKeyType) bool { return this > o }
 func (this GOGPKeyType) Show() string             { return "" } //
 //#GOGP_ENDIF //GOGP_HasKeyType
 
 type GOGPValueType int                                //
 func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
-func (this GOGPValueType) Great(o GOGPValueType) bool { return this > o }
 func (this GOGPValueType) Show() string               { return "" }//
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
