@@ -32,11 +32,11 @@ package gp //#GOGP_IGNORE_END
 //these defines is used to make sure this fake go file can be compiled correctlly
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-//#GOGP_IFDEF GOGP_HasKeyType
+//#GOGP_IFDEF KEY_TYPE
 type GOGPKeyType int                              //
 func (this GOGPKeyType) Less(o GOGPKeyType) bool  { return this < o }
 func (this GOGPKeyType) Show() string             { return "" } //
-//#GOGP_ENDIF //GOGP_HasKeyType
+//#GOGP_ENDIF //KEY_TYPE
 
 type GOGPValueType int                                //
 func (this GOGPValueType) Less(o GOGPValueType) bool  { return this < o }
