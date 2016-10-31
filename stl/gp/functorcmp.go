@@ -76,7 +76,7 @@ func (me CmpGOGPGlobalNamePart) String() (s string) {
 	case CMP_Greater:
 		s = "Greater"
 	default:
-		s = "error"
+		s = "error cmp value"
 	}
 	return
 }
