@@ -15,9 +15,7 @@ package gp
 //
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-import (
-	"sort"
-)
+import "sort"
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
@@ -31,11 +29,9 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
-//this file is used to import by other gp files
+//this file is used to //import by other gp files
 //it cannot use independently, simulation C++ stl functors
 //package gp
 
@@ -143,27 +139,27 @@ func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 func init() {
-	gGOGPGlobalNamePrefixSortSliceGbl.cmp = CreateComparerGOGPGlobalNamePart("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
 }
 
 var gGOGPGlobalNamePrefixSortSliceGbl struct {
-	cmp ComparerGOGPGlobalNamePart
+	cmp CmpGOGPGlobalNamePart
 }
 
-func NewGOGPGlobalNamePrefixSortSlice(cmpName string) *GOGPGlobalNamePrefixSortSlice {
+func NewGOGPGlobalNamePrefixSortSlice(bigFirst bool) *GOGPGlobalNamePrefixSortSlice {
 	p := &GOGPGlobalNamePrefixSortSlice{}
-	p.Init(cmpName)
+	p.Init(bigFirst)
 	return p
 }
 
 //for sort
 type GOGPGlobalNamePrefixSortSlice struct {
-	cmp ComparerGOGPGlobalNamePart
+	cmp CmpGOGPGlobalNamePart
 	d   []GOGPValueType
 }
 
-func (this *GOGPGlobalNamePrefixSortSlice) Init(cmpName string) {
-	this.cmp = CreateComparerGOGPGlobalNamePart(cmpName)
+func (this *GOGPGlobalNamePrefixSortSlice) Init(bigFirst bool) {
+	this.cmp = this.cmp.CreateByBool(bigFirst)
 }
 
 func (this *GOGPGlobalNamePrefixSortSlice) Sort() {

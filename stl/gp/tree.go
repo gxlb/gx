@@ -5,7 +5,7 @@ package gp
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //
 //
-///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -15,9 +15,8 @@ package gp
 //
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-import (
-	"sort"
-)
+//#GOGP_IGNORE_BEGIN
+import "sort" //#GOGP_IGNORE_END
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
@@ -33,7 +32,7 @@ func (this GOGPValueType) Show() string              { return "" } //
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
-//this file is used to import by other gp files
+//this file is used to //import by other gp files
 //it cannot use independently, simulation C++ stl functors
 //package gp
 
@@ -131,6 +130,79 @@ func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/sort_slice)
+//this file define a template type for sort
+
+//package gp
+
+//import "sort"
+
+func init() {
+	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("")
+}
+
+var gGOGPGlobalNamePrefixSortSliceGbl struct {
+	cmp CmpGOGPGlobalNamePart
+}
+
+func NewGOGPGlobalNamePrefixSortSlice(bigFirst bool) *GOGPGlobalNamePrefixSortSlice {
+	p := &GOGPGlobalNamePrefixSortSlice{}
+	p.Init(bigFirst)
+	return p
+}
+
+//for sort
+type GOGPGlobalNamePrefixSortSlice struct {
+	cmp CmpGOGPGlobalNamePart
+	d   []GOGPValueType
+}
+
+func (this *GOGPGlobalNamePrefixSortSlice) Init(bigFirst bool) {
+	this.cmp = this.cmp.CreateByBool(bigFirst)
+}
+
+func (this *GOGPGlobalNamePrefixSortSlice) Sort() {
+	sort.Sort(this)
+}
+
+//data
+func (this *GOGPGlobalNamePrefixSortSlice) Slice() []GOGPValueType {
+	return this.d
+}
+
+//push
+func (this *GOGPGlobalNamePrefixSortSlice) Push(v GOGPValueType) int {
+	this.d = append(this.d, v)
+	return this.Len()
+}
+
+func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r GOGPValueType) {
+	if len(this.d) > 0 {
+		r = (this.d)[len(this.d)-1]
+	}
+	this.d = (this.d)[:len(this.d)-1]
+	return
+}
+
+//len
+func (this *GOGPGlobalNamePrefixSortSlice) Len() int {
+	return len(this.Slice())
+}
+
+//sort by Hash decend,the larger one first
+func (this *GOGPGlobalNamePrefixSortSlice) Less(i, j int) (ok bool) {
+	l, r := (this.d)[i], (this.d)[j]
+	return this.cmp.F(l, r)
+}
+
+//swap
+func (this *GOGPGlobalNamePrefixSortSlice) Swap(i, j int) {
+	(this.d)[i], (this.d)[j] = (this.d)[j], (this.d)[i]
+}
+
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/sort_slice)
+
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
@@ -166,7 +238,7 @@ func NewGOGPGlobalNamePrefixTree(bigFirst bool) *GOGPGlobalNamePrefixTree {
 //tree node
 type GOGPGlobalNamePrefixTreeNode struct {
 	GOGPValueType
-	children __GOGPGlobalNamePrefixTreeNodeSortSlice
+	children GOGPGlobalNamePrefixSortSlice
 }
 
 func (this *GOGPGlobalNamePrefixTreeNode) SortChildren() {
@@ -352,47 +424,47 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Get() *GOGPValueType {
 	return &this.node.GOGPValueType
 }
 
-//for sort
-type __GOGPGlobalNamePrefixTreeNodeSortSlice []*GOGPGlobalNamePrefixTreeNode
+////for sort
+//type __GOGPGlobalNamePrefixTreeNodeSortSlice []*GOGPGlobalNamePrefixTreeNode
 
-func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Sort() {
-	sort.Sort(this)
-}
+//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Sort() {
+//	sort.Sort(this)
+//}
 
-//data
-func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Buffer() []*GOGPGlobalNamePrefixTreeNode {
-	return *this
-}
+////data
+//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Buffer() []*GOGPGlobalNamePrefixTreeNode {
+//	return *this
+//}
 
-//push
-func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Push(v *GOGPGlobalNamePrefixTreeNode) int {
-	*this = append(*this, v)
-	return this.Len()
-}
+////push
+//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Push(v *GOGPGlobalNamePrefixTreeNode) int {
+//	*this = append(*this, v)
+//	return this.Len()
+//}
 
-func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNode) {
-	if len(*this) > 0 {
-		r = (*this)[len(*this)-1]
-	}
-	*this = (*this)[:len(*this)-1]
-	return
-}
+//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNode) {
+//	if len(*this) > 0 {
+//		r = (*this)[len(*this)-1]
+//	}
+//	*this = (*this)[:len(*this)-1]
+//	return
+//}
 
-//len
-func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Len() int {
-	return len(this.Buffer())
-}
+////len
+//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Len() int {
+//	return len(this.Buffer())
+//}
 
-//sort by Hash decend,the larger one first
-func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
-	l, r := (*this)[i], (*this)[j]
-	return gGOGPGlobalNamePrefixTreeGbl.cmp.F(l.GOGPValueType, r.GOGPValueType)
-}
+////sort by Hash decend,the larger one first
+//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
+//	l, r := (*this)[i], (*this)[j]
+//	return gGOGPGlobalNamePrefixTreeGbl.cmp.F(l.GOGPValueType, r.GOGPValueType)
+//}
 
-//swap
-func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Swap(i, j int) {
-	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
-}
+////swap
+//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Swap(i, j int) {
+//	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
+//}
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
