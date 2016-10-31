@@ -66,6 +66,21 @@ func (me CmpGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 	return
 }
 
+func (me CmpGOGPGlobalNamePart) Lesser() CmpGOGPGlobalNamePart  { return CMP_Lesser }
+func (me CmpGOGPGlobalNamePart) Greater() CmpGOGPGlobalNamePart { return CMP_Greater }
+
+func (me CmpGOGPGlobalNamePart) String() (s string) {
+	switch me {
+	case CMP_Lesser:
+		s = "Lesser"
+	case CMP_Greater:
+		s = "Greater"
+	default:
+		s = "error"
+	}
+	return
+}
+
 func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNamePart) {
 	switch cmpName {
 	case "": //default Lesser
