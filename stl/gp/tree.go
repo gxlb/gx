@@ -31,6 +31,8 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
+
+
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/funccmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/funccmp)
 //this file is used to import by other gp files

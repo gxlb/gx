@@ -36,45 +36,123 @@ func (this GOGPValueType) Show() string              { return "" } //
 //it cannot use independently, simulation C++ stl functors
 //package gp
 
-type ComparerGOGPGlobalNamePart interface {
-	F(left, right GOGPValueType) bool
-}
+//#GOGP_ONCE
+const (
+	CMPLesser = iota //default
+	CMPGreater
+) //
+//#GOGP_ONCE_END
+
+//cmp object, zero is Lesser
+type CmpGOGPGlobalNamePart byte
+
+const (
+	CmpGOGPGlobalNamePartLesser  CmpGOGPGlobalNamePart = CMPLesser
+	CmpGOGPGlobalNamePartGreater CmpGOGPGlobalNamePart = CMPGreater
+)
 
 //create cmp object by name
-func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNamePart) {
+func CreateCmpGOGPGlobalNamePart(cmpName string) (r CmpGOGPGlobalNamePart) {
+	r = CmpGOGPGlobalNamePartLesser.CreateByName(cmpName)
+	return
+}
+
+//uniformed global function
+func (me CmpGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+	switch me {
+	case CMPLesser:
+		ok = me.less(left, right)
+	case CMPGreater:
+		ok = me.great(left, right)
+	}
+	return
+}
+
+func (me CmpGOGPGlobalNamePart) Lesser() CmpGOGPGlobalNamePart  { return CMPLesser }
+func (me CmpGOGPGlobalNamePart) Greater() CmpGOGPGlobalNamePart { return CMPGreater }
+
+func (me CmpGOGPGlobalNamePart) String() (s string) {
+	switch me {
+	case CMPLesser:
+		s = "Lesser"
+	case CMPGreater:
+		s = "Greater"
+	default:
+		s = "error cmp value"
+	}
+	return
+}
+
+func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNamePart) {
 	switch cmpName {
 	case "": //default Lesser
 		fallthrough
 	case "Lesser":
-		r = LesserGOGPGlobalNamePart{}
+		r = CMPLesser
 	case "Greater":
-		r = GreaterGOGPGlobalNamePart{}
+		r = CMPGreater
 	default: //unsupport name
 		panic(cmpName)
 	}
 	return
 }
 
-//Lesser
-type LesserGOGPGlobalNamePart struct{}
-
-func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePart) less(left, right GOGPValueType) (ok bool) {
 
 	ok = left < right
 
 	return
 }
+func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 
-//Greater
-type GreaterGOGPGlobalNamePart struct{}
-
-func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
-
-	ok = left > right
+	ok = right < left
 
 	return
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//type ComparerGOGPGlobalNamePart interface {
+//	F(left, right GOGPValueType) bool
+//}
+
+////create cmp object by name
+//func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNamePart) {
+//	switch cmpName {
+//	case "": //default Lesser
+//		fallthrough
+//	case "Lesser":
+//		r = LesserGOGPGlobalNamePart{}
+//	case "Greater":
+//		r = GreaterGOGPGlobalNamePart{}
+//	default: //unsupport name
+//		panic(cmpName)
+//	}
+//	return
+//}
+
+////Lesser
+//type LesserGOGPGlobalNamePart struct{}
+
+//func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+//
+
+//	ok = left < right
+//
+
+//	return
+//}
+
+////Greater
+//type GreaterGOGPGlobalNamePart struct{}
+
+//func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+//
+
+//	ok = left > right
+//
+
+//	return
+//}
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
 ////#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine

@@ -40,40 +40,46 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
+//#GOGP_ONCE
 const (
-	CMP_Lesser = iota //default
-	CMP_Greater
-	_CMP_CNT_
-)
+	CMPLesser = iota //default
+	CMPGreater
+) //
+//#GOGP_ONCE_END
 
 //cmp object, zero is Lesser
 type CmpGOGPGlobalNamePart byte
 
+const (
+	CmpGOGPGlobalNamePartLesser  CmpGOGPGlobalNamePart = CMPLesser
+	CmpGOGPGlobalNamePartGreater CmpGOGPGlobalNamePart = CMPGreater
+)
+
 //create cmp object by name
 func CreateCmpGOGPGlobalNamePart(cmpName string) (r CmpGOGPGlobalNamePart) {
-	r = CmpGOGPGlobalNamePart(0).CreateByName(cmpName)
+	r = CmpGOGPGlobalNamePartLesser.CreateByName(cmpName)
 	return
 }
 
 //uniformed global function
 func (me CmpGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 	switch me {
-	case CMP_Lesser:
+	case CMPLesser:
 		ok = me.less(left, right)
-	case CMP_Greater:
+	case CMPGreater:
 		ok = me.great(left, right)
 	}
 	return
 }
 
-func (me CmpGOGPGlobalNamePart) Lesser() CmpGOGPGlobalNamePart  { return CMP_Lesser }
-func (me CmpGOGPGlobalNamePart) Greater() CmpGOGPGlobalNamePart { return CMP_Greater }
+func (me CmpGOGPGlobalNamePart) Lesser() CmpGOGPGlobalNamePart  { return CMPLesser }
+func (me CmpGOGPGlobalNamePart) Greater() CmpGOGPGlobalNamePart { return CMPGreater }
 
 func (me CmpGOGPGlobalNamePart) String() (s string) {
 	switch me {
-	case CMP_Lesser:
+	case CMPLesser:
 		s = "Lesser"
-	case CMP_Greater:
+	case CMPGreater:
 		s = "Greater"
 	default:
 		s = "error cmp value"
@@ -86,9 +92,9 @@ func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNam
 	case "": //default Lesser
 		fallthrough
 	case "Lesser":
-		r = CMP_Lesser
+		r = CMPLesser
 	case "Greater":
-		r = CMP_Greater
+		r = CMPGreater
 	default: //unsupport name
 		panic(cmpName)
 	}
