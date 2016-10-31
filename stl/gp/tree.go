@@ -88,6 +88,16 @@ func (me CmpGOGPGlobalNamePart) String() (s string) {
 	return
 }
 
+//create by bool
+func (me CmpGOGPGlobalNamePart) CreateByBool(bigFirst bool) (r CmpGOGPGlobalNamePart) {
+	if bigFirst {
+		r = CMPGreater
+	} else {
+		r = CMPLesser
+	}
+	return
+}
+
 //create cmp object by name
 func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNamePart) {
 	switch cmpName {
@@ -134,25 +144,22 @@ func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 func init() {
-	gGOGPGlobalNamePrefixTreeGbl.cmp = GetCmpFuncGOGPGlobalNamePart("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+	gGOGPGlobalNamePrefixTreeGbl.cmp = gGOGPGlobalNamePrefixTreeGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
 }
 
 var gGOGPGlobalNamePrefixTreeGbl struct {
-	cmp CmpFuncGOGPGlobalNamePart
+	cmp CmpGOGPGlobalNamePart
 }
 
 //tree strture
 type GOGPGlobalNamePrefixTree struct {
-	cmp  CmpFuncGOGPGlobalNamePart
+	cmp  CmpGOGPGlobalNamePart
 	root *GOGPGlobalNamePrefixTreeNode
 }
 
 //new container
-func NewGOGPGlobalNamePrefixTree(cmpType string) *GOGPGlobalNamePrefixTree {
-	p := &GOGPGlobalNamePrefixTree{cmp: gGOGPGlobalNamePrefixTreeGbl.cmp}
-	if cmpType != "" {
-		p.cmp = GetCmpFuncGOGPGlobalNamePart(cmpType)
-	}
+func NewGOGPGlobalNamePrefixTree(bigFirst bool) *GOGPGlobalNamePrefixTree {
+	p := &GOGPGlobalNamePrefixTree{cmp: gGOGPGlobalNamePrefixTreeGbl.cmp.CreateByBool(bigFirst)}
 	return p
 }
 
@@ -379,7 +386,7 @@ func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Len() int {
 //sort by Hash decend,the larger one first
 func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
 	l, r := (*this)[i], (*this)[j]
-	return gGOGPGlobalNamePrefixTreeGbl.cmp(l.GOGPValueType, r.GOGPValueType)
+	return gGOGPGlobalNamePrefixTreeGbl.cmp.F(l.GOGPValueType, r.GOGPValueType)
 }
 
 //swap

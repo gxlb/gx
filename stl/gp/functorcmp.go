@@ -91,6 +91,16 @@ func (me CmpGOGPGlobalNamePart) String() (s string) {
 	return
 }
 
+//create by bool
+func (me CmpGOGPGlobalNamePart) CreateByBool(bigFirst bool) (r CmpGOGPGlobalNamePart) {
+	if bigFirst {
+		r = CMPGreater
+	} else {
+		r = CMPLesser
+	}
+	return
+}
+
 //create cmp object by name
 func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNamePart) {
 	switch cmpName {
