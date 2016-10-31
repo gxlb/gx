@@ -71,9 +71,13 @@ func (me CmpGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 	return
 }
 
-func (me CmpGOGPGlobalNamePart) Lesser() CmpGOGPGlobalNamePart  { return CMPLesser }
+//Lesser object
+func (me CmpGOGPGlobalNamePart) Lesser() CmpGOGPGlobalNamePart { return CMPLesser }
+
+//Greater object
 func (me CmpGOGPGlobalNamePart) Greater() CmpGOGPGlobalNamePart { return CMPGreater }
 
+//show as string
 func (me CmpGOGPGlobalNamePart) String() (s string) {
 	switch me {
 	case CMPLesser:
@@ -86,6 +90,7 @@ func (me CmpGOGPGlobalNamePart) String() (s string) {
 	return
 }
 
+//create cmp object by name
 func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNamePart) {
 	switch cmpName {
 	case "": //default Lesser
@@ -100,12 +105,15 @@ func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNam
 	return
 }
 
+//lesser operation
 func (me CmpGOGPGlobalNamePart) less(left, right GOGPValueType) (ok bool) {
 
 	ok = left < right
 
 	return
 }
+
+//Greater operation
 func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 
 	ok = right < left
@@ -113,49 +121,6 @@ func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 	return
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//type ComparerGOGPGlobalNamePart interface {
-//	F(left, right GOGPValueType) bool
-//}
-
-////create cmp object by name
-//func CreateComparerGOGPGlobalNamePart(cmpName string) (r ComparerGOGPGlobalNamePart) {
-//	switch cmpName {
-//	case "": //default Lesser
-//		fallthrough
-//	case "Lesser":
-//		r = LesserGOGPGlobalNamePart{}
-//	case "Greater":
-//		r = GreaterGOGPGlobalNamePart{}
-//	default: //unsupport name
-//		panic(cmpName)
-//	}
-//	return
-//}
-
-////Lesser
-//type LesserGOGPGlobalNamePart struct{}
-
-//func (this LesserGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
-//
-
-//	ok = left < right
-//
-
-//	return
-//}
-
-////Greater
-//type GreaterGOGPGlobalNamePart struct{}
-
-//func (this GreaterGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
-//
-
-//	ok = left > right
-//
-
-//	return
-//}
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
