@@ -29,9 +29,11 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
+
+
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
-//this file is used to //import by other gp files
+//this file is used to import by other gp files
 //it cannot use independently, simulation C++ stl functors
 //package gp
 
@@ -138,36 +140,40 @@ func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-func init() {
-	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
-}
+//func init() {
+//	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+//}
 
-var gGOGPGlobalNamePrefixSortSliceGbl struct {
-	cmp CmpGOGPGlobalNamePart
-}
+//var gGOGPGlobalNamePrefixSortSliceGbl struct {
+//	cmp CmpGOGPGlobalNamePart
+//}
 
-func NewGOGPGlobalNamePrefixSortSlice(bigFirst bool) *GOGPGlobalNamePrefixSortSlice {
+//new sort object
+func NewGOGPGlobalNamePrefixSortSlice(capacity int, bigFirst bool) *GOGPGlobalNamePrefixSortSlice {
 	p := &GOGPGlobalNamePrefixSortSlice{}
-	p.Init(bigFirst)
+	p.Init(capacity, bigFirst)
 	return p
 }
 
-//for sort
+//sort slice
 type GOGPGlobalNamePrefixSortSlice struct {
-	cmp CmpGOGPGlobalNamePart
 	d   []GOGPValueType
+	cmp CmpGOGPGlobalNamePart
 }
 
-func (this *GOGPGlobalNamePrefixSortSlice) Init(bigFirst bool) {
+//init
+func (this *GOGPGlobalNamePrefixSortSlice) Init(capacity int, bigFirst bool) {
+	this.d = make([]GOGPValueType, 0, capacity)
 	this.cmp = this.cmp.CreateByBool(bigFirst)
 }
 
+//sort
 func (this *GOGPGlobalNamePrefixSortSlice) Sort() {
 	sort.Sort(this)
 }
 
-//data
-func (this *GOGPGlobalNamePrefixSortSlice) Slice() []GOGPValueType {
+//data buffer
+func (this *GOGPGlobalNamePrefixSortSlice) Buffer() []GOGPValueType {
 	return this.d
 }
 
@@ -177,8 +183,30 @@ func (this *GOGPGlobalNamePrefixSortSlice) Push(v GOGPValueType) int {
 	return this.Len()
 }
 
-func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r GOGPValueType) {
-	if len(this.d) > 0 {
+//insert
+func (this *GOGPGlobalNamePrefixSortSlice) Insert(v GOGPValueType, idx int) int {
+	if idx >= 0 && idx < this.Len() {
+		right := this.d[idx+1:]
+		this.d = append(this.d[:idx], v)
+		this.d = append(this.d, right...)
+	} else {
+		this.d = append(this.d, v)
+	}
+	return this.Len()
+}
+
+//remove
+func (this *GOGPGlobalNamePrefixSortSlice) Remove(idx int) (ok bool) {
+	if ok = idx >= 0 && idx < this.Len(); ok {
+		right := this.d[idx+1:]
+		this.d = append(this.d[:idx], right...)
+	}
+	return
+}
+
+//pop
+func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r GOGPValueType, ok bool) {
+	if ok = len(this.d) > 0; ok {
 		r = (this.d)[len(this.d)-1]
 	}
 	this.d = (this.d)[:len(this.d)-1]
@@ -187,7 +215,7 @@ func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r GOGPValueType) {
 
 //len
 func (this *GOGPGlobalNamePrefixSortSlice) Len() int {
-	return len(this.Slice())
+	return len(this.d)
 }
 
 //sort by Hash decend,the larger one first

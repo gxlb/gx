@@ -32,7 +32,7 @@ func (this GOGPValueType) Show() string              { return "" } //
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
-//this file is used to //import by other gp files
+//this file is used to import by other gp files
 //it cannot use independently, simulation C++ stl functors
 //package gp
 
