@@ -7,7 +7,7 @@ package gp
 // #GOGP_REQUIRE(github.com/vipally/gx/stl/gp/factorcmp)
 //
 //
-/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -24,11 +24,9 @@ package gp
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-
-
-type <VALUE_TYPE> int                                //
-func (this <VALUE_TYPE>) Less(o <VALUE_TYPE>) bool  { return this < o }
-func (this <VALUE_TYPE>) Show() string               { return "" }//
+type GOGPValueType int                               //
+func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
+func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
