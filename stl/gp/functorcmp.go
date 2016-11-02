@@ -24,9 +24,11 @@ package gp
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-type GOGPValueType int                               //
-func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
-func (this GOGPValueType) Show() string              { return "" } //
+
+
+type <VALUE_TYPE> int                                //
+func (this <VALUE_TYPE>) Less(o <VALUE_TYPE>) bool  { return this < o }
+func (this <VALUE_TYPE>) Show() string               { return "" }//
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
