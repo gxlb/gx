@@ -47,7 +47,10 @@ func (me String) Pointer() Pointer {
 
 //return GoString's buffer slice(enable modify string)
 func StringBytes(s string) Bytes {
-	return *(*Bytes)(unsafe.Pointer(&s))
+	var bh reflect.SliceHeader
+	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	bh.Data, bh.Len, bh.Cap = sh.Data, sh.Len, sh.Len
+	return *(*Bytes)(unsafe.Pointer(&bh))
 }
 
 // convert b to string without copy
