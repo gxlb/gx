@@ -140,14 +140,6 @@ func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-//func init() {
-//	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
-//}
-
-//var gGOGPGlobalNamePrefixSortSliceGbl struct {
-//	cmp CmpGOGPGlobalNamePart
-//}
-
 //new sort object
 func NewGOGPGlobalNamePrefixSortSlice(capacity int, bigFirst bool) *GOGPGlobalNamePrefixSortSlice {
 	p := &GOGPGlobalNamePrefixSortSlice{}

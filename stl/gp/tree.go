@@ -138,14 +138,6 @@ func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 
 //import "sort"
 
-//func init() {
-//	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("")
-//}
-
-//var gGOGPGlobalNamePrefixSortSliceGbl struct {
-//	cmp CmpGOGPGlobalNamePart
-//}
-
 //new sort object
 func NewGOGPGlobalNamePrefixSortSlice(capacity int, bigFirst bool) *GOGPGlobalNamePrefixSortSlice {
 	p := &GOGPGlobalNamePrefixSortSlice{}
@@ -155,13 +147,13 @@ func NewGOGPGlobalNamePrefixSortSlice(capacity int, bigFirst bool) *GOGPGlobalNa
 
 //sort slice
 type GOGPGlobalNamePrefixSortSlice struct {
-	d   []GOGPValueType
+	d   []*GOGPGlobalNamePrefixTreeNode
 	cmp CmpGOGPGlobalNamePart
 }
 
 //init
 func (this *GOGPGlobalNamePrefixSortSlice) Init(capacity int, bigFirst bool) {
-	this.d = make([]GOGPValueType, 0, capacity)
+	this.d = make([]*GOGPGlobalNamePrefixTreeNode, 0, capacity)
 	this.cmp = this.cmp.CreateByBool(bigFirst)
 }
 
@@ -171,18 +163,18 @@ func (this *GOGPGlobalNamePrefixSortSlice) Sort() {
 }
 
 //data buffer
-func (this *GOGPGlobalNamePrefixSortSlice) Buffer() []GOGPValueType {
+func (this *GOGPGlobalNamePrefixSortSlice) Buffer() []*GOGPGlobalNamePrefixTreeNode {
 	return this.d
 }
 
 //push
-func (this *GOGPGlobalNamePrefixSortSlice) Push(v GOGPValueType) int {
+func (this *GOGPGlobalNamePrefixSortSlice) Push(v *GOGPGlobalNamePrefixTreeNode) int {
 	this.d = append(this.d, v)
 	return this.Len()
 }
 
 //insert
-func (this *GOGPGlobalNamePrefixSortSlice) Insert(v GOGPValueType, idx int) int {
+func (this *GOGPGlobalNamePrefixSortSlice) Insert(v *GOGPGlobalNamePrefixTreeNode, idx int) int {
 	if idx >= 0 && idx < this.Len() {
 		right := this.d[idx+1:]
 		this.d = append(this.d[:idx], v)
@@ -203,7 +195,7 @@ func (this *GOGPGlobalNamePrefixSortSlice) Remove(idx int) (ok bool) {
 }
 
 //pop
-func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r GOGPValueType, ok bool) {
+func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
 	if ok = len(this.d) > 0; ok {
 		r = (this.d)[len(this.d)-1]
 	}
