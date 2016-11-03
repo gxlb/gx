@@ -5,7 +5,7 @@ package gp
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //
 //
-/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -29,8 +29,6 @@ func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
 func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
-
-
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
@@ -117,7 +115,7 @@ func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNam
 //lesser operation
 func (me CmpGOGPGlobalNamePart) less(left, right GOGPValueType) (ok bool) {
 
-	ok = left < right
+	ok = left.Less(right)
 
 	return
 }
@@ -125,113 +123,14 @@ func (me CmpGOGPGlobalNamePart) less(left, right GOGPValueType) (ok bool) {
 //Greater operation
 func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 
-	ok = right < left
+	ok = right.Less(left)
 
 	return
 }
 
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
-
-
-//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice)
-//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/sort_slice)
-//this file define a template type for sort
-
-//package gp
-
-//import "sort"
-
-//func init() {
-//	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("")
-//}
-
-//var gGOGPGlobalNamePrefixSortSliceGbl struct {
-//	cmp CmpGOGPGlobalNamePart
-//}
-
-//new sort object
-func NewGOGPGlobalNamePrefixSortSlice(capacity int, bigFirst bool) *GOGPGlobalNamePrefixSortSlice {
-	p := &GOGPGlobalNamePrefixSortSlice{}
-	p.Init(capacity, bigFirst)
-	return p
-}
-
-//sort slice
-type GOGPGlobalNamePrefixSortSlice struct {
-	d   []GOGPValueType
-	cmp CmpGOGPGlobalNamePart
-}
-
-//init
-func (this *GOGPGlobalNamePrefixSortSlice) Init(capacity int, bigFirst bool) {
-	this.d = make([]GOGPValueType, 0, capacity)
-	this.cmp = this.cmp.CreateByBool(bigFirst)
-}
-
-//sort
-func (this *GOGPGlobalNamePrefixSortSlice) Sort() {
-	sort.Sort(this)
-}
-
-//data buffer
-func (this *GOGPGlobalNamePrefixSortSlice) Buffer() []GOGPValueType {
-	return this.d
-}
-
-//push
-func (this *GOGPGlobalNamePrefixSortSlice) Push(v GOGPValueType) int {
-	this.d = append(this.d, v)
-	return this.Len()
-}
-
-//insert
-func (this *GOGPGlobalNamePrefixSortSlice) Insert(v GOGPValueType, idx int) int {
-	if idx >= 0 && idx < this.Len() {
-		right := this.d[idx+1:]
-		this.d = append(this.d[:idx], v)
-		this.d = append(this.d, right...)
-	} else {
-		this.d = append(this.d, v)
-	}
-	return this.Len()
-}
-
-//remove
-func (this *GOGPGlobalNamePrefixSortSlice) Remove(idx int) (ok bool) {
-	if ok = idx >= 0 && idx < this.Len(); ok {
-		right := this.d[idx+1:]
-		this.d = append(this.d[:idx], right...)
-	}
-	return
-}
-
-//pop
-func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r GOGPValueType, ok bool) {
-	if ok = len(this.d) > 0; ok {
-		r = (this.d)[len(this.d)-1]
-	}
-	this.d = (this.d)[:len(this.d)-1]
-	return
-}
-
-//len
-func (this *GOGPGlobalNamePrefixSortSlice) Len() int {
-	return len(this.d)
-}
-
-//sort by Hash decend,the larger one first
-func (this *GOGPGlobalNamePrefixSortSlice) Less(i, j int) (ok bool) {
-	l, r := (this.d)[i], (this.d)[j]
-	return this.cmp.F(l, r)
-}
-
-//swap
-func (this *GOGPGlobalNamePrefixSortSlice) Swap(i, j int) {
-	(this.d)[i], (this.d)[j] = (this.d)[j], (this.d)[i]
-}
-
-//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/sort_slice)
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice,tree_sort_slice)
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
