@@ -5,7 +5,7 @@ package gp
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //
 //
-///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -30,7 +30,7 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
-//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp,tree_sort_slice)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
 //it cannot use independently, simulation C++ stl functors
@@ -58,7 +58,7 @@ func CreateCmpGOGPGlobalNamePart(cmpName string) (r CmpGOGPGlobalNamePart) {
 }
 
 //uniformed global function
-func (me CmpGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePart) F(left, right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
 	switch me {
 	case CMPLesser:
 		ok = me.less(left, right)
@@ -113,7 +113,7 @@ func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNam
 }
 
 //lesser operation
-func (me CmpGOGPGlobalNamePart) less(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePart) less(left, right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
 
 	ok = left.Less(right)
 
@@ -121,7 +121,7 @@ func (me CmpGOGPGlobalNamePart) less(left, right GOGPValueType) (ok bool) {
 }
 
 //Greater operation
-func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePart) great(left, right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
 
 	ok = right.Less(left)
 
