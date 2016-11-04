@@ -259,6 +259,15 @@ type GOGPGlobalNamePrefixTreeNode struct {
 	children GOGPGlobalNamePrefixSortSlice
 }
 
+func (this *GOGPGlobalNamePrefixTreeNode) Less(right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
+	//#GOGP_IFDEF GOGP_HasCmpFunc
+	ok = this.GOGPValueType.Less(right.GOGPValueType)
+	//#GOGP_ELSE
+	ok = this.GOGPValueType < right.GOGPValueType
+	//#GOGP_ENDIF
+	return
+}
+
 func (this *GOGPGlobalNamePrefixTreeNode) SortChildren() {
 	this.children.Sort()
 }
@@ -269,40 +278,32 @@ func (this *GOGPGlobalNamePrefixTreeNode) Children() []*GOGPGlobalNamePrefixTree
 
 //add a child
 func (this *GOGPGlobalNamePrefixTreeNode) AddChild(v GOGPValueType, idx int) (child *GOGPGlobalNamePrefixTreeNode) {
-	n := &GOGPGlobalNamePrefixTreeNode{GOGPValueType: v, children: nil}
+	n := &GOGPGlobalNamePrefixTreeNode{GOGPValueType: v}
 	return this.AddChildNode(n, idx)
 }
 
 //add a child node
 func (this *GOGPGlobalNamePrefixTreeNode) AddChildNode(node *GOGPGlobalNamePrefixTreeNode, idx int) (child *GOGPGlobalNamePrefixTreeNode) {
-	if idx >= 0 && idx < len(this.children) {
-		right := this.children[idx+1:]
-		this.children = append(this.children[:idx], node)
-		this.children = append(this.children, right...)
-	} else {
-		this.children = append(this.children, node)
-	}
+	this.children.Insert(node, idx)
 	return node
 }
 
 //cound of children
 func (this *GOGPGlobalNamePrefixTreeNode) NumChildren() int {
-	return len(this.children)
+	return this.children.Len()
 }
 
 //get child
 func (this *GOGPGlobalNamePrefixTreeNode) GetChild(idx int) (child *GOGPGlobalNamePrefixTreeNode, ok bool) {
-	if ok = idx >= 0 && idx < len(this.children); ok {
-		child = this.children[idx]
+	if ok = idx >= 0 && idx < this.children.Len(); ok {
+		child = this.children.Buffer()[idx]
 	}
 	return
 }
 
 //remove child
 func (this *GOGPGlobalNamePrefixTreeNode) RemoveChild(idx int) (child *GOGPGlobalNamePrefixTreeNode, ok bool) {
-	if child, ok = this.GetChild(idx); ok {
-		this.children = append(this.children[:idx], this.children[idx+1:]...)
-	}
+	ok = this.children.Remove(idx)
 	return
 }
 
@@ -316,7 +317,7 @@ func (this *GOGPGlobalNamePrefixTreeNode) Visitor() (v *GOGPGlobalNamePrefixTree
 //get all node data
 func (this *GOGPGlobalNamePrefixTreeNode) All() (list []GOGPValueType) {
 	list = append(list, this.GOGPValueType)
-	for _, v := range this.children {
+	for _, v := range this.children.Buffer() {
 		list = append(list, v.All()...)
 	}
 	return
@@ -369,11 +370,11 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) update_tail(bIdx int) bool {
 
 func (this *GOGPGlobalNamePrefixTreeNodeVisitor) top_right(n *GOGPGlobalNamePrefixTreeNode) (p *GOGPGlobalNamePrefixTreeNode) {
 	if n != nil {
-		l := len(n.children)
+		l := n.children.Len()
 		for l > 0 {
 			this.push(n, l-1)
-			n = n.children[l-1]
-			l = len(n.children)
+			n = n.children.Buffer()[l-1]
+			l = n.children.Len()
 		}
 		p = n
 	}
@@ -383,9 +384,9 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) top_right(n *GOGPGlobalNamePref
 //visit next node
 func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Next() (data *GOGPValueType, ok bool) {
 	if this.node != nil { //check if has any children
-		if len(this.node.children) > 0 {
+		if this.node.children.Len() > 0 {
 			this.push(this.node, 0)
-			this.node = this.node.children[0]
+			this.node = this.node.children.Buffer()[0]
 		} else {
 			this.node = nil
 		}
@@ -395,9 +396,9 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Next() (data *GOGPValueType, ok
 		if bIdx < 0 { //ref parent
 			this.node = p
 			this.pop()
-		} else if bIdx < len(p.children)-1 { //next brother
+		} else if bIdx < p.children.Len()-1 { //next brother
 			bIdx++
-			this.node = p.children[bIdx]
+			this.node = p.children.Buffer()[bIdx]
 			this.update_tail(bIdx)
 		} else { //no more brothers
 			this.pop()
@@ -425,7 +426,7 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Prev() (data *GOGPValueType, ok
 		if bIdx > 0 {
 			bIdx--
 			this.update_tail(bIdx)
-			this.node = this.top_right(p.children[bIdx])
+			this.node = this.top_right(p.children.Buffer()[bIdx])
 		} else {
 			this.node = p
 			this.pop()
