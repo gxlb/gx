@@ -30,6 +30,8 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
+
+
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp,tree_sort_slice)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
@@ -130,6 +132,8 @@ func (me CmpGOGPGlobalNamePart) great(left, right *GOGPGlobalNamePrefixTreeNode)
 
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
+
+
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice,tree_sort_slice)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/sort_slice)
 //this file define a template type for sort
@@ -186,8 +190,8 @@ func (this *GOGPGlobalNamePrefixSortSlice) Insert(v *GOGPGlobalNamePrefixTreeNod
 }
 
 //remove
-func (this *GOGPGlobalNamePrefixSortSlice) Remove(idx int) (ok bool) {
-	if ok = idx >= 0 && idx < this.Len(); ok {
+func (this *GOGPGlobalNamePrefixSortSlice) Remove(idx int) (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
+	if r, ok = this.Get(idx); ok {
 		right := this.d[idx+1:]
 		this.d = append(this.d[:idx], right...)
 	}
@@ -200,6 +204,14 @@ func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNod
 		r = (this.d)[len(this.d)-1]
 	}
 	this.d = (this.d)[:len(this.d)-1]
+	return
+}
+
+//get
+func (this *GOGPGlobalNamePrefixSortSlice) Get(idx int) (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
+	if ok = idx >= 0 && idx < this.Len(); ok {
+		r = this.d[idx]
+	}
 	return
 }
 

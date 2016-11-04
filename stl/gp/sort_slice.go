@@ -29,8 +29,6 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
@@ -188,8 +186,8 @@ func (this *GOGPGlobalNamePrefixSortSlice) Insert(v GOGPValueType, idx int) int 
 }
 
 //remove
-func (this *GOGPGlobalNamePrefixSortSlice) Remove(idx int) (ok bool) {
-	if ok = idx >= 0 && idx < this.Len(); ok {
+func (this *GOGPGlobalNamePrefixSortSlice) Remove(idx int) (r GOGPValueType, ok bool) {
+	if r, ok = this.Get(idx); ok {
 		right := this.d[idx+1:]
 		this.d = append(this.d[:idx], right...)
 	}
@@ -202,6 +200,14 @@ func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r GOGPValueType, ok bool) {
 		r = (this.d)[len(this.d)-1]
 	}
 	this.d = (this.d)[:len(this.d)-1]
+	return
+}
+
+//get
+func (this *GOGPGlobalNamePrefixSortSlice) Get(idx int) (r GOGPValueType, ok bool) {
+	if ok = idx >= 0 && idx < this.Len(); ok {
+		r = this.d[idx]
+	}
 	return
 }
 
