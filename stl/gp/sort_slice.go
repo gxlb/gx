@@ -211,6 +211,15 @@ func (this *GOGPGlobalNamePrefixSortSlice) Get(idx int) (r GOGPValueType, ok boo
 	return
 }
 
+//must get
+func (this *GOGPGlobalNamePrefixSortSlice) MustGet(idx int) (r GOGPValueType) {
+	ok := false
+	if r, ok = this.Get(idx); !ok {
+		panic(idx)
+	}
+	return
+}
+
 //len
 func (this *GOGPGlobalNamePrefixSortSlice) Len() int {
 	return len(this.d)

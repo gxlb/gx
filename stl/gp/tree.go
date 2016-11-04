@@ -30,8 +30,6 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp,tree_sort_slice)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
@@ -132,8 +130,6 @@ func (me CmpGOGPGlobalNamePart) great(left, right *GOGPGlobalNamePrefixTreeNode)
 
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice,tree_sort_slice)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/sort_slice)
 //this file define a template type for sort
@@ -211,6 +207,15 @@ func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNod
 func (this *GOGPGlobalNamePrefixSortSlice) Get(idx int) (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
 	if ok = idx >= 0 && idx < this.Len(); ok {
 		r = this.d[idx]
+	}
+	return
+}
+
+//must get
+func (this *GOGPGlobalNamePrefixSortSlice) MustGet(idx int) (r *GOGPGlobalNamePrefixTreeNode) {
+	ok := false
+	if r, ok = this.Get(idx); !ok {
+		panic(idx)
 	}
 	return
 }
@@ -307,15 +312,13 @@ func (this *GOGPGlobalNamePrefixTreeNode) NumChildren() int {
 
 //get child
 func (this *GOGPGlobalNamePrefixTreeNode) GetChild(idx int) (child *GOGPGlobalNamePrefixTreeNode, ok bool) {
-	if ok = idx >= 0 && idx < this.children.Len(); ok {
-		child = this.children.Buffer()[idx]
-	}
+	child, ok = this.children.Get(idx)
 	return
 }
 
 //remove child
 func (this *GOGPGlobalNamePrefixTreeNode) RemoveChild(idx int) (child *GOGPGlobalNamePrefixTreeNode, ok bool) {
-	ok = this.children.Remove(idx)
+	child, ok = this.children.Remove(idx)
 	return
 }
 
@@ -385,7 +388,7 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) top_right(n *GOGPGlobalNamePref
 		l := n.children.Len()
 		for l > 0 {
 			this.push(n, l-1)
-			n = n.children.Buffer()[l-1]
+			n = n.children.MustGet(l - 1)
 			l = n.children.Len()
 		}
 		p = n
@@ -398,7 +401,7 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Next() (data *GOGPValueType, ok
 	if this.node != nil { //check if has any children
 		if this.node.children.Len() > 0 {
 			this.push(this.node, 0)
-			this.node = this.node.children.Buffer()[0]
+			this.node = this.node.children.MustGet(0)
 		} else {
 			this.node = nil
 		}
@@ -410,7 +413,7 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Next() (data *GOGPValueType, ok
 			this.pop()
 		} else if bIdx < p.children.Len()-1 { //next brother
 			bIdx++
-			this.node = p.children.Buffer()[bIdx]
+			this.node = p.children.MustGet(bIdx)
 			this.update_tail(bIdx)
 		} else { //no more brothers
 			this.pop()
@@ -438,7 +441,7 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Prev() (data *GOGPValueType, ok
 		if bIdx > 0 {
 			bIdx--
 			this.update_tail(bIdx)
-			this.node = this.top_right(p.children.Buffer()[bIdx])
+			this.node = this.top_right(p.children.MustGet(bIdx))
 		} else {
 			this.node = p
 			this.pop()
