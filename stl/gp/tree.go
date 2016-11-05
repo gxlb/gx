@@ -130,7 +130,7 @@ func (me CmpGOGPGlobalNamePart) great(left, right *GOGPGlobalNamePrefixTreeNode)
 
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
-//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice,tree_sort_slice)
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/sort_slice)
 //this file define a template type for sort
 
