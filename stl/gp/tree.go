@@ -458,48 +458,6 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Get() *GOGPValueType {
 	return &this.node.GOGPValueType
 }
 
-////for sort
-//type __GOGPGlobalNamePrefixTreeNodeSortSlice []*GOGPGlobalNamePrefixTreeNode
-
-//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Sort() {
-//	sort.Sort(this)
-//}
-
-////data
-//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Buffer() []*GOGPGlobalNamePrefixTreeNode {
-//	return *this
-//}
-
-////push
-//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Push(v *GOGPGlobalNamePrefixTreeNode) int {
-//	*this = append(*this, v)
-//	return this.Len()
-//}
-
-//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNode) {
-//	if len(*this) > 0 {
-//		r = (*this)[len(*this)-1]
-//	}
-//	*this = (*this)[:len(*this)-1]
-//	return
-//}
-
-////len
-//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Len() int {
-//	return len(this.Buffer())
-//}
-
-////sort by Hash decend,the larger one first
-//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
-//	l, r := (*this)[i], (*this)[j]
-//	return gGOGPGlobalNamePrefixTreeGbl.cmp.F(l.GOGPValueType, r.GOGPValueType)
-//}
-
-////swap
-//func (this *__GOGPGlobalNamePrefixTreeNodeSortSlice) Swap(i, j int) {
-//	(*this)[i], (*this)[j] = (*this)[j], (*this)[i]
-//}
-
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
