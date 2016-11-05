@@ -29,18 +29,18 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
+
+
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
 //it cannot use independently, simulation C++ stl functors
 //package gp
 
-//#GOGP_ONCE
 const (
 	CMPLesser = iota //default
 	CMPGreater
 ) //
-//#GOGP_ONCE_END
 
 //cmp object, zero is Lesser
 type CmpGOGPGlobalNamePart byte

@@ -45,7 +45,7 @@ const (
 	CMPLesser = iota //default
 	CMPGreater
 ) //
-//#GOGP_ONCE_END
+//#GOGP_END_ONCE
 
 //cmp object, zero is Lesser
 type CmpGOGPGlobalNamePart byte
