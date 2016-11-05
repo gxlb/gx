@@ -38,6 +38,11 @@ func (this GOGPValueType) Show() string              { return "" } //
 //it cannot use independently, simulation C++ stl functors
 //package gp
 
+const (
+	CMPLesser = iota //default
+	CMPGreater
+) //
+
 //cmp object, zero is Lesser
 type CmpGOGPGlobalNamePart byte
 
