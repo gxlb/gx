@@ -13,45 +13,149 @@ package gp
 //
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-//import...
-
-//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
-//
-//these defines is used to make sure this dummy go file can be compiled correctlly
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
+//these defines is used to make sure this fake go file can be compiled correctlly
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-import (
-	dumy_fmt "fmt"
+type GOGPValueType int                               //
+func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
+func (this GOGPValueType) Show() string              { return "" } //
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
+
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
+//this file is used to //import by other gp files
+//it cannot use independently, simulation C++ stl functors
+//package gp
+
+const (
+	CMPLesser = iota //default
+	CMPGreater
+) //
+
+//cmp object, zero is Lesser
+type CmpGOGPGlobalNamePart byte
+
+const (
+	CmpGOGPGlobalNamePartLesser  CmpGOGPGlobalNamePart = CMPLesser
+	CmpGOGPGlobalNamePartGreater CmpGOGPGlobalNamePart = CMPGreater
 )
 
-type GOGPHeapElem int
-
-func (this GOGPHeapElem) Less(o GOGPHeapElem) bool {
-	return this < o
+//create cmp object by name
+func CreateCmpGOGPGlobalNamePart(cmpName string) (r CmpGOGPGlobalNamePart) {
+	r = CmpGOGPGlobalNamePartLesser.CreateByName(cmpName)
+	return
 }
 
-func (me GOGPHeapElem) Show() string {
-	return dumy_fmt.Sprintf("%d", me)
+//uniformed global function
+func (me CmpGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+	switch me {
+	case CMPLesser:
+		ok = me.less(left, right)
+	case CMPGreater:
+		ok = me.great(left, right)
+	}
+	return
 }
 
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine//container object
-type GOGPHeapNamePrefixHeap struct {
-	b      []GOGPHeapElem //data buffer
-	limitN int            //if limitN>0, heap size must<=limitN
-	maxTop bool           //if top is max value
+//Lesser object
+func (me CmpGOGPGlobalNamePart) Lesser() CmpGOGPGlobalNamePart { return CMPLesser }
+
+//Greater object
+func (me CmpGOGPGlobalNamePart) Greater() CmpGOGPGlobalNamePart { return CMPGreater }
+
+//show as string
+func (me CmpGOGPGlobalNamePart) String() (s string) {
+	switch me {
+	case CMPLesser:
+		s = "Lesser"
+	case CMPGreater:
+		s = "Greater"
+	default:
+		s = "error cmp value"
+	}
+	return
+}
+
+//create by bool
+func (me CmpGOGPGlobalNamePart) CreateByBool(bigFirst bool) (r CmpGOGPGlobalNamePart) {
+	if bigFirst {
+		r = CMPGreater
+	} else {
+		r = CMPLesser
+	}
+	return
+}
+
+//create cmp object by name
+func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNamePart) {
+	switch cmpName {
+	case "": //default Lesser
+		fallthrough
+	case "Lesser":
+		r = CMPLesser
+	case "Greater":
+		r = CMPGreater
+	default: //unsupport name
+		panic(cmpName)
+	}
+	return
+}
+
+//lesser operation
+func (me CmpGOGPGlobalNamePart) less(left, right GOGPValueType) (ok bool) {
+
+	ok = left < right
+
+	return
+}
+
+//Greater operation
+func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
+
+	ok = right < left
+
+	return
+}
+
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
+
+type GOGPGlobalNamePrefixHeap struct {
+	b      []GOGPValueType       //data buffer
+	limitN int                   //if limitN>0, heap size must<=limitN
+	cmp    CmpGOGPGlobalNamePart //if top is max value
+}
+
+//new object
+func NewGOGPHeapNamePrefixHeap(capacity int, maxTop bool) (r *GOGPGlobalNamePrefixHeap) {
+	r = &GOGPGlobalNamePrefixHeap{}
+	r.Init(capacity, 0, maxTop)
+	return
+}
+
+//initialize
+func (this *GOGPGlobalNamePrefixHeap) Init(capacity, limitN int, maxTop bool) {
+	if cap(this.b) < capacity {
+		this.b = make([]GOGPValueType, 0, capacity)
+	}
+	this.b = this.b[:0]
+
+	this.limitN = limitN
+	this.cmp = this.cmp.CreateByBool(!maxTop)
 }
 
 //push heap value
-func (this *GOGPHeapNamePrefixHeap) PushHeap(b []GOGPHeapElem, v GOGPHeapElem) []GOGPHeapElem {
+func (this *GOGPGlobalNamePrefixHeap) PushHeap(b []GOGPValueType, v GOGPValueType) []GOGPValueType {
 	b = append(b, v)
 	this.adjustUp(b, len(b)-1, v)
 	return b
 }
 
 //pop heap top
-func (this *GOGPHeapNamePrefixHeap) PopHeap(b []GOGPHeapElem) (h []GOGPHeapElem, top GOGPHeapElem, ok bool) {
+func (this *GOGPGlobalNamePrefixHeap) PopHeap(b []GOGPValueType) (h []GOGPValueType, top GOGPValueType, ok bool) {
 	l := len(b)
 	if ok = l > 0; ok {
 		top = b[0]
@@ -65,7 +169,7 @@ func (this *GOGPHeapNamePrefixHeap) PopHeap(b []GOGPHeapElem) (h []GOGPHeapElem,
 }
 
 //check if b is a valid heap
-func (this *GOGPHeapNamePrefixHeap) CheckHeap(b []GOGPHeapElem) bool {
+func (this *GOGPGlobalNamePrefixHeap) CheckHeap(b []GOGPValueType) bool {
 	for i := len(b) - 1; i > 0; i-- {
 		p := this.parent(i)
 		if !this.cmpV(b[i], b[p]) {
@@ -76,7 +180,7 @@ func (this *GOGPHeapNamePrefixHeap) CheckHeap(b []GOGPHeapElem) bool {
 }
 
 //adjust heap to select a proper hole to set v
-func (this *GOGPHeapNamePrefixHeap) adjustDown(b []GOGPHeapElem, hole int, v GOGPHeapElem) {
+func (this *GOGPGlobalNamePrefixHeap) adjustDown(b []GOGPValueType, hole int, v GOGPValueType) {
 	size := len(b)
 	//#GOGP_IFDEF GOGP_ImproveHeap
 	//try to improve STL's adjust down algorithm
@@ -108,7 +212,7 @@ func (this *GOGPHeapNamePrefixHeap) adjustDown(b []GOGPHeapElem, hole int, v GOG
 }
 
 //adjust heap to select a proper hole to set v
-func (this *GOGPHeapNamePrefixHeap) adjustUp(b []GOGPHeapElem, hole int, v GOGPHeapElem) {
+func (this *GOGPGlobalNamePrefixHeap) adjustUp(b []GOGPValueType, hole int, v GOGPValueType) {
 	for hole > 0 {
 		if parent := this.parent(hole); !this.cmpV(v, b[parent]) {
 			b[hole], hole = b[parent], parent
@@ -120,7 +224,7 @@ func (this *GOGPHeapNamePrefixHeap) adjustUp(b []GOGPHeapElem, hole int, v GOGPH
 }
 
 //make b as a heap
-func (this *GOGPHeapNamePrefixHeap) MakeHeap(b []GOGPHeapElem) {
+func (this *GOGPGlobalNamePrefixHeap) MakeHeap(b []GOGPValueType) {
 	if l := len(b); l > 1 {
 		for i := l / 2; i >= 0; i-- {
 			this.adjustDown(b, i, b[i])
@@ -129,7 +233,7 @@ func (this *GOGPHeapNamePrefixHeap) MakeHeap(b []GOGPHeapElem) {
 }
 
 //reverse order of b
-func (this *GOGPHeapNamePrefixHeap) Reverse(b []GOGPHeapElem) {
+func (this *GOGPGlobalNamePrefixHeap) Reverse(b []GOGPValueType) {
 	l := len(b) - 1
 	for i := l / 2; i >= 0; i-- {
 		b[i], b[l-i] = b[l-i], b[i]
@@ -137,7 +241,7 @@ func (this *GOGPHeapNamePrefixHeap) Reverse(b []GOGPHeapElem) {
 }
 
 //sort slice use heap algorithm
-func (this *GOGPHeapNamePrefixHeap) SortHeap(b []GOGPHeapElem) []GOGPHeapElem {
+func (this *GOGPGlobalNamePrefixHeap) SortHeap(b []GOGPValueType) []GOGPValueType {
 	this.MakeHeap(b)
 	for t := b; len(t) > 1; {
 		t, _, _ = this.PopHeap(t)
@@ -145,31 +249,13 @@ func (this *GOGPHeapNamePrefixHeap) SortHeap(b []GOGPHeapElem) []GOGPHeapElem {
 	return b
 }
 
-//new object
-func NewGOGPHeapNamePrefixHeap(capacity int, maxTop bool) (r *GOGPHeapNamePrefixHeap) {
-	r = &GOGPHeapNamePrefixHeap{}
-	r.Init(capacity, 0, maxTop)
-	return
-}
-
-//initialize
-func (this *GOGPHeapNamePrefixHeap) Init(capacity, limitN int, maxTop bool) {
-	if cap(this.b) < capacity {
-		this.b = make([]GOGPHeapElem, 0, capacity)
-	}
-	this.b = this.b[:0]
-
-	this.limitN = limitN
-	this.maxTop = maxTop
-}
-
 //heap slice
-func (this *GOGPHeapNamePrefixHeap) Buffer() []GOGPHeapElem {
+func (this *GOGPGlobalNamePrefixHeap) Buffer() []GOGPValueType {
 	return this.b
 }
 
 //push
-func (this *GOGPHeapNamePrefixHeap) Push(v GOGPHeapElem) {
+func (this *GOGPGlobalNamePrefixHeap) Push(v GOGPValueType) {
 	if this.limitN > 0 && this.Size() >= this.limitN {
 		if top, ok := this.Top(); ok && this.cmpV(top, v) {
 			this.Pop()
@@ -179,13 +265,13 @@ func (this *GOGPHeapNamePrefixHeap) Push(v GOGPHeapElem) {
 }
 
 //pop
-func (this *GOGPHeapNamePrefixHeap) Pop() (top GOGPHeapElem, ok bool) {
+func (this *GOGPGlobalNamePrefixHeap) Pop() (top GOGPValueType, ok bool) {
 	this.b, top, ok = this.PopHeap(this.b)
 	return
 }
 
 //heap top
-func (this *GOGPHeapNamePrefixHeap) Top() (top GOGPHeapElem, ok bool) {
+func (this *GOGPGlobalNamePrefixHeap) Top() (top GOGPValueType, ok bool) {
 	if ok = !this.Empty(); ok {
 		top = this.b[0]
 	}
@@ -193,30 +279,18 @@ func (this *GOGPHeapNamePrefixHeap) Top() (top GOGPHeapElem, ok bool) {
 }
 
 //cmpare value
-func (this *GOGPHeapNamePrefixHeap) cmpV(c, p GOGPHeapElem) (ok bool) {
-	//#GOGP_IFDEF GOGP_HasLess
-	if this.maxTop {
-		ok = !p.Less(c)
-	} else {
-		ok = !c.Less(p)
-	}
-	//#GOGP_ELSE
-	if this.maxTop {
-		ok = !(p < c)
-	} else {
-		ok = !(c < p)
-	}
-	//#GOGP_ENDIF
+func (this *GOGPGlobalNamePrefixHeap) cmpV(c, p GOGPValueType) (ok bool) {
+	ok = !this.cmp.F(p, c)
 	return
 }
 
 //get parent index
-func (this *GOGPHeapNamePrefixHeap) parent(idx int) int {
+func (this *GOGPGlobalNamePrefixHeap) parent(idx int) int {
 	return (idx - 1) / 2
 }
 
 //get left child index
-func (this *GOGPHeapNamePrefixHeap) lchild(idx int) int {
+func (this *GOGPGlobalNamePrefixHeap) lchild(idx int) int {
 	return 2*idx + 1
 }
 
@@ -232,12 +306,12 @@ func (this *GOGPHeapNamePrefixHeap) lchild(idx int) int {
 //}
 
 //size
-func (this *GOGPHeapNamePrefixHeap) Size() int {
+func (this *GOGPGlobalNamePrefixHeap) Size() int {
 	return len(this.b)
 }
 
 //empty
-func (this *GOGPHeapNamePrefixHeap) Empty() bool {
+func (this *GOGPGlobalNamePrefixHeap) Empty() bool {
 	return this.Size() == 0
 }
 
