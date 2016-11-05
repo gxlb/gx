@@ -13,47 +13,49 @@ package gp
 //
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-//import here...
+//#GOGP_IFDEF GOGP_HasShow
+import show_bytes "bytes" //#GOGP_ENDIF
+
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
+//these defines is used to make sure this fake go file can be compiled correctlly
+//and they will be removed from real go files
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+type GOGPValueType int                               //
+func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
+func (this GOGPValueType) Show() string              { return "" } //
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
 //
 //these defines is used to make sure this dummy go file can be compiled correctlly
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-import (
-	dumy_fmt "fmt"
-)
-
-type GOGPStackElem int
-
-func (me GOGPStackElem) Show() string {
-	return dumy_fmt.Sprintf("%d", me)
-}
-
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 //stack object
-type GOGPStackNamePrefixStack struct {
-	d []GOGPStackElem
+type GOGPGlobalNamePrefixStack struct {
+	d []GOGPValueType
 }
 
 //new object
-func NewGOGPStackNamePrefixStack(bufSize int) *GOGPStackNamePrefixStack {
-	r := &GOGPStackNamePrefixStack{}
+func NewGOGPStackNamePrefixStack(bufSize int) *GOGPGlobalNamePrefixStack {
+	r := &GOGPGlobalNamePrefixStack{}
 	r.Init(bufSize)
 	return r
 }
 
 //init
-func (this *GOGPStackNamePrefixStack) Init(bufSize int) {
+func (this *GOGPGlobalNamePrefixStack) Init(bufSize int) {
 	if nil == this.d {
 		if -1 == bufSize {
 			bufSize = 10
 		}
 		if bufSize > 0 {
-			this.d = make([]GOGPStackElem, 0, bufSize)
+			this.d = make([]GOGPValueType, 0, bufSize)
 		}
 	}
 	this.d = this.d[:0]
@@ -61,12 +63,12 @@ func (this *GOGPStackNamePrefixStack) Init(bufSize int) {
 }
 
 //clear
-func (this *GOGPStackNamePrefixStack) Clear() {
+func (this *GOGPGlobalNamePrefixStack) Clear() {
 	this.Init(-1)
 }
 
 //push v to top of stack
-func (this *GOGPStackNamePrefixStack) Push(v GOGPStackElem) (ok bool) {
+func (this *GOGPGlobalNamePrefixStack) Push(v GOGPValueType) (ok bool) {
 	if ok = true; ok {
 		this.d = append(this.d, v)
 	}
@@ -74,7 +76,7 @@ func (this *GOGPStackNamePrefixStack) Push(v GOGPStackElem) (ok bool) {
 }
 
 //pop top of stack
-func (this *GOGPStackNamePrefixStack) Pop() (top GOGPStackElem, ok bool) {
+func (this *GOGPGlobalNamePrefixStack) Pop() (top GOGPValueType, ok bool) {
 	if top, ok = this.Top(); ok {
 		this.d = this.d[:this.Size()-1]
 	}
@@ -82,7 +84,7 @@ func (this *GOGPStackNamePrefixStack) Pop() (top GOGPStackElem, ok bool) {
 }
 
 //get top of stack
-func (this *GOGPStackNamePrefixStack) Top() (top GOGPStackElem, ok bool) {
+func (this *GOGPGlobalNamePrefixStack) Top() (top GOGPValueType, ok bool) {
 	d := this.Size()
 	if d > 0 {
 		top = this.d[d-1]
@@ -93,29 +95,31 @@ func (this *GOGPStackNamePrefixStack) Top() (top GOGPStackElem, ok bool) {
 }
 
 //size of stack
-func (this *GOGPStackNamePrefixStack) Size() int {
+func (this *GOGPGlobalNamePrefixStack) Size() int {
 	return len(this.d)
 }
 
 //is stack is empty
-func (this *GOGPStackNamePrefixStack) Empty() bool {
+func (this *GOGPGlobalNamePrefixStack) Empty() bool {
 	return this.Size() == 0
 }
 
-//GOGPShowComment//show
-//GOGPShowCommentfunc (this *GOGPStackNamePrefixStack) Show() string {
-//GOGPShowComment	var b show_bytes.Buffer
-//GOGPShowComment	b.WriteByte('[')
-//GOGPShowComment	for _, v := range this.d {
-//GOGPShowComment		b.WriteString(v.Show())
-//GOGPShowComment		b.WriteByte(',')
-//GOGPShowComment	}
-//GOGPShowComment	if this.Depth() > 0 {
-//GOGPShowComment		b.Truncate(b.Len() - 1) //remove last ','
-//GOGPShowComment	}
-//GOGPShowComment	b.WriteByte(']')
-//GOGPShowComment	return b.String()
-//GOGPShowComment}
+//#GOGP_IFDEF GOGP_HasShow
+//show
+func (this *GOGPGlobalNamePrefixStack) Show() string {
+	var b show_bytes.Buffer
+	b.WriteByte('[')
+	for _, v := range this.d {
+		b.WriteString(v.Show())
+		b.WriteByte(',')
+	}
+	if this.Size() > 0 {
+		b.Truncate(b.Len() - 1) //remove last ','
+	}
+	b.WriteByte(']')
+	return b.String()
+} //
+//#GOGP_ENDIF
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
