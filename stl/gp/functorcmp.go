@@ -48,21 +48,21 @@ const (
 //#GOGP_END_ONCE
 
 //cmp object, zero is Lesser
-type CmpGOGPGlobalNamePart byte
+type CmpGOGPGlobalNamePrefix byte
 
 const (
-	CmpGOGPGlobalNamePartLesser  CmpGOGPGlobalNamePart = CMPLesser
-	CmpGOGPGlobalNamePartGreater CmpGOGPGlobalNamePart = CMPGreater
+	CmpGOGPGlobalNamePrefixLesser  CmpGOGPGlobalNamePrefix = CMPLesser
+	CmpGOGPGlobalNamePrefixGreater CmpGOGPGlobalNamePrefix = CMPGreater
 )
 
 //create cmp object by name
-func CreateCmpGOGPGlobalNamePart(cmpName string) (r CmpGOGPGlobalNamePart) {
-	r = CmpGOGPGlobalNamePartLesser.CreateByName(cmpName)
+func CreateCmpGOGPGlobalNamePrefix(cmpName string) (r CmpGOGPGlobalNamePrefix) {
+	r = CmpGOGPGlobalNamePrefixLesser.CreateByName(cmpName)
 	return
 }
 
 //uniformed global function
-func (me CmpGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePrefix) F(left, right GOGPValueType) (ok bool) {
 	switch me {
 	case CMPLesser:
 		ok = me.less(left, right)
@@ -73,13 +73,13 @@ func (me CmpGOGPGlobalNamePart) F(left, right GOGPValueType) (ok bool) {
 }
 
 //Lesser object
-func (me CmpGOGPGlobalNamePart) Lesser() CmpGOGPGlobalNamePart { return CMPLesser }
+func (me CmpGOGPGlobalNamePrefix) Lesser() CmpGOGPGlobalNamePrefix { return CMPLesser }
 
 //Greater object
-func (me CmpGOGPGlobalNamePart) Greater() CmpGOGPGlobalNamePart { return CMPGreater }
+func (me CmpGOGPGlobalNamePrefix) Greater() CmpGOGPGlobalNamePrefix { return CMPGreater }
 
 //show as string
-func (me CmpGOGPGlobalNamePart) String() (s string) {
+func (me CmpGOGPGlobalNamePrefix) String() (s string) {
 	switch me {
 	case CMPLesser:
 		s = "Lesser"
@@ -92,7 +92,7 @@ func (me CmpGOGPGlobalNamePart) String() (s string) {
 }
 
 //create by bool
-func (me CmpGOGPGlobalNamePart) CreateByBool(bigFirst bool) (r CmpGOGPGlobalNamePart) {
+func (me CmpGOGPGlobalNamePrefix) CreateByBool(bigFirst bool) (r CmpGOGPGlobalNamePrefix) {
 	if bigFirst {
 		r = CMPGreater
 	} else {
@@ -102,7 +102,7 @@ func (me CmpGOGPGlobalNamePart) CreateByBool(bigFirst bool) (r CmpGOGPGlobalName
 }
 
 //create cmp object by name
-func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNamePart) {
+func (me CmpGOGPGlobalNamePrefix) CreateByName(cmpName string) (r CmpGOGPGlobalNamePrefix) {
 	switch cmpName {
 	case "": //default Lesser
 		fallthrough
@@ -117,7 +117,7 @@ func (me CmpGOGPGlobalNamePart) CreateByName(cmpName string) (r CmpGOGPGlobalNam
 }
 
 //lesser operation
-func (me CmpGOGPGlobalNamePart) less(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePrefix) less(left, right GOGPValueType) (ok bool) {
 	//#GOGP_IFDEF GOGP_HasCmpFunc
 	ok = left.Less(right)
 	//#GOGP_ELSE
@@ -127,7 +127,7 @@ func (me CmpGOGPGlobalNamePart) less(left, right GOGPValueType) (ok bool) {
 }
 
 //Greater operation
-func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePrefix) great(left, right GOGPValueType) (ok bool) {
 	//#GOGP_IFDEF GOGP_HasCmpFunc
 	ok = right.Less(left)
 	//#GOGP_ELSE
@@ -136,6 +136,4 @@ func (me CmpGOGPGlobalNamePart) great(left, right GOGPValueType) (ok bool) {
 	return
 }
 
-//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
-//*/
-//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END
+//#GOGP_IGNORE_BEGIN  */ //#GOGP_IGNORE_END //GOGPCommentDummyGoFile
