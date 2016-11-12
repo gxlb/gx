@@ -50,8 +50,7 @@ func TestFilePath(t *testing.T) {
 		//		}
 		fmt.Println("visiting...")
 		{
-			v := n.Visitor()
-			for v.Prev() {
+			for v := n.Visitor(); v.Prev(); {
 				g := v.Get()
 				fmt.Println(g.Hash, g.Path, g.Size)
 			}
