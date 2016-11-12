@@ -30,8 +30,6 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
@@ -129,8 +127,6 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right *GOGPGlobalNamePrefixTreeNod
 }
 
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
-
-
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/sort_slice)
@@ -399,7 +395,7 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) top_right(n *GOGPGlobalNamePref
 }
 
 //visit next node
-func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Next() (data *GOGPValueType, ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Next() (ok bool) {
 	if this.node != nil { //check if has any children
 		if this.node.children.Len() > 0 {
 			this.push(this.node, 0)
@@ -422,18 +418,18 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Next() (data *GOGPValueType, ok
 		}
 	}
 	if ok = this.node != nil; ok {
-		data = this.Get()
+		//do nothing
 	}
 	return
 }
 
 //visit previous node
-func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Prev() (data *GOGPValueType, ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Prev() (ok bool) {
 	if this.node == nil && this.depth() > 0 { //check if has any brothers or uncles
 		p, _ := this.pop()
 		this.node = this.top_right(p)
 		if ok = this.node != nil; ok {
-			data = this.Get()
+			//do nothing
 		}
 		return
 	}
@@ -450,14 +446,17 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Prev() (data *GOGPValueType, ok
 		}
 	}
 	if ok = this.node != nil; ok {
-		data = this.Get()
+		//do nothing
 	}
 	return
 }
 
 //get node data
-func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Get() *GOGPValueType {
-	return &this.node.GOGPValueType
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Get() (data *GOGPValueType) {
+	if nil != this.node {
+		data = &this.node.GOGPValueType
+	}
+	return
 }
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
