@@ -15,18 +15,8 @@ package gp
 //
 //#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
 
-//import here...
-
-//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
-//
-//these defines is used to make sure this dummy go file can be compiled correctlly
-//and they will be removed from real go files
-//
-
-type GOGPDListData int
-
-//
-//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 
 //list node
 type GOGPListNamePrefixDListNode struct {
