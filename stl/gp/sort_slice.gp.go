@@ -136,23 +136,29 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right GOGPValueType) (ok bool) {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
+var gGOGPGlobalNamePrefixSortSliceGbl struct {
+	cmp CmpGOGPGlobalNamePrefix
+}
+
+func init() {
+	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+}
+
 //new sort object
-func NewGOGPGlobalNamePrefixSortSlice(capacity int, bigFirst bool) *GOGPGlobalNamePrefixSortSlice {
+func NewGOGPGlobalNamePrefixSortSlice(capacity int) *GOGPGlobalNamePrefixSortSlice {
 	p := &GOGPGlobalNamePrefixSortSlice{}
-	p.Init(capacity, bigFirst)
+	p.Init(capacity)
 	return p
 }
 
 //sort slice
 type GOGPGlobalNamePrefixSortSlice struct {
-	d   []GOGPValueType
-	cmp CmpGOGPGlobalNamePrefix
+	d []GOGPValueType
 }
 
 //init
-func (this *GOGPGlobalNamePrefixSortSlice) Init(capacity int, bigFirst bool) {
+func (this *GOGPGlobalNamePrefixSortSlice) Init(capacity int) {
 	this.d = make([]GOGPValueType, 0, capacity)
-	this.cmp = this.cmp.CreateByBool(bigFirst)
 }
 
 //sort
@@ -226,7 +232,7 @@ func (this *GOGPGlobalNamePrefixSortSlice) Len() int {
 //sort by Hash decend,the larger one first
 func (this *GOGPGlobalNamePrefixSortSlice) Less(i, j int) (ok bool) {
 	l, r := (this.d)[i], (this.d)[j]
-	return this.cmp.F(l, r)
+	return gGOGPGlobalNamePrefixSortSliceGbl.cmp.F(l, r)
 }
 
 //swap

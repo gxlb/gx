@@ -25,8 +25,6 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
@@ -126,8 +124,8 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right GOGPValueType) (ok bool) {
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
 type GOGPGlobalNamePrefixHeap struct {
-	b      []GOGPValueType       //data buffer
-	limitN int                   //if limitN>0, heap size must<=limitN
+	b      []GOGPValueType         //data buffer
+	limitN int                     //if limitN>0, heap size must<=limitN
 	cmp    CmpGOGPGlobalNamePrefix //if top is max value
 }
 

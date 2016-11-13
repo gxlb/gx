@@ -30,6 +30,8 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
+
+
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
@@ -128,6 +130,8 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right *GOGPGlobalNamePrefixTreeNod
 
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
 
+
+
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/sort_slice)
 //this file define a template type for sort
@@ -136,23 +140,29 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right *GOGPGlobalNamePrefixTreeNod
 
 //import "sort"
 
+var gGOGPGlobalNamePrefixSortSliceGbl struct {
+	cmp CmpGOGPGlobalNamePrefix
+}
+
+func init() {
+	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("")
+}
+
 //new sort object
-func NewGOGPGlobalNamePrefixSortSlice(capacity int, bigFirst bool) *GOGPGlobalNamePrefixSortSlice {
+func NewGOGPGlobalNamePrefixSortSlice(capacity int) *GOGPGlobalNamePrefixSortSlice {
 	p := &GOGPGlobalNamePrefixSortSlice{}
-	p.Init(capacity, bigFirst)
+	p.Init(capacity)
 	return p
 }
 
 //sort slice
 type GOGPGlobalNamePrefixSortSlice struct {
-	d   []*GOGPGlobalNamePrefixTreeNode
-	cmp CmpGOGPGlobalNamePrefix
+	d []*GOGPGlobalNamePrefixTreeNode
 }
 
 //init
-func (this *GOGPGlobalNamePrefixSortSlice) Init(capacity int, bigFirst bool) {
+func (this *GOGPGlobalNamePrefixSortSlice) Init(capacity int) {
 	this.d = make([]*GOGPGlobalNamePrefixTreeNode, 0, capacity)
-	this.cmp = this.cmp.CreateByBool(bigFirst)
 }
 
 //sort
@@ -226,7 +236,7 @@ func (this *GOGPGlobalNamePrefixSortSlice) Len() int {
 //sort by Hash decend,the larger one first
 func (this *GOGPGlobalNamePrefixSortSlice) Less(i, j int) (ok bool) {
 	l, r := (this.d)[i], (this.d)[j]
-	return this.cmp.F(l, r)
+	return gGOGPGlobalNamePrefixSortSliceGbl.cmp.F(l, r)
 }
 
 //swap
@@ -248,23 +258,21 @@ func (this *GOGPGlobalNamePrefixSortSlice) Swap(i, j int) {
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
-func init() {
-	gGOGPGlobalNamePrefixTreeGbl.cmp = gGOGPGlobalNamePrefixTreeGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
-}
-
-var gGOGPGlobalNamePrefixTreeGbl struct {
-	cmp CmpGOGPGlobalNamePrefix
-}
+//var gGOGPGlobalNamePrefixTreeGbl struct {
+//	cmp CmpGOGPGlobalNamePrefix
+//}
+//func init() {
+//	gGOGPGlobalNamePrefixTreeGbl.cmp = gGOGPGlobalNamePrefixTreeGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+//}
 
 //tree strture
 type GOGPGlobalNamePrefixTree struct {
-	cmp  CmpGOGPGlobalNamePrefix
 	root *GOGPGlobalNamePrefixTreeNode
 }
 
 //new container
-func NewGOGPGlobalNamePrefixTree(bigFirst bool) *GOGPGlobalNamePrefixTree {
-	p := &GOGPGlobalNamePrefixTree{cmp: gGOGPGlobalNamePrefixTreeGbl.cmp.CreateByBool(bigFirst)}
+func NewGOGPGlobalNamePrefixTree() *GOGPGlobalNamePrefixTree {
+	p := &GOGPGlobalNamePrefixTree{}
 	return p
 }
 
