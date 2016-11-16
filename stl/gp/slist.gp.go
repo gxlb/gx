@@ -5,7 +5,7 @@ package gp
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
 //
 //
-/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 //
@@ -169,7 +169,7 @@ func (this *GOGPGlobalNamePrefixSListNode) Next() (r *GOGPGlobalNamePrefixSListN
 
 //list object
 type GOGPListNamePrefixSList struct {
-	head *GOGPGlobalNamePrefixSListNode
+	head GOGPGlobalNamePrefixSListNode //head is a dummy node, not a pionter
 	//#GOGP_IFDEF GOGP_HasTail
 	tail *GOGPGlobalNamePrefixSListNode //
 	//#GOGP_ENDIF
@@ -193,7 +193,7 @@ func (this *GOGPListNamePrefixSList) Len() int {
 //}
 
 func (this *GOGPListNamePrefixSList) Front() *GOGPGlobalNamePrefixSListNode {
-	return this.head
+	return this.head.next
 }
 
 //#GOGP_IFDEF GOGP_HasTail
@@ -203,15 +203,16 @@ func (this *GOGPListNamePrefixSList) Back() *GOGPGlobalNamePrefixSListNode {
 //#GOGP_ENDIF
 
 func (this *GOGPListNamePrefixSList) Clear() {
-	this.head = nil
+	this.head.next = nil
 	//#GOGP_IFDEF GOGP_HasTail
 	this.tail = nil //
 	//#GOGP_ENDIF
 }
+
 func (this *GOGPListNamePrefixSList) PushFront(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
 	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v}
-	n.next = this.head
-	this.head = n
+	n.next = this.head.next
+	this.head.next = n
 	//#GOGP_IFDEF GOGP_HasTail
 	if this.tail == nil {
 		this.tail = n
@@ -226,7 +227,7 @@ func (this *GOGPListNamePrefixSList) PushBack(v GOGPValueType) *GOGPGlobalNamePr
 	if this.tail != nil {
 		this.tail.next = n
 	} else {
-		this.head = n
+		this.head.next = n
 	}
 	this.tail = n
 	return n
@@ -238,12 +239,12 @@ func (this *GOGPListNamePrefixSList) PushFrontList(other *GOGPListNamePrefixSLis
 	//#GOGP_IFDEF GOGP_HasTail
 	t = other.tail
 	//#GOGP_ELSE
-	for t = other.head; t != nil && t.next != nil; t = t.next {
+	for t = other.head.next; t != nil && t.next != nil; t = t.next {
 	}
 	//#GOGP_ENDIF
 	if t != nil {
-		t.next = this.head
-		this.head = other.head
+		t.next = this.head.next
+		this.head.next = other.head.next
 		//#GOGP_IFDEF GOGP_HasTail
 		if this.tail == nil {
 			this.tail = t
@@ -256,10 +257,10 @@ func (this *GOGPListNamePrefixSList) PushFrontList(other *GOGPListNamePrefixSLis
 func (this *GOGPListNamePrefixSList) PushBackList(other *GOGPListNamePrefixSList) {
 	if other.tail != nil {
 		if this.tail != nil {
-			this.tail.next = other.head
+			this.tail.next = other.head.next
 			this.tail = other.tail
 		} else {
-			this.head, this.tail = other.head, other.tail
+			this.head.next, this.tail = other.head.next, other.tail
 		}
 		other.Clear()
 	}
@@ -278,9 +279,10 @@ func (this *GOGPListNamePrefixSList) InsertAfter(v GOGPValueType, mark *GOGPGlob
 	}
 	return
 }
+
 func (this *GOGPListNamePrefixSList) Remove(node *GOGPGlobalNamePrefixSListNode) (r *GOGPGlobalNamePrefixSListNode) {
 	if node != nil {
-		for b := this.head; b != nil; b = b.next {
+		for b := &this.head; b != nil; b = b.next {
 			if b.next == node {
 				b.next = node.next
 				r = node
@@ -290,16 +292,14 @@ func (this *GOGPListNamePrefixSList) Remove(node *GOGPGlobalNamePrefixSListNode)
 	}
 	return
 }
+
 func (this *GOGPListNamePrefixSList) MoveFront(node *GOGPGlobalNamePrefixSListNode) (r *GOGPGlobalNamePrefixSListNode) {
 	if node != nil {
-		for b := this.head; b != nil; b = b.next {
+		for b := &this.head; b != nil; b = b.next {
 			if b.next == node {
 				b.next = node.next
-				node.next = this.head
-				this.head = node
-				r = node
-				break
-			} else if b == node {
+				node.next = this.head.next
+				this.head.next = node
 				r = node
 				break
 			}
@@ -311,8 +311,8 @@ func (this *GOGPListNamePrefixSList) MoveFront(node *GOGPGlobalNamePrefixSListNo
 //#GOGP_IFDEF GOGP_HasTail
 func (this *GOGPListNamePrefixSList) MoveBack(node *GOGPGlobalNamePrefixSListNode) (r *GOGPGlobalNamePrefixSListNode) {
 	if node != nil {
-		for b := this.head; b != nil; b = b.next {
-			if b.next == node { //bug:node==head?
+		for b := &this.head; b != nil; b = b.next {
+			if b.next == node {
 				b.next = node.next
 				node.next = nil
 				this.tail.next = node
@@ -330,9 +330,21 @@ func (this *GOGPListNamePrefixSList) MoveBack(node *GOGPGlobalNamePrefixSListNod
 //	return nil
 //}
 
-func (this *GOGPListNamePrefixSList) MoveAfter(node, mark *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
-	return nil
+func (this *GOGPListNamePrefixSList) MoveAfter(node, mark *GOGPGlobalNamePrefixSListNode) (r *GOGPGlobalNamePrefixSListNode) {
+	if node != nil && mark != nil {
+		for b := &this.head; b != nil; b = b.next {
+			if b.next == node {
+				b.next = node.next
+				node.next = mark.next
+				mark.next = node
+				r = node
+				break
+			}
+		}
+	}
+	return
 }
+
 func (this *GOGPListNamePrefixSList) Sort() {
 	return
 }
