@@ -1,6 +1,3 @@
-//#GOGP_ONCE
-//single-way link list
-//#GOGP_END_ONCE
 package gp
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
@@ -176,16 +173,15 @@ func (this *GOGPGlobalNamePrefixSListNode) Next() (r *GOGPGlobalNamePrefixSListN
 //	return nil
 //}
 
-//list object
+//single-way link list object
 type GOGPListNamePrefixSList struct {
 	head GOGPGlobalNamePrefixSListNode //head is a dummy node, not a pionter
 	//#GOGP_IFDEF GOGP_HasTail
 	tail *GOGPGlobalNamePrefixSListNode //
 	//#GOGP_ENDIF
 
-	//GOGP_Cycle
 	//GOGP_HasTail
-	//GOGP_DummyHead
+	//bug: ring?
 }
 
 //new object
@@ -193,9 +189,9 @@ func NewGOGPStackNamePrefixSList() *GOGPListNamePrefixSList {
 	return &GOGPListNamePrefixSList{}
 }
 
-func (this *GOGPListNamePrefixSList) Len() int {
-	return 0
-}
+//func (this *GOGPListNamePrefixSList) Len() int {
+//	return 0
+//}
 
 //func (this *GOGPListNamePrefixSList) Visitor(node *GOGPGlobalNamePrefixSListNode) *GOGPTreeNamePrefixRBTreeNodeVisitor {
 //	return nil
@@ -219,8 +215,7 @@ func (this *GOGPListNamePrefixSList) Clear() {
 }
 
 func (this *GOGPListNamePrefixSList) PushFront(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
-	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v}
-	n.next = this.head.next
+	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: this.head.next}
 	this.head.next = n
 	//#GOGP_IFDEF GOGP_HasTail
 	if this.tail == nil {
@@ -343,7 +338,7 @@ func (this *GOGPListNamePrefixSList) MoveBack(node *GOGPGlobalNamePrefixSListNod
 //}
 
 func (this *GOGPListNamePrefixSList) MoveAfter(node, mark *GOGPGlobalNamePrefixSListNode) (r *GOGPGlobalNamePrefixSListNode) {
-	if node != nil && mark != nil {
+	if node != nil && mark != nil && node != mark {
 		for b := &this.head; b != nil; b = b.next { //bug:tail?
 			if b.next == node {
 				if b != mark {
