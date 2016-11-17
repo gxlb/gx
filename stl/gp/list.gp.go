@@ -125,52 +125,52 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right GOGPValueType) (ok bool) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var gGOGPGlobalNamePrefixDListGbl struct {
+var gGOGPGlobalNamePrefixListGbl struct {
 	cmp CmpGOGPGlobalNamePrefix
 }
 
 func init() {
-	gGOGPGlobalNamePrefixDListGbl.cmp = gGOGPGlobalNamePrefixDListGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+	gGOGPGlobalNamePrefixListGbl.cmp = gGOGPGlobalNamePrefixListGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
 }
 
 //double-way cycle link list node
-type GOGPGlobalNamePrefixDListNode struct {
+type GOGPGlobalNamePrefixListNode struct {
 	GOGPValueType
-	prev, next *GOGPGlobalNamePrefixDListNode
+	prev, next *GOGPGlobalNamePrefixListNode
 }
 
-func (this *GOGPGlobalNamePrefixDListNode) Get() GOGPValueType {
+func (this *GOGPGlobalNamePrefixListNode) Get() GOGPValueType {
 	return this.GOGPValueType
 }
 
-func (this *GOGPGlobalNamePrefixDListNode) Set(v GOGPValueType) (old GOGPValueType) {
+func (this *GOGPGlobalNamePrefixListNode) Set(v GOGPValueType) (old GOGPValueType) {
 	old, this.GOGPValueType = this.GOGPValueType, v
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDListNode) Next() (r *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixListNode) Next() (r *GOGPGlobalNamePrefixListNode) {
 	if this != nil {
 		r = this.next
 	}
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDListNode) Prev() (r *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixListNode) Prev() (r *GOGPGlobalNamePrefixListNode) {
 	if this != nil {
 		r = this.prev
 	}
 	return
 }
 
-type GOGGlobalNamePrefixDListNodeVisitor struct {
-	node, head *GOGPGlobalNamePrefixDListNode
+type GOGGlobalNamePrefixListNodeVisitor struct {
+	node, head *GOGPGlobalNamePrefixListNode
 }
 
-func (this *GOGGlobalNamePrefixDListNodeVisitor) Reset() {
+func (this *GOGGlobalNamePrefixListNodeVisitor) Reset() {
 	this.node = nil
 }
 
-func (this *GOGGlobalNamePrefixDListNodeVisitor) Next() (ok bool) {
+func (this *GOGGlobalNamePrefixListNodeVisitor) Next() (ok bool) {
 	if this.node == nil {
 		if ok = this.head != nil; ok {
 			this.node = this.head
@@ -182,7 +182,7 @@ func (this *GOGGlobalNamePrefixDListNodeVisitor) Next() (ok bool) {
 	return
 }
 
-func (this *GOGGlobalNamePrefixDListNodeVisitor) Prev() (ok bool) {
+func (this *GOGGlobalNamePrefixListNodeVisitor) Prev() (ok bool) {
 	if this.node == nil {
 		if ok = this.head != nil; ok {
 			this.node = this.head.prev
@@ -194,62 +194,62 @@ func (this *GOGGlobalNamePrefixDListNodeVisitor) Prev() (ok bool) {
 	return
 }
 
-func (this *GOGGlobalNamePrefixDListNodeVisitor) Get() *GOGPGlobalNamePrefixDListNode {
+func (this *GOGGlobalNamePrefixListNodeVisitor) Get() *GOGPGlobalNamePrefixListNode {
 	return this.node
 }
 
-func (this *GOGPGlobalNamePrefixDList) Visitor(node *GOGPGlobalNamePrefixDListNode) *GOGGlobalNamePrefixDListNodeVisitor {
-	n := &GOGGlobalNamePrefixDListNodeVisitor{node: nil, head: this.head}
+func (this *GOGPGlobalNamePrefixList) Visitor(node *GOGPGlobalNamePrefixListNode) *GOGGlobalNamePrefixListNodeVisitor {
+	n := &GOGGlobalNamePrefixListNodeVisitor{node: nil, head: this.head}
 	return n
 }
 
 //list object
-type GOGPGlobalNamePrefixDList struct {
-	head *GOGPGlobalNamePrefixDListNode
+type GOGPGlobalNamePrefixList struct {
+	head *GOGPGlobalNamePrefixListNode
 }
 
 //new object
-func NewGOGPGlobalNamePrefixDList() *GOGPGlobalNamePrefixDList {
-	return &GOGPGlobalNamePrefixDList{}
+func NewGOGPGlobalNamePrefixList() *GOGPGlobalNamePrefixList {
+	return &GOGPGlobalNamePrefixList{}
 }
 
-//func (this *GOGPGlobalNamePrefixDList) Len() int {
+//func (this *GOGPGlobalNamePrefixList) Len() int {
 //	return 0
 //}
 
-func (this *GOGPGlobalNamePrefixDList) Front() *GOGPGlobalNamePrefixDListNode {
+func (this *GOGPGlobalNamePrefixList) Front() *GOGPGlobalNamePrefixListNode {
 	return this.head
 }
-func (this *GOGPGlobalNamePrefixDList) Back() (r *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixList) Back() (r *GOGPGlobalNamePrefixListNode) {
 	if this.head != nil {
 		r = this.head.prev
 	}
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) Clear() {
+func (this *GOGPGlobalNamePrefixList) Clear() {
 	this.head = nil
 }
 
-func (this *GOGPGlobalNamePrefixDList) RotateForward() {
+func (this *GOGPGlobalNamePrefixList) RotateForward() {
 	if this.head != nil {
 		this.head = this.head.next
 	}
 }
-func (this *GOGPGlobalNamePrefixDList) RotateBackward() {
+func (this *GOGPGlobalNamePrefixList) RotateBackward() {
 	if this.head != nil {
 		this.head = this.head.prev
 	}
 }
 
-func (this *GOGPGlobalNamePrefixDList) PushFront(v GOGPValueType) *GOGPGlobalNamePrefixDListNode {
+func (this *GOGPGlobalNamePrefixList) PushFront(v GOGPValueType) *GOGPGlobalNamePrefixListNode {
 	n := this.PushBack(v)
 	this.RotateBackward()
 	return n
 }
 
-func (this *GOGPGlobalNamePrefixDList) PushBack(v GOGPValueType) *GOGPGlobalNamePrefixDListNode {
-	n := &GOGPGlobalNamePrefixDListNode{GOGPValueType: v}
+func (this *GOGPGlobalNamePrefixList) PushBack(v GOGPValueType) *GOGPGlobalNamePrefixListNode {
+	n := &GOGPGlobalNamePrefixListNode{GOGPValueType: v}
 	if this.head != nil {
 		this.head, n.next, n.prev = n, n, n
 	} else {
@@ -259,26 +259,26 @@ func (this *GOGPGlobalNamePrefixDList) PushBack(v GOGPValueType) *GOGPGlobalName
 	return n
 }
 
-func (this *GOGPGlobalNamePrefixDList) PopFront() (v GOGPValueType, ok bool) {
+func (this *GOGPGlobalNamePrefixList) PopFront() (v GOGPValueType, ok bool) {
 	if n := this.Remove(this.Front()); n != nil {
 		v, ok = n.Get(), true
 	}
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) PopBack() (v GOGPValueType, ok bool) {
+func (this *GOGPGlobalNamePrefixList) PopBack() (v GOGPValueType, ok bool) {
 	if n := this.Remove(this.Back()); n != nil {
 		v, ok = n.Get(), true
 	}
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) PushFrontList(other *GOGPGlobalNamePrefixDList) {
+func (this *GOGPGlobalNamePrefixList) PushFrontList(other *GOGPGlobalNamePrefixList) {
 	this.PushBackList(other)
 	this.RotateBackward()
 }
 
-func (this *GOGPGlobalNamePrefixDList) PushBackList(other *GOGPGlobalNamePrefixDList) {
+func (this *GOGPGlobalNamePrefixList) PushBackList(other *GOGPGlobalNamePrefixList) {
 	if other.head != nil {
 		if this.head == nil {
 			this.head = other.head
@@ -292,9 +292,9 @@ func (this *GOGPGlobalNamePrefixDList) PushBackList(other *GOGPGlobalNamePrefixD
 	}
 }
 
-func (this *GOGPGlobalNamePrefixDList) PushBefore(v GOGPValueType, mark *GOGPGlobalNamePrefixDListNode) (n *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixList) PushBefore(v GOGPValueType, mark *GOGPGlobalNamePrefixListNode) (n *GOGPGlobalNamePrefixListNode) {
 	if mark != nil {
-		n = &GOGPGlobalNamePrefixDListNode{GOGPValueType: v}
+		n = &GOGPGlobalNamePrefixListNode{GOGPValueType: v}
 		n.next = mark
 		n.prev = mark.prev
 		mark.prev = n
@@ -302,9 +302,9 @@ func (this *GOGPGlobalNamePrefixDList) PushBefore(v GOGPValueType, mark *GOGPGlo
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) PushAfter(v GOGPValueType, mark *GOGPGlobalNamePrefixDListNode) (n *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixList) PushAfter(v GOGPValueType, mark *GOGPGlobalNamePrefixListNode) (n *GOGPGlobalNamePrefixListNode) {
 	if mark != nil {
-		n = &GOGPGlobalNamePrefixDListNode{GOGPValueType: v}
+		n = &GOGPGlobalNamePrefixListNode{GOGPValueType: v}
 		n.next = mark.next
 		n.prev = mark
 		mark.next = n
@@ -312,7 +312,7 @@ func (this *GOGPGlobalNamePrefixDList) PushAfter(v GOGPValueType, mark *GOGPGlob
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) Remove(node *GOGPGlobalNamePrefixDListNode) (n *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixList) Remove(node *GOGPGlobalNamePrefixListNode) (n *GOGPGlobalNamePrefixListNode) {
 	if node != nil && node.next != nil && node.prev != nil {
 		n = node
 		if node.next == node {
@@ -327,7 +327,7 @@ func (this *GOGPGlobalNamePrefixDList) Remove(node *GOGPGlobalNamePrefixDListNod
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) Reachable(node, dest *GOGPGlobalNamePrefixDListNode) (ok bool) {
+func (this *GOGPGlobalNamePrefixList) Reachable(node, dest *GOGPGlobalNamePrefixListNode) (ok bool) {
 	if ok = (node == dest) && node != nil; !ok && node != nil && dest != nil {
 		for p := node; p != nil && p != node; p = p.next {
 			if ok = (p == dest); ok {
@@ -338,18 +338,18 @@ func (this *GOGPGlobalNamePrefixDList) Reachable(node, dest *GOGPGlobalNamePrefi
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) IsValidNode(node *GOGPGlobalNamePrefixDListNode) bool {
+func (this *GOGPGlobalNamePrefixList) IsValidNode(node *GOGPGlobalNamePrefixListNode) bool {
 	return this.Reachable(this.head, node)
 }
 
-func (this *GOGPGlobalNamePrefixDList) MoveFront(node *GOGPGlobalNamePrefixDListNode) (r *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixList) MoveFront(node *GOGPGlobalNamePrefixListNode) (r *GOGPGlobalNamePrefixListNode) {
 	if r = this.MoveBack(node); r != nil {
 		this.RotateBackward()
 	}
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) MoveBack(node *GOGPGlobalNamePrefixDListNode) (r *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixList) MoveBack(node *GOGPGlobalNamePrefixListNode) (r *GOGPGlobalNamePrefixListNode) {
 	if node != nil && node.next != nil && node.prev != nil && node.next != node { //bug:node is back?
 		node.next.prev = node.prev
 		node.prev.next = node.next
@@ -362,7 +362,7 @@ func (this *GOGPGlobalNamePrefixDList) MoveBack(node *GOGPGlobalNamePrefixDListN
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) MoveBefore(node, mark *GOGPGlobalNamePrefixDListNode) (r *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixList) MoveBefore(node, mark *GOGPGlobalNamePrefixListNode) (r *GOGPGlobalNamePrefixListNode) {
 	if node != nil && mark != nil && node != mark && node.next != mark {
 		if r = this.Remove(node); r != nil {
 			node.next = mark.prev.next
@@ -374,7 +374,7 @@ func (this *GOGPGlobalNamePrefixDList) MoveBefore(node, mark *GOGPGlobalNamePref
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) MoveAfter(node, mark *GOGPGlobalNamePrefixDListNode) (r *GOGPGlobalNamePrefixDListNode) {
+func (this *GOGPGlobalNamePrefixList) MoveAfter(node, mark *GOGPGlobalNamePrefixListNode) (r *GOGPGlobalNamePrefixListNode) {
 	if node != nil && mark != nil && node != mark && mark.next != node {
 		if r = this.Remove(node); r != nil {
 			node.next = mark.next
@@ -386,9 +386,9 @@ func (this *GOGPGlobalNamePrefixDList) MoveAfter(node, mark *GOGPGlobalNamePrefi
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) Reverse() {}
+func (this *GOGPGlobalNamePrefixList) Reverse() {}
 
-func (this *GOGPGlobalNamePrefixDList) Sort() {
+func (this *GOGPGlobalNamePrefixList) Sort() {
 	return
 }
 
