@@ -139,8 +139,8 @@ type GOGPGlobalNamePrefixDListNode struct {
 	prev, next *GOGPGlobalNamePrefixDListNode
 }
 
-func (this *GOGPGlobalNamePrefixDListNode) Get() *GOGPValueType {
-	return &this.GOGPValueType
+func (this *GOGPGlobalNamePrefixDListNode) Get() GOGPValueType {
+	return this.GOGPValueType
 }
 
 func (this *GOGPGlobalNamePrefixDListNode) Set(v GOGPValueType) (old GOGPValueType) {
@@ -247,6 +247,7 @@ func (this *GOGPGlobalNamePrefixDList) PushFront(v GOGPValueType) *GOGPGlobalNam
 	this.RotateBackward()
 	return n
 }
+
 func (this *GOGPGlobalNamePrefixDList) PushBack(v GOGPValueType) *GOGPGlobalNamePrefixDListNode {
 	n := &GOGPGlobalNamePrefixDListNode{GOGPValueType: v}
 	if this.head != nil {
@@ -256,6 +257,20 @@ func (this *GOGPGlobalNamePrefixDList) PushBack(v GOGPValueType) *GOGPGlobalName
 		n.prev = this.head.prev
 	}
 	return n
+}
+
+func (this *GOGPGlobalNamePrefixDList) PopFront() (v GOGPValueType, ok bool) {
+	if n := this.Remove(this.Front()); n != nil {
+		v, ok = n.Get(), true
+	}
+	return
+}
+
+func (this *GOGPGlobalNamePrefixDList) PopBack() (v GOGPValueType, ok bool) {
+	if n := this.Remove(this.Back()); n != nil {
+		v, ok = n.Get(), true
+	}
+	return
 }
 
 func (this *GOGPGlobalNamePrefixDList) PushFrontList(other *GOGPGlobalNamePrefixDList) {
@@ -347,13 +362,31 @@ func (this *GOGPGlobalNamePrefixDList) MoveBack(node *GOGPGlobalNamePrefixDListN
 	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) MoveBefore(node, mark *GOGPGlobalNamePrefixDListNode) *GOGPGlobalNamePrefixDListNode {
-	return nil
+func (this *GOGPGlobalNamePrefixDList) MoveBefore(node, mark *GOGPGlobalNamePrefixDListNode) (r *GOGPGlobalNamePrefixDListNode) {
+	if node != nil && mark != nil && node != mark && node.next != mark {
+		if r = this.Remove(node); r != nil {
+			node.next = mark.prev.next
+			node.prev = mark.prev
+			mark.prev.next = node
+			mark.prev = node
+		}
+	}
+	return
 }
 
-func (this *GOGPGlobalNamePrefixDList) MoveAfter(node, mark *GOGPGlobalNamePrefixDListNode) *GOGPGlobalNamePrefixDListNode {
-	return nil
+func (this *GOGPGlobalNamePrefixDList) MoveAfter(node, mark *GOGPGlobalNamePrefixDListNode) (r *GOGPGlobalNamePrefixDListNode) {
+	if node != nil && mark != nil && node != mark && mark.next != node {
+		if r = this.Remove(node); r != nil {
+			node.next = mark.next
+			node.prev = mark
+			mark.next.prev = node
+			mark.next = node
+		}
+	}
+	return
 }
+
+func (this *GOGPGlobalNamePrefixDList) Reverse() {}
 
 func (this *GOGPGlobalNamePrefixDList) Sort() {
 	return
