@@ -193,6 +193,7 @@ func (this *GOGGlobalNamePrefixDListNodeVisitor) Prev() (ok bool) {
 	}
 	return
 }
+
 func (this *GOGGlobalNamePrefixDListNodeVisitor) Get() *GOGPGlobalNamePrefixDListNode {
 	return this.node
 }
@@ -285,6 +286,7 @@ func (this *GOGPGlobalNamePrefixDList) PushBefore(v GOGPValueType, mark *GOGPGlo
 	}
 	return
 }
+
 func (this *GOGPGlobalNamePrefixDList) PushAfter(v GOGPValueType, mark *GOGPGlobalNamePrefixDListNode) (n *GOGPGlobalNamePrefixDListNode) {
 	if mark != nil {
 		n = &GOGPGlobalNamePrefixDListNode{GOGPValueType: v}
@@ -294,6 +296,7 @@ func (this *GOGPGlobalNamePrefixDList) PushAfter(v GOGPValueType, mark *GOGPGlob
 	}
 	return
 }
+
 func (this *GOGPGlobalNamePrefixDList) Remove(node *GOGPGlobalNamePrefixDListNode) (n *GOGPGlobalNamePrefixDListNode) {
 	if node != nil && node.next != nil && node.prev != nil {
 		n = node
@@ -308,18 +311,50 @@ func (this *GOGPGlobalNamePrefixDList) Remove(node *GOGPGlobalNamePrefixDListNod
 	}
 	return
 }
-func (this *GOGPGlobalNamePrefixDList) MoveFront(node *GOGPGlobalNamePrefixDListNode) *GOGPGlobalNamePrefixDListNode {
-	return nil
+
+func (this *GOGPGlobalNamePrefixDList) Reachable(node, dest *GOGPGlobalNamePrefixDListNode) (ok bool) {
+	if ok = (node == dest) && node != nil; !ok && node != nil && dest != nil {
+		for p := node; p != nil && p != node; p = p.next {
+			if ok = (p == dest); ok {
+				break
+			}
+		}
+	}
+	return
 }
-func (this *GOGPGlobalNamePrefixDList) MoveBck(node *GOGPGlobalNamePrefixDListNode) *GOGPGlobalNamePrefixDListNode {
-	return nil
+
+func (this *GOGPGlobalNamePrefixDList) IsValidNode(node *GOGPGlobalNamePrefixDListNode) bool {
+	return this.Reachable(this.head, node)
 }
+
+func (this *GOGPGlobalNamePrefixDList) MoveFront(node *GOGPGlobalNamePrefixDListNode) (r *GOGPGlobalNamePrefixDListNode) {
+	if r = this.MoveBack(node); r != nil {
+		this.RotateBackward()
+	}
+	return
+}
+
+func (this *GOGPGlobalNamePrefixDList) MoveBack(node *GOGPGlobalNamePrefixDListNode) (r *GOGPGlobalNamePrefixDListNode) {
+	if node != nil && node.next != nil && node.prev != nil && node.next != node { //bug:node is back?
+		node.next.prev = node.prev
+		node.prev.next = node.next
+		node.next = this.head
+		node.prev = this.head.prev
+		this.head.prev.next = node
+		this.head.prev = node
+		r = node
+	}
+	return
+}
+
 func (this *GOGPGlobalNamePrefixDList) MoveBefore(node, mark *GOGPGlobalNamePrefixDListNode) *GOGPGlobalNamePrefixDListNode {
 	return nil
 }
+
 func (this *GOGPGlobalNamePrefixDList) MoveAfter(node, mark *GOGPGlobalNamePrefixDListNode) *GOGPGlobalNamePrefixDListNode {
 	return nil
 }
+
 func (this *GOGPGlobalNamePrefixDList) Sort() {
 	return
 }
