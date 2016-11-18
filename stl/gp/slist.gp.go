@@ -146,6 +146,17 @@ func (this *GOGPGlobalNamePrefixSListNode) Set(v GOGPValueType) (old GOGPValueTy
 	return
 }
 
+//merge other sorted-list with head otherHead to this sorted-list with head this
+//func (this *GOGPGlobalNamePrefixSListNode) merge(otherHead *GOGPGlobalNamePrefixSListNode) {
+//	for p, po := this, otherHead; p != nil && po != nil; {
+//		if gGOGPGlobalNamePrefixSListGbl.cmp.F(po.GOGPValueType, p.GOGPValueType) {
+//			po = po.next
+//		} else {
+//			p = p.next
+//		}
+//	}
+//}
+
 func (this *GOGPGlobalNamePrefixSListNode) Tail() (r *GOGPGlobalNamePrefixSListNode, size int) {
 	if this != nil {
 		for r, size = this, 1; r != nil && r.next != nil; r, size = r.next, size+1 { //do nothing body
@@ -161,17 +172,25 @@ func (this *GOGPGlobalNamePrefixSListNode) Next() (r *GOGPGlobalNamePrefixSListN
 	return
 }
 
-//type GOGPTreeNamePrefixRBTreeNodeVisitor struct {
-//	node, head *GOGPGlobalNamePrefixSListNode
-//}
+type GOGPGlobalNamePrefixSListNodeVisitor struct {
+	node, head *GOGPGlobalNamePrefixSListNode
+}
 
-//func (this *GOGPTreeNamePrefixRBTreeNodeVisitor) Next() bool {
-//	return false
-//}
+func (this *GOGPGlobalNamePrefixSListNodeVisitor) Next() (ok bool) {
+	if this.node == nil {
+		if ok = this.head != nil; ok {
+			this.node = this.head
+		}
+	} else {
+		this.node = this.node.next
+		ok = this.node != nil
+	}
+	return false
+}
 
-//func (this *GOGPTreeNamePrefixRBTreeNodeVisitor) Node() *GOGPGlobalNamePrefixSListNode {
-//	return nil
-//}
+func (this *GOGPGlobalNamePrefixSListNodeVisitor) Get() *GOGPGlobalNamePrefixSListNode {
+	return this.node
+}
 
 //single-way link list object
 type GOGPGlobalNamePrefixSList struct {
@@ -185,17 +204,22 @@ type GOGPGlobalNamePrefixSList struct {
 }
 
 //new object
-func NewGOGPStackNamePrefixSList() *GOGPGlobalNamePrefixSList {
+func NewGOGPGlobalNamePrefixSList() *GOGPGlobalNamePrefixSList {
 	return &GOGPGlobalNamePrefixSList{}
 }
 
-//func (this *GOGPListNamePrefixSList) Len() int {
+func (this *GOGPGlobalNamePrefixSList) Empty() bool {
+	return this.head.next != nil
+}
+
+//func (this *GOGPGlobalNamePrefixSList) Len() int {
 //	return 0
 //}
 
-//func (this *GOGPListNamePrefixSList) Visitor(node *GOGPGlobalNamePrefixSListNode) *GOGPTreeNamePrefixRBTreeNodeVisitor {
-//	return nil
-//}
+func (this *GOGPGlobalNamePrefixSList) Visitor() *GOGPGlobalNamePrefixSListNodeVisitor {
+	v := &GOGPGlobalNamePrefixSListNodeVisitor{node: nil, head: this.head.next}
+	return v
+}
 
 func (this *GOGPGlobalNamePrefixSList) Front() *GOGPGlobalNamePrefixSListNode {
 	return this.head.next
@@ -290,11 +314,29 @@ func (this *GOGPGlobalNamePrefixSList) PushBackList(other *GOGPGlobalNamePrefixS
 //	return nil
 //}
 
-func (this *GOGPGlobalNamePrefixSList) InsertAfter(v GOGPValueType, mark *GOGPGlobalNamePrefixSListNode) (n *GOGPGlobalNamePrefixSListNode) {
+func (this *GOGPGlobalNamePrefixSList) PushAfter(v GOGPValueType, mark *GOGPGlobalNamePrefixSListNode) (n *GOGPGlobalNamePrefixSListNode) {
 	if mark != nil {
 		n = &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: mark.next}
+		n = this.InsertAfter(n, mark)
+	}
+	return
+}
+
+func (this *GOGPGlobalNamePrefixSList) InsertAfter(node, mark *GOGPGlobalNamePrefixSListNode) (n *GOGPGlobalNamePrefixSListNode) {
+	if mark != nil && node != nil && node != mark {
+		node.next = mark.next
 		mark.next = n
 	}
+	return
+}
+
+func (this *GOGPGlobalNamePrefixSList) InsertFront(node *GOGPGlobalNamePrefixSListNode) (n *GOGPGlobalNamePrefixSListNode) {
+	n = this.InsertAfter(node, &this.head)
+	return
+}
+
+func (this *GOGPGlobalNamePrefixSList) RemoveFront(node *GOGPGlobalNamePrefixSListNode) (n *GOGPGlobalNamePrefixSListNode) {
+	n = this.Remove(this.head.next)
 	return
 }
 
@@ -375,46 +417,101 @@ func (this *GOGPGlobalNamePrefixSList) MoveAfter(node, mark *GOGPGlobalNamePrefi
 	return
 }
 
-func (this *GOGPGlobalNamePrefixSList) Reverse() {}
+func (this *GOGPGlobalNamePrefixSList) Reverse() {
+	p := this.head.next
+	this.Clear()
+	//#GOGP_IFDEF GOGP_HasTail
+	this.tail = p //
+	//#GOGP_ENDIF
+	for p != nil {
+		q := p.next
+		this.InsertFront(p)
+		p = q
+	}
+}
+
+func (this *GOGPGlobalNamePrefixSList) HasCycle(head *GOGPGlobalNamePrefixSListNode) (ok bool) {
+	for slow, fast := head, head; fast != nil; fast, slow = fast.next.next, slow.next { //do nothing body
+		fast = fast.next
+		if ok = fast != nil; !ok {
+			break
+		}
+		fast = fast.next
+		slow = slow.next
+		if ok = fast == slow; ok {
+			break
+		}
+	}
+	return
+}
+
+//func (this *GOGPGlobalNamePrefixSList) FindCycleStart() *GOGPGlobalNamePrefixSListNode { return nil }
 
 //func (this *GOGPGlobalNamePrefixDList) Find(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
 //	return nil
 //}
 
-//func (this *GOGPGlobalNamePrefixDList) Reachable(node, dest *GOGPGlobalNamePrefixDListNode) (ok bool) {
-//	if ok = (node == dest) && node != nil; !ok && node != nil && dest != nil {
-//		for p := node; p != nil && p != node; p = p.next {
-//			if ok = (p == dest); ok {
-//				break
-//			}
-//		}
-//	}
-//	return
-//}
+func (this *GOGPGlobalNamePrefixSList) Reachable(node, dest *GOGPGlobalNamePrefixSListNode) (ok bool) {
+	if ok = (node == dest) && node != nil; !ok && node != nil && dest != nil {
+		for p := node; p != nil && p != node; p = p.next {
+			if ok = (p == dest); ok {
+				break
+			}
+		}
+	}
+	return
+}
 
-//func (this *GOGPGlobalNamePrefixDList) IsValidNode(node *GOGPGlobalNamePrefixDListNode) bool {
-//	return this.Reachable(this.head, node)
-//}
+func (this *GOGPGlobalNamePrefixSList) IsValidNode(node *GOGPGlobalNamePrefixSListNode) bool {
+	return this.Reachable(this.head.next, node)
+}
 
 //merge sort
 func (this *GOGPGlobalNamePrefixSList) Sort() {
-	head := this.head.next
+	if nil == this.head.next || nil == this.head.next.next { //0 or 1 element, no need to sort
+		return
+	}
+
+	//head := this.head.next
 	this.Clear()
-	this.head.next = this.insertSort(head)
+	this.head.next = this.fastSort(this.head.next)
 	//#GOGP_IFDEF GOGP_HasTail
 	this.tail, _ = this.head.next.Tail() //
 	//#GOGP_ENDIF
 	return
 }
 
-func (this *GOGPGlobalNamePrefixSList) mid(head *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
-	if head == nil || head.next == nil {
+//STL's fast sort algorithm for list
+func (this *GOGPGlobalNamePrefixSList) fastSort(head *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
+	if nil == head || nil == head.next { //0 or 1 element, no need to sort
 		return head
 	}
-	slow := head
-	for fast := head; fast != nil && fast.next != nil; fast, slow = fast.next.next, slow.next { //do nothing body
+
+	var (
+		hand       *GOGPGlobalNamePrefixSListNode
+		binList    [64]*GOGPGlobalNamePrefixSListNode //save temp list that len=2^i
+		nFilledBin = 0
+	)
+
+	for p, pn := head, head; p != nil; p = pn {
+		pn = p.next
+		hand, p.next = p, nil
+		i := 0
+		for ; i < nFilledBin && binList[i] != nil; i++ {
+			binList[i] = this.merge(binList[i], hand)
+			hand, binList[i] = binList[i], hand
+		}
+		hand, binList[i] = binList[i], hand
+		if i == nFilledBin {
+			nFilledBin++
+		}
 	}
-	return slow
+
+	for i := 1; i < nFilledBin; i++ {
+		binList[i] = this.merge(binList[i], binList[i-1])
+	}
+
+	return binList[nFilledBin-1]
 }
 
 func (this *GOGPGlobalNamePrefixSList) merge(a, b *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
@@ -427,8 +524,7 @@ func (this *GOGPGlobalNamePrefixSList) merge(a, b *GOGPGlobalNamePrefixSListNode
 		head GOGPGlobalNamePrefixSListNode
 		tail *GOGPGlobalNamePrefixSListNode
 	)
-	tail = &head
-	for a != nil && b != nil {
+	for tail = &head; a != nil && b != nil; {
 		if gGOGPGlobalNamePrefixSListGbl.cmp.F(a.GOGPValueType, b.GOGPValueType) {
 			tail.next = a
 			tail = tail.next
@@ -451,53 +547,63 @@ func (this *GOGPGlobalNamePrefixSList) merge(a, b *GOGPGlobalNamePrefixSListNode
 	return head.next
 }
 
-func (this *GOGPGlobalNamePrefixSList) mergeSort(head *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
-	if head == nil || head.next == nil {
-		return head
-	} else if mid := this.mid(head); mid != nil {
-		midNext := mid.next
-		mid.next = nil
-		return this.merge(this.mergeSort(mid), this.mergeSort(midNext))
-	}
-	return nil
-}
+//func (this *GOGPGlobalNamePrefixSList) mid(head *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
+//	if head == nil || head.next == nil {
+//		return head
+//	}
+//	slow := head
+//	for fast := head; fast != nil && fast.next != nil; fast, slow = fast.next.next, slow.next { //do nothing body
+//	}
+//	return slow
+//}
 
-func (this *GOGPGlobalNamePrefixSList) PushOrderly(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
-	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: nil}
-	return this.InsertOrderly(n)
-}
+//func (this *GOGPGlobalNamePrefixSList) mergeSort(head *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
+//	if head == nil || head.next == nil {
+//		return head
+//	} else if mid := this.mid(head); mid != nil {
+//		midNext := mid.next
+//		mid.next = nil
+//		return this.merge(this.mergeSort(mid), this.mergeSort(midNext))
+//	}
+//	return nil
+//}
 
-func (this *GOGPGlobalNamePrefixSList) InsertOrderly(node *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
-	p := &this.head
-	for ; p.next != nil; p = p.next {
-		if n := p.next; gGOGPGlobalNamePrefixSListGbl.cmp.F(node.GOGPValueType, n.GOGPValueType) {
-			break
-		}
-	}
-	node.next = p.next
-	p.next = node
-	//#GOGP_IFDEF GOGP_HasTail
-	if this.tail == nil || this.tail == p {
-		this.tail = node
-	} //
-	//#GOGP_ENDIF
-	return node
-}
+//func (this *GOGPGlobalNamePrefixSList) PushOrderly(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
+//	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: nil}
+//	return this.InsertOrderly(n)
+//}
 
-func (this *GOGPGlobalNamePrefixSList) insertSort(head *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
-	if head == nil || head.next == nil {
-		return head
-	}
+//func (this *GOGPGlobalNamePrefixSList) InsertOrderly(node *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
+//	p := &this.head
+//	for ; p.next != nil; p = p.next {
+//		if n := p.next; gGOGPGlobalNamePrefixSListGbl.cmp.F(node.GOGPValueType, n.GOGPValueType) {
+//			break
+//		}
+//	}
+//	node.next = p.next
+//	p.next = node
+//	//#GOGP_IFDEF GOGP_HasTail
+//	if this.tail == nil || this.tail == p {
+//		this.tail = node
+//	} //
+//	//#GOGP_ENDIF
+//	return node
+//}
 
-	var h GOGPGlobalNamePrefixSList
-	for p := head; p != nil; {
-		q := p.next
-		p.next = nil
-		h.InsertOrderly(p)
-		p = q
-	}
-	return h.head.next
-}
+//func (this *GOGPGlobalNamePrefixSList) insertSort(head *GOGPGlobalNamePrefixSListNode) *GOGPGlobalNamePrefixSListNode {
+//	if head == nil || head.next == nil {
+//		return head
+//	}
+
+//	var h GOGPGlobalNamePrefixSList
+//	for p := head; p != nil; {
+//		q := p.next
+//		p.next = nil
+//		h.InsertOrderly(p)
+//		p = q
+//	}
+//	return h.head.next
+//}
 
 //#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
 //*/
