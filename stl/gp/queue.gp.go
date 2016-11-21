@@ -1,58 +1,32 @@
 package gp
 
-//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
-//
-//
-/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
-//	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
-//
-//
-// This is exactly not a real go code file
-// It is used to generate .gp file by gogp tool
-// Real go code file will be generated from .gp file
-//
-//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_FILE_BEGIN
 
-//import here...
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
 
-//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
-//
-//these defines is used to make sure this dummy go file can be compiled correctlly
-//and they will be removed from real go files
-//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 
-import (
-	dumy_fmt "fmt"
-)
-
-type GOGPQueueElem int
-
-func (me GOGPQueueElem) Show() string {
-	return dumy_fmt.Sprintf("%d", me)
-}
-
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
+////////////////////////////////////////////////////////////////////////////////
 
 //queue object
-type GOGPQueueNamePrefixQueue struct {
+type GOGPGlobalNamePrefixQueue struct {
 	//real data is [head,tail)
 	//buffer d is cycle, that is to say, next(len(d)-1)=0, prev(0)=len(d)-1
 	//so if tail<head, data is [head, end, 0, tail)
 	head int
 	tail int
-	d    []GOGPQueueElem
+	d    []GOGPValueType
 }
 
 //new object
-func NewGOGPQueueNamePrefixQueue(bufSize int) *GOGPQueueNamePrefixQueue {
-	r := &GOGPQueueNamePrefixQueue{}
+func NewGOGPQueueNamePrefixQueue(bufSize int) *GOGPGlobalNamePrefixQueue {
+	r := &GOGPGlobalNamePrefixQueue{}
 	r.Init(bufSize)
 	return r
 }
 
 //init
-func (this *GOGPQueueNamePrefixQueue) Init(bufSize int) {
+func (this *GOGPGlobalNamePrefixQueue) Init(bufSize int) {
 	if nil == this.d {
 		if bufSize <= 0 {
 			bufSize = 8 //default buffer size
@@ -64,19 +38,19 @@ func (this *GOGPQueueNamePrefixQueue) Init(bufSize int) {
 }
 
 //create new buffer
-func (this *GOGPQueueNamePrefixQueue) newBuf(bufSize int) {
+func (this *GOGPGlobalNamePrefixQueue) newBuf(bufSize int) {
 	if bufSize > 0 {
-		this.d = make([]GOGPQueueElem, bufSize, bufSize) //the same cap and len
+		this.d = make([]GOGPValueType, bufSize, bufSize) //the same cap and len
 	}
 }
 
 //clear
-func (this *GOGPQueueNamePrefixQueue) Clear() {
+func (this *GOGPGlobalNamePrefixQueue) Clear() {
 	this.head, this.tail = 0, 0
 }
 
 //push to back of queue
-func (this *GOGPQueueNamePrefixQueue) Push(v GOGPQueueElem) (ok bool) {
+func (this *GOGPGlobalNamePrefixQueue) Push(v GOGPValueType) (ok bool) {
 	if ok = true; ok {
 		if nil == this.d { //init if needed
 			this.Init(-1)
@@ -98,7 +72,7 @@ func (this *GOGPQueueNamePrefixQueue) Push(v GOGPQueueElem) (ok bool) {
 }
 
 //pop front of queue
-func (this *GOGPQueueNamePrefixQueue) Pop() (front GOGPQueueElem, ok bool) {
+func (this *GOGPGlobalNamePrefixQueue) Pop() (front GOGPValueType, ok bool) {
 	if ok = this.head != this.tail; ok {
 		front = this.d[this.head]
 		if this.head++; this.head >= this.Cap() && this.head != this.tail {
@@ -109,7 +83,7 @@ func (this *GOGPQueueNamePrefixQueue) Pop() (front GOGPQueueElem, ok bool) {
 }
 
 //front data
-func (this *GOGPQueueNamePrefixQueue) Front() (front GOGPQueueElem, ok bool) {
+func (this *GOGPGlobalNamePrefixQueue) Front() (front GOGPValueType, ok bool) {
 	if ok = this.head != this.tail; ok {
 		front = this.d[this.head]
 	}
@@ -117,7 +91,7 @@ func (this *GOGPQueueNamePrefixQueue) Front() (front GOGPQueueElem, ok bool) {
 }
 
 //back data
-func (this *GOGPQueueNamePrefixQueue) Back() (back GOGPQueueElem, ok bool) {
+func (this *GOGPGlobalNamePrefixQueue) Back() (back GOGPValueType, ok bool) {
 	if ok = this.head != this.tail; ok {
 		t := this.tail - 1
 		if t < 0 {
@@ -129,7 +103,7 @@ func (this *GOGPQueueNamePrefixQueue) Back() (back GOGPQueueElem, ok bool) {
 }
 
 //shrink data buffer if necessary
-func (this *GOGPQueueNamePrefixQueue) Shrink() (ok bool) {
+func (this *GOGPGlobalNamePrefixQueue) Shrink() (ok bool) {
 	oldCap := this.Cap()
 	oldSize := this.Size()
 	if ok := oldCap > 8 && oldCap >= 3*oldSize; ok { //leave at least 8 elem space
@@ -151,12 +125,12 @@ func (this *GOGPQueueNamePrefixQueue) Shrink() (ok bool) {
 //func (this *GOGPDequeNamePrefixDeque) Sort() {}
 
 //data buffer size
-func (this *GOGPQueueNamePrefixQueue) Cap() int {
+func (this *GOGPGlobalNamePrefixQueue) Cap() int {
 	return len(this.d)
 }
 
 //size of queue
-func (this *GOGPQueueNamePrefixQueue) Size() (size int) {
+func (this *GOGPGlobalNamePrefixQueue) Size() (size int) {
 	if this.tail >= this.head {
 		size = this.tail - this.head
 	} else {
@@ -166,7 +140,7 @@ func (this *GOGPQueueNamePrefixQueue) Size() (size int) {
 }
 
 //if queue is empty
-func (this *GOGPQueueNamePrefixQueue) Empty() bool {
+func (this *GOGPGlobalNamePrefixQueue) Empty() bool {
 	return this.Size() == 0
 }
 
@@ -189,6 +163,4 @@ func (this *GOGPQueueNamePrefixQueue) Empty() bool {
 //	return b.String()
 //}
 
-//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
-//*/
-//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END
+//#GOGP_FILE_END
