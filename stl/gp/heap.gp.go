@@ -190,7 +190,7 @@ func (this *GOGPGlobalNamePrefixHeap) CheckHeap(b []GOGPValueType) bool {
 //adjust heap to select a proper hole to set v
 func (this *GOGPGlobalNamePrefixHeap) adjustDown(b []GOGPValueType, hole int, v GOGPValueType) {
 	size := len(b)
-	//#GOGP_IFDEF GOGP_ImproveHeap
+	//#GOGP_IFDEF GOGP_ImproveSTL
 	//try to improve STL's adjust down algorithm
 	//adjust heap to select a proper hole to set v
 	for l := this.lchild(hole); l < size; l = this.lchild(hole) {
