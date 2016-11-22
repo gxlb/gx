@@ -12,7 +12,7 @@ package gp
 //
 //#GOGP_IGNORE_END ///gogp_file_begin
 
-//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
+//#GOGP_REQUIRE(github.com/vipally/gogp/lib/fakedef,_)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
 //these defines is used to make sure this fake go file can be compiled correctlly
 //and they will be removed from real go files

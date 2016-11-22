@@ -17,8 +17,8 @@ package gp
 //#GOGP_IGNORE_BEGIN
 import "sort" //#GOGP_IGNORE_END
 
-//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/fakedef,_)
-//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/fakedef)
+//#GOGP_REQUIRE(github.com/vipally/gogp/lib/fakedef,_)
+//#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gogp/lib/fakedef)
 //these defines are used to make sure this fake go file can be compiled correctlly
 //and they will be removed from real go files
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -27,7 +27,7 @@ type GOGPValueType int                               //
 func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
 func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
+//#GOGP_IGNORE_END //required from(github.com/vipally/gogp/lib/fakedef)
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
