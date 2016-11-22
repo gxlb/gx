@@ -12,6 +12,8 @@ package gp
 //
 //#GOGP_IGNORE_END ///gogp_file_begin
 
+
+
 //#GOGP_REQUIRE(github.com/vipally/gogp/lib/fakedef,_)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gogp/lib/fakedef)
 //these defines are used to make sure this fake go file can be compiled correctlly
@@ -23,6 +25,8 @@ func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
 func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gogp/lib/fakedef)
+
+
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
@@ -140,11 +144,11 @@ type GOGPGlobalNamePrefixSListNode struct {
 }
 
 func (this *GOGPGlobalNamePrefixSListNode) Get() GOGPValueType {
-	return this.GOGPValueType
+	return this.#GOGP_RAWNAME(GOGPValueType)
 }
 
 func (this *GOGPGlobalNamePrefixSListNode) Set(v GOGPValueType) (old GOGPValueType) {
-	old, this.GOGPValueType = this.GOGPValueType, v
+	old, this.#GOGP_RAWNAME(GOGPValueType) = this.#GOGP_RAWNAME(GOGPValueType), v
 	return
 }
 
@@ -230,7 +234,7 @@ func (this *GOGPGlobalNamePrefixSList) Clear() {
 }
 
 func (this *GOGPGlobalNamePrefixSList) PushFront(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
-	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: this.head.next}
+	n := &GOGPGlobalNamePrefixSListNode{#GOGP_RAWNAME(GOGPValueType): v, next: this.head.next}
 	this.head.next = n
 	//#GOGP_IFDEF GOGP_HasTail
 	if this.tail == nil {
@@ -258,7 +262,7 @@ func (this *GOGPGlobalNamePrefixSList) PopBack() (v GOGPValueType, ok bool) {
 
 //#GOGP_IFDEF GOGP_HasTail
 func (this *GOGPGlobalNamePrefixSList) PushBack(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
-	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v}
+	n := &GOGPGlobalNamePrefixSListNode{#GOGP_RAWNAME(GOGPValueType): v}
 	if this.tail != nil {
 		this.tail.next = n
 	} else {
@@ -307,7 +311,7 @@ func (this *GOGPGlobalNamePrefixSList) PushBackList(other *GOGPGlobalNamePrefixS
 
 func (this *GOGPGlobalNamePrefixSList) PushAfter(v GOGPValueType, mark *GOGPGlobalNamePrefixSListNode) (n *GOGPGlobalNamePrefixSListNode) {
 	if mark != nil {
-		n = &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: mark.next}
+		n = &GOGPGlobalNamePrefixSListNode{#GOGP_RAWNAME(GOGPValueType): v, next: mark.next}
 		n = this.InsertAfter(n, mark)
 	}
 	return
@@ -503,7 +507,7 @@ func (this *GOGPGlobalNamePrefixSList) merge(other *GOGPGlobalNamePrefixSList) {
 	p, po := &this.head, other.Front()
 	for p.next != nil && po != nil {
 		pn := p.next
-		if gGOGPGlobalNamePrefixSListGbl.cmp.F(po.GOGPValueType, pn.GOGPValueType) {
+		if gGOGPGlobalNamePrefixSListGbl.cmp.F(po.#GOGP_RAWNAME(GOGPValueType), pn.#GOGP_RAWNAME(GOGPValueType)) {
 			n := other.RemoveFront()
 			po = other.Front()
 			p = this.InsertAfter(n, p)
