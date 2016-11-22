@@ -29,8 +29,6 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/fakedef)
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
@@ -129,8 +127,6 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right *GOGPGlobalNamePrefixTreeNod
 }
 
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
-
-
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/sort_slice)
