@@ -12,8 +12,6 @@ package gp
 //
 //#GOGP_IGNORE_END ///gogp_file_begin
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gogp/lib/fakedef,_)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gogp/lib/fakedef)
 //these defines are used to make sure this fake go file can be compiled correctlly
@@ -25,8 +23,6 @@ func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
 func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gogp/lib/fakedef)
-
-
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
@@ -136,9 +132,9 @@ type GOGPGlobalNamePrefixHeap struct {
 }
 
 //new object
-func NewGOGPHeapNamePrefixHeap(capacity int, maxTop bool) (r *GOGPGlobalNamePrefixHeap) {
+func NewGOGPGlobalNamePrefixHeap(capacity,limitN int, maxTop bool) (r *GOGPGlobalNamePrefixHeap) {
 	r = &GOGPGlobalNamePrefixHeap{}
-	r.Init(capacity, 0, maxTop)
+	r.Init(capacity, limitN, maxTop)
 	return
 }
 
@@ -263,8 +259,10 @@ func (this *GOGPGlobalNamePrefixHeap) Buffer() []GOGPValueType {
 //push
 func (this *GOGPGlobalNamePrefixHeap) Push(v GOGPValueType) {
 	if this.limitN > 0 && this.Size() >= this.limitN {
-		if top, ok := this.Top(); ok && this.cmpV(top, v) {
+		if top, ok := this.Top(); ok && this.cmpV(v, top) {
 			this.Pop()
+		} else {
+			return
 		}
 	}
 	this.b = this.PushHeap(this.b, v)
