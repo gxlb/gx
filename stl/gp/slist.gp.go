@@ -144,11 +144,11 @@ type GOGPGlobalNamePrefixSListNode struct {
 }
 
 func (this *GOGPGlobalNamePrefixSListNode) Get() GOGPValueType {
-	return this.#GOGP_RAWNAME(GOGPValueType)
+	return this.GOGPValueType
 }
 
 func (this *GOGPGlobalNamePrefixSListNode) Set(v GOGPValueType) (old GOGPValueType) {
-	old, this.#GOGP_RAWNAME(GOGPValueType) = this.#GOGP_RAWNAME(GOGPValueType), v
+	old, this.GOGPValueType = this.GOGPValueType, v
 	return
 }
 
@@ -234,7 +234,7 @@ func (this *GOGPGlobalNamePrefixSList) Clear() {
 }
 
 func (this *GOGPGlobalNamePrefixSList) PushFront(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
-	n := &GOGPGlobalNamePrefixSListNode{#GOGP_RAWNAME(GOGPValueType): v, next: this.head.next}
+	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: this.head.next}
 	this.head.next = n
 	//#GOGP_IFDEF GOGP_HasTail
 	if this.tail == nil {
@@ -262,7 +262,7 @@ func (this *GOGPGlobalNamePrefixSList) PopBack() (v GOGPValueType, ok bool) {
 
 //#GOGP_IFDEF GOGP_HasTail
 func (this *GOGPGlobalNamePrefixSList) PushBack(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
-	n := &GOGPGlobalNamePrefixSListNode{#GOGP_RAWNAME(GOGPValueType): v}
+	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v}
 	if this.tail != nil {
 		this.tail.next = n
 	} else {
@@ -311,7 +311,7 @@ func (this *GOGPGlobalNamePrefixSList) PushBackList(other *GOGPGlobalNamePrefixS
 
 func (this *GOGPGlobalNamePrefixSList) PushAfter(v GOGPValueType, mark *GOGPGlobalNamePrefixSListNode) (n *GOGPGlobalNamePrefixSListNode) {
 	if mark != nil {
-		n = &GOGPGlobalNamePrefixSListNode{#GOGP_RAWNAME(GOGPValueType): v, next: mark.next}
+		n = &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: mark.next}
 		n = this.InsertAfter(n, mark)
 	}
 	return
@@ -507,7 +507,7 @@ func (this *GOGPGlobalNamePrefixSList) merge(other *GOGPGlobalNamePrefixSList) {
 	p, po := &this.head, other.Front()
 	for p.next != nil && po != nil {
 		pn := p.next
-		if gGOGPGlobalNamePrefixSListGbl.cmp.F(po.#GOGP_RAWNAME(GOGPValueType), pn.#GOGP_RAWNAME(GOGPValueType)) {
+		if gGOGPGlobalNamePrefixSListGbl.cmp.F(po.GOGPValueType, pn.GOGPValueType) {
 			n := other.RemoveFront()
 			po = other.Front()
 			p = this.InsertAfter(n, p)

@@ -144,11 +144,11 @@ type GOGPGlobalNamePrefixListNode struct {
 }
 
 func (this *GOGPGlobalNamePrefixListNode) Get() GOGPValueType {
-	return this.#GOGP_RAWNAME(GOGPValueType)
+	return this.GOGPValueType
 }
 
 func (this *GOGPGlobalNamePrefixListNode) Set(v GOGPValueType) (old GOGPValueType) {
-	old, this.#GOGP_RAWNAME(GOGPValueType) = this.#GOGP_RAWNAME(GOGPValueType), v
+	old, this.GOGPValueType = this.GOGPValueType, v
 	return
 }
 
@@ -247,12 +247,12 @@ func (this *GOGPGlobalNamePrefixList) RotateBackward() {
 }
 
 func (this *GOGPGlobalNamePrefixList) PushFront(v GOGPValueType) *GOGPGlobalNamePrefixListNode {
-	n := &GOGPGlobalNamePrefixListNode{#GOGP_RAWNAME(GOGPValueType): v}
+	n := &GOGPGlobalNamePrefixListNode{GOGPValueType: v}
 	return this.InsertFront(n)
 }
 
 func (this *GOGPGlobalNamePrefixList) PushBack(v GOGPValueType) *GOGPGlobalNamePrefixListNode {
-	n := &GOGPGlobalNamePrefixListNode{#GOGP_RAWNAME(GOGPValueType): v}
+	n := &GOGPGlobalNamePrefixListNode{GOGPValueType: v}
 	return this.InsertBack(n)
 }
 
@@ -315,7 +315,7 @@ func (this *GOGPGlobalNamePrefixList) InsertBackList(other *GOGPGlobalNamePrefix
 
 func (this *GOGPGlobalNamePrefixList) PushBefore(v GOGPValueType, mark *GOGPGlobalNamePrefixListNode) (n *GOGPGlobalNamePrefixListNode) {
 	if mark != nil {
-		n = &GOGPGlobalNamePrefixListNode{#GOGP_RAWNAME(GOGPValueType): v}
+		n = &GOGPGlobalNamePrefixListNode{GOGPValueType: v}
 		n = this.InsertBefore(n, mark)
 	}
 	return
@@ -323,7 +323,7 @@ func (this *GOGPGlobalNamePrefixList) PushBefore(v GOGPValueType, mark *GOGPGlob
 
 func (this *GOGPGlobalNamePrefixList) PushAfter(v GOGPValueType, mark *GOGPGlobalNamePrefixListNode) (n *GOGPGlobalNamePrefixListNode) {
 	if mark != nil {
-		n = &GOGPGlobalNamePrefixListNode{#GOGP_RAWNAME(GOGPValueType): v}
+		n = &GOGPGlobalNamePrefixListNode{GOGPValueType: v}
 		n = this.InsertAfter(n, mark)
 	}
 	return
@@ -489,7 +489,7 @@ func (this *GOGPGlobalNamePrefixList) merge(other *GOGPGlobalNamePrefixList) {
 
 	p, po := this.Front(), other.Front()
 	for p != nil && po != nil {
-		if gGOGPGlobalNamePrefixListGbl.cmp.F(po.#GOGP_RAWNAME(GOGPValueType), p.#GOGP_RAWNAME(GOGPValueType)) {
+		if gGOGPGlobalNamePrefixListGbl.cmp.F(po.GOGPValueType, p.GOGPValueType) {
 			n := other.RemoveFront()
 			po = other.Front()
 			p = this.InsertBefore(n, p)

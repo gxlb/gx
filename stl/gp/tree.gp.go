@@ -29,8 +29,6 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gogp/lib/fakedef)
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
 //this file is used to //import by other gp files
@@ -129,8 +127,6 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right *GOGPGlobalNamePrefixTreeNod
 }
 
 //#GOGP_IGNORE_END //required from(github.com/vipally/gx/stl/gp/functorcmp)
-
-
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/sort_slice,#GOGP_GPGCFG(GOGP_SectionSortSlice))
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/sort_slice)
@@ -269,9 +265,9 @@ type GOGPGlobalNamePrefixTreeNode struct {
 
 func (this *GOGPGlobalNamePrefixTreeNode) Less(right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
 	//#GOGP_IFDEF GOGP_HasCmpFunc
-	ok = this.#GOGP_RAWNAME(GOGPValueType).Less(right.#GOGP_RAWNAME(GOGPValueType))
+	ok = this.GOGPValueType.Less(right.GOGPValueType)
 	//#GOGP_ELSE
-	ok = this.#GOGP_RAWNAME(GOGPValueType) < right.#GOGP_RAWNAME(GOGPValueType)
+	ok = this.GOGPValueType < right.GOGPValueType
 	//#GOGP_ENDIF
 	return
 }
@@ -286,7 +282,7 @@ func (this *GOGPGlobalNamePrefixTreeNode) Children() []*GOGPGlobalNamePrefixTree
 
 //add a child
 func (this *GOGPGlobalNamePrefixTreeNode) AddChild(v GOGPValueType, idx int) (child *GOGPGlobalNamePrefixTreeNode) {
-	n := &GOGPGlobalNamePrefixTreeNode{#GOGP_RAWNAME(GOGPValueType): v}
+	n := &GOGPGlobalNamePrefixTreeNode{GOGPValueType: v}
 	return this.AddChildNode(n, idx)
 }
 
@@ -322,7 +318,7 @@ func (this *GOGPGlobalNamePrefixTreeNode) Visitor() (v *GOGPGlobalNamePrefixTree
 
 //get all node data
 func (this *GOGPGlobalNamePrefixTreeNode) All() (list []GOGPValueType) {
-	list = append(list, this.#GOGP_RAWNAME(GOGPValueType))
+	list = append(list, this.GOGPValueType)
 	for _, v := range this.children.Buffer() {
 		list = append(list, v.All()...)
 	}
@@ -447,7 +443,7 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Prev() (ok bool) {
 //get node data
 func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Get() (data *GOGPValueType) {
 	if nil != this.node {
-		data = &this.node.#GOGP_RAWNAME(GOGPValueType)
+		data = &this.node.GOGPValueType
 	}
 	return
 }
