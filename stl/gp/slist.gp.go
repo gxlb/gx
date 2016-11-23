@@ -1,9 +1,9 @@
 package gp
 
-//#GOGP_FILE_BEGIN
+//#GOGP_FILE_BEGIN 1
 //#GOGP_IGNORE_BEGIN ///gogp_file_begin
 //
-/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 // This is a fake go code file
@@ -11,8 +11,6 @@ package gp
 // Real go code file will be generated from .gp file
 //
 //#GOGP_IGNORE_END ///gogp_file_begin
-
-
 
 //#GOGP_REQUIRE(github.com/vipally/gogp/lib/fakedef,_)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gogp/lib/fakedef)
@@ -25,8 +23,6 @@ func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
 func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gogp/lib/fakedef)
-
-
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
@@ -207,9 +203,11 @@ func (this *GOGPGlobalNamePrefixSList) Empty() bool {
 	return this.head.next != nil
 }
 
-//func (this *GOGPGlobalNamePrefixSList) Len() int {
-//	return 0
-//}
+func (this *GOGPGlobalNamePrefixSList) Len() (n int) {
+	for v := this.Visitor(); v.Next(); n++ {
+	}
+	return
+}
 
 func (this *GOGPGlobalNamePrefixSList) Visitor() *GOGPGlobalNamePrefixSListNodeVisitor {
 	v := &GOGPGlobalNamePrefixSListNodeVisitor{node: nil, head: this.head.next}

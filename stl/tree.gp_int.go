@@ -6,7 +6,7 @@
 // Last update at: [Wed Nov 23 2016 22:36:23]
 // Generate from:
 //   [github.com/vipally/gx/stl/gp/tree.gp]
-//   [github.com/vipally/gx/fs/tree.gpg] [tree_filehash]
+//   [github.com/vipally/gx/stl/stl.gpg] [tree_int]
 //
 // Tool [github.com/vipally/gogp] info:
 // CopyRight 2016 @Ally Dale. All rights reserved.
@@ -20,81 +20,81 @@
 
 //this file defines a template tree structure just like file system
 
-package fs
+package stl
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //tree strture
-type FileHashTree struct {
-	root *FileHashTreeNode
+type IntTree struct {
+	root *IntTreeNode
 }
 
 //new container
-func NewFileHashTree() *FileHashTree {
-	p := &FileHashTree{}
+func NewIntTree() *IntTree {
+	p := &IntTree{}
 	return p
 }
 
 //tree node
-type FileHashTreeNode struct {
-	FileHash
-	children FileHashTreeNodeSortSlice
+type IntTreeNode struct {
+	int
+	children IntTreeNodeSortSlice
 }
 
-func (this *FileHashTreeNode) Less(right *FileHashTreeNode) (ok bool) {
+func (this *IntTreeNode) Less(right *IntTreeNode) (ok bool) {
 
-	ok = this.FileHash.Less(right.FileHash)
+	ok = this.int < right.int
 
 	return
 }
 
-func (this *FileHashTreeNode) SortChildren() {
+func (this *IntTreeNode) SortChildren() {
 	this.children.Sort()
 }
 
-func (this *FileHashTreeNode) Children() []*FileHashTreeNode {
+func (this *IntTreeNode) Children() []*IntTreeNode {
 	return this.children.Buffer()
 }
 
 //add a child
-func (this *FileHashTreeNode) AddChild(v FileHash, idx int) (child *FileHashTreeNode) {
-	n := &FileHashTreeNode{FileHash: v}
+func (this *IntTreeNode) AddChild(v int, idx int) (child *IntTreeNode) {
+	n := &IntTreeNode{int: v}
 	return this.AddChildNode(n, idx)
 }
 
 //add a child node
-func (this *FileHashTreeNode) AddChildNode(node *FileHashTreeNode, idx int) (child *FileHashTreeNode) {
+func (this *IntTreeNode) AddChildNode(node *IntTreeNode, idx int) (child *IntTreeNode) {
 	this.children.Insert(node, idx)
 	return node
 }
 
 //cound of children
-func (this *FileHashTreeNode) NumChildren() int {
+func (this *IntTreeNode) NumChildren() int {
 	return this.children.Len()
 }
 
 //get child
-func (this *FileHashTreeNode) GetChild(idx int) (child *FileHashTreeNode, ok bool) {
+func (this *IntTreeNode) GetChild(idx int) (child *IntTreeNode, ok bool) {
 	child, ok = this.children.Get(idx)
 	return
 }
 
 //remove child
-func (this *FileHashTreeNode) RemoveChild(idx int) (child *FileHashTreeNode, ok bool) {
+func (this *IntTreeNode) RemoveChild(idx int) (child *IntTreeNode, ok bool) {
 	child, ok = this.children.Remove(idx)
 	return
 }
 
 //create a visitor
-func (this *FileHashTreeNode) Visitor() (v *FileHashTreeNodeVisitor) {
-	v = &FileHashTreeNodeVisitor{}
+func (this *IntTreeNode) Visitor() (v *IntTreeNodeVisitor) {
+	v = &IntTreeNodeVisitor{}
 	v.push(this, -1)
 	return
 }
 
 //get all node data
-func (this *FileHashTreeNode) All() (list []FileHash) {
-	list = append(list, this.FileHash)
+func (this *IntTreeNode) All() (list []int) {
+	list = append(list, this.int)
 	for _, v := range this.children.Buffer() {
 		list = append(list, v.All()...)
 	}
@@ -102,19 +102,19 @@ func (this *FileHashTreeNode) All() (list []FileHash) {
 }
 
 //tree node visitor
-type FileHashTreeNodeVisitor struct {
-	node         *FileHashTreeNode
-	parents      []*FileHashTreeNode
+type IntTreeNodeVisitor struct {
+	node         *IntTreeNode
+	parents      []*IntTreeNode
 	brotherIdxes []int
 	//visit order: this->child->brother
 }
 
-func (this *FileHashTreeNodeVisitor) push(n *FileHashTreeNode, bIdx int) {
+func (this *IntTreeNodeVisitor) push(n *IntTreeNode, bIdx int) {
 	this.parents = append(this.parents, n)
 	this.brotherIdxes = append(this.brotherIdxes, bIdx)
 }
 
-func (this *FileHashTreeNodeVisitor) pop() (n *FileHashTreeNode, bIdx int) {
+func (this *IntTreeNodeVisitor) pop() (n *IntTreeNode, bIdx int) {
 	l := len(this.parents)
 	if l > 0 {
 		n, bIdx = this.tail()
@@ -124,7 +124,7 @@ func (this *FileHashTreeNodeVisitor) pop() (n *FileHashTreeNode, bIdx int) {
 	return
 }
 
-func (this *FileHashTreeNodeVisitor) tail() (n *FileHashTreeNode, bIdx int) {
+func (this *IntTreeNodeVisitor) tail() (n *IntTreeNode, bIdx int) {
 	l := len(this.parents)
 	if l > 0 {
 		n = this.parents[l-1]
@@ -133,11 +133,11 @@ func (this *FileHashTreeNodeVisitor) tail() (n *FileHashTreeNode, bIdx int) {
 	return
 }
 
-func (this *FileHashTreeNodeVisitor) depth() int {
+func (this *IntTreeNodeVisitor) depth() int {
 	return len(this.parents)
 }
 
-func (this *FileHashTreeNodeVisitor) update_tail(bIdx int) bool {
+func (this *IntTreeNodeVisitor) update_tail(bIdx int) bool {
 	l := len(this.parents)
 	if l > 0 {
 		this.brotherIdxes[l-1] = bIdx
@@ -146,7 +146,7 @@ func (this *FileHashTreeNodeVisitor) update_tail(bIdx int) bool {
 	return false
 }
 
-func (this *FileHashTreeNodeVisitor) top_right(n *FileHashTreeNode) (p *FileHashTreeNode) {
+func (this *IntTreeNodeVisitor) top_right(n *IntTreeNode) (p *IntTreeNode) {
 	if n != nil {
 		l := n.children.Len()
 		for l > 0 {
@@ -160,7 +160,7 @@ func (this *FileHashTreeNodeVisitor) top_right(n *FileHashTreeNode) (p *FileHash
 }
 
 //visit next node
-func (this *FileHashTreeNodeVisitor) Next() (ok bool) {
+func (this *IntTreeNodeVisitor) Next() (ok bool) {
 	if this.node != nil { //check if has any children
 		if this.node.children.Len() > 0 {
 			this.push(this.node, 0)
@@ -189,7 +189,7 @@ func (this *FileHashTreeNodeVisitor) Next() (ok bool) {
 }
 
 //visit previous node
-func (this *FileHashTreeNodeVisitor) Prev() (ok bool) {
+func (this *IntTreeNodeVisitor) Prev() (ok bool) {
 	if this.node == nil && this.depth() > 0 { //check if has any brothers or uncles
 		p, _ := this.pop()
 		this.node = this.top_right(p)
@@ -217,9 +217,9 @@ func (this *FileHashTreeNodeVisitor) Prev() (ok bool) {
 }
 
 //get node data
-func (this *FileHashTreeNodeVisitor) Get() (data *FileHash) {
+func (this *IntTreeNodeVisitor) Get() (data *int) {
 	if nil != this.node {
-		data = &this.node.FileHash
+		data = &this.node.int
 	}
 	return
 }

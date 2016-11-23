@@ -260,7 +260,7 @@ func NewGOGPGlobalNamePrefixTree() *GOGPGlobalNamePrefixTree {
 //tree node
 type GOGPGlobalNamePrefixTreeNode struct {
 	GOGPValueType
-	children GOGPGlobalNamePrefixSortSlice
+	children GOGPGlobalNamePrefixTreeNodeSortSlice
 }
 
 func (this *GOGPGlobalNamePrefixTreeNode) Less(right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
