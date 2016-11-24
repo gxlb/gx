@@ -59,7 +59,7 @@ func (me CmpGOGPGlobalNamePrefix) F(left, right GOGPValueType) (ok bool) {
 		ok = me.great(left, right)
 	}
 	return
-}
+} //
 
 //Lesser object
 func (me CmpGOGPGlobalNamePrefix) Lesser() CmpGOGPGlobalNamePrefix { return CMPLesser }

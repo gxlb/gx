@@ -1,9 +1,9 @@
 package gp
 
-//#GOGP_FILE_BEGIN 1
+//#GOGP_FILE_BEGIN
 //#GOGP_IGNORE_BEGIN ///gogp_file_begin
 //
-///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 // This is a fake go code file
@@ -59,7 +59,7 @@ func (me CmpGOGPGlobalNamePrefix) F(left, right GOGPValueType) (ok bool) {
 		ok = me.great(left, right)
 	}
 	return
-}
+} //
 
 //Lesser object
 func (me CmpGOGPGlobalNamePrefix) Lesser() CmpGOGPGlobalNamePrefix { return CMPLesser }

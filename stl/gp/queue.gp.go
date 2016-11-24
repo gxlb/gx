@@ -12,8 +12,6 @@ package gp
 //
 //#GOGP_IGNORE_END ///gogp_file_begin
 
-
-
 //#GOGP_REQUIRE(github.com/vipally/gogp/lib/fakedef,_)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gogp/lib/fakedef)
 //these defines are used to make sure this fake go file can be compiled correctlly
@@ -25,8 +23,6 @@ func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
 func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gogp/lib/fakedef)
-
-
 
 //#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 //#GOGP_IGNORE_BEGIN //required from(github.com/vipally/gx/stl/gp/functorcmp)
@@ -63,7 +59,7 @@ func (me CmpGOGPGlobalNamePrefix) F(left, right GOGPValueType) (ok bool) {
 		ok = me.great(left, right)
 	}
 	return
-}
+} //
 
 //Lesser object
 func (me CmpGOGPGlobalNamePrefix) Lesser() CmpGOGPGlobalNamePrefix { return CMPLesser }
