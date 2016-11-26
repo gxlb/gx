@@ -55,7 +55,7 @@ func CreateCmpGOGPGlobalNamePrefix(cmpName string) (r CmpGOGPGlobalNamePrefix) {
 }
 
 //uniformed global function
-func (me CmpGOGPGlobalNamePrefix) F(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePrefix) F(left, right GOGPKeyType) (ok bool) {
 	switch me {
 	case CMPLesser:
 		ok = me.less(left, right)
@@ -110,7 +110,7 @@ func (me CmpGOGPGlobalNamePrefix) CreateByName(cmpName string) (r CmpGOGPGlobalN
 }
 
 //lesser operation
-func (me CmpGOGPGlobalNamePrefix) less(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePrefix) less(left, right GOGPKeyType) (ok bool) {
 
 	ok = left < right
 
@@ -118,7 +118,7 @@ func (me CmpGOGPGlobalNamePrefix) less(left, right GOGPValueType) (ok bool) {
 }
 
 //Greater operation
-func (me CmpGOGPGlobalNamePrefix) great(left, right GOGPValueType) (ok bool) {
+func (me CmpGOGPGlobalNamePrefix) great(left, right GOGPKeyType) (ok bool) {
 
 	ok = right < left
 
