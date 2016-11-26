@@ -57,18 +57,6 @@ func CreateCmpGOGPGlobalNamePrefix(cmpName string) (r CmpGOGPGlobalNamePrefix) {
 	return
 }
 
-//#GOGP_IFDEF KEY_TYPE
-//uniformed global function
-func (me CmpGOGPGlobalNamePrefix) F(left, right GOGPKeyType) (ok bool) {
-	switch me {
-	case CMPLesser:
-		ok = me.less(left, right)
-	case CMPGreater:
-		ok = me.great(left, right)
-	}
-	return
-} //
-//#GOGP_ELSE
 //uniformed global function
 func (me CmpGOGPGlobalNamePrefix) F(left, right GOGPValueType) (ok bool) {
 	switch me {
@@ -78,8 +66,7 @@ func (me CmpGOGPGlobalNamePrefix) F(left, right GOGPValueType) (ok bool) {
 		ok = me.great(left, right)
 	}
 	return
-} //
-//#GOGP_ENDIF
+}
 
 //Lesser object
 func (me CmpGOGPGlobalNamePrefix) Lesser() CmpGOGPGlobalNamePrefix { return CMPLesser }

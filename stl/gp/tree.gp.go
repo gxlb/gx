@@ -64,7 +64,7 @@ func (me CmpGOGPGlobalNamePrefix) F(left, right *GOGPGlobalNamePrefixTreeNode) (
 		ok = me.great(left, right)
 	}
 	return
-} //
+}
 
 //Lesser object
 func (me CmpGOGPGlobalNamePrefix) Lesser() CmpGOGPGlobalNamePrefix { return CMPLesser }
