@@ -32,6 +32,10 @@ func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gogp/lib/fakedef)
 
+//#GOGP_IFDEF KEY_TYPE
+//#GOGP_REPLACE(<VALUE_TYPE>, <KEY_TYPE>)
+//#GOGP_ENDIF
+
 //#GOGP_ONCE
 const (
 	CMPLesser = iota //default
