@@ -135,16 +135,16 @@ func init() {
 
 //list node
 type GOGPGlobalNamePrefixSListNode struct {
-	GOGPValueType
+	val  GOGPValueType
 	next *GOGPGlobalNamePrefixSListNode
 }
 
 func (this *GOGPGlobalNamePrefixSListNode) Get() GOGPValueType {
-	return this.GOGPValueType
+	return this.val
 }
 
 func (this *GOGPGlobalNamePrefixSListNode) Set(v GOGPValueType) (old GOGPValueType) {
-	old, this.GOGPValueType = this.GOGPValueType, v
+	old, this.val = this.val, v
 	return
 }
 
@@ -232,7 +232,7 @@ func (this *GOGPGlobalNamePrefixSList) Clear() {
 }
 
 func (this *GOGPGlobalNamePrefixSList) PushFront(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
-	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: this.head.next}
+	n := &GOGPGlobalNamePrefixSListNode{val: v, next: this.head.next}
 	this.head.next = n
 	//#GOGP_IFDEF GOGP_HasTail
 	if this.tail == nil {
@@ -260,7 +260,7 @@ func (this *GOGPGlobalNamePrefixSList) PopBack() (v GOGPValueType, ok bool) {
 
 //#GOGP_IFDEF GOGP_HasTail
 func (this *GOGPGlobalNamePrefixSList) PushBack(v GOGPValueType) *GOGPGlobalNamePrefixSListNode {
-	n := &GOGPGlobalNamePrefixSListNode{GOGPValueType: v}
+	n := &GOGPGlobalNamePrefixSListNode{val: v}
 	if this.tail != nil {
 		this.tail.next = n
 	} else {
@@ -309,7 +309,7 @@ func (this *GOGPGlobalNamePrefixSList) PushBackList(other *GOGPGlobalNamePrefixS
 
 func (this *GOGPGlobalNamePrefixSList) PushAfter(v GOGPValueType, mark *GOGPGlobalNamePrefixSListNode) (n *GOGPGlobalNamePrefixSListNode) {
 	if mark != nil {
-		n = &GOGPGlobalNamePrefixSListNode{GOGPValueType: v, next: mark.next}
+		n = &GOGPGlobalNamePrefixSListNode{val: v, next: mark.next}
 		n = this.InsertAfter(n, mark)
 	}
 	return
@@ -505,7 +505,7 @@ func (this *GOGPGlobalNamePrefixSList) merge(other *GOGPGlobalNamePrefixSList) {
 	p, po := &this.head, other.Front()
 	for p.next != nil && po != nil {
 		pn := p.next
-		if gGOGPGlobalNamePrefixSListGbl.cmp.F(po.GOGPValueType, pn.GOGPValueType) {
+		if gGOGPGlobalNamePrefixSListGbl.cmp.F(po.val, pn.val) {
 			n := other.RemoveFront()
 			po = other.Front()
 			p = this.InsertAfter(n, p)

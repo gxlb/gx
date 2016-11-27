@@ -42,21 +42,21 @@ const (
 ) //
 
 //cmp object, zero is Lesser
-type CmpGOGPGlobalNamePrefix byte
+type CmpGOGPGlobalNamePrefixTreeNode byte
 
 const (
-	CmpGOGPGlobalNamePrefixLesser  CmpGOGPGlobalNamePrefix = CMPLesser
-	CmpGOGPGlobalNamePrefixGreater CmpGOGPGlobalNamePrefix = CMPGreater
+	CmpGOGPGlobalNamePrefixTreeNodeLesser  CmpGOGPGlobalNamePrefixTreeNode = CMPLesser
+	CmpGOGPGlobalNamePrefixTreeNodeGreater CmpGOGPGlobalNamePrefixTreeNode = CMPGreater
 )
 
 //create cmp object by name
-func CreateCmpGOGPGlobalNamePrefix(cmpName string) (r CmpGOGPGlobalNamePrefix) {
-	r = CmpGOGPGlobalNamePrefixLesser.CreateByName(cmpName)
+func CreateCmpGOGPGlobalNamePrefixTreeNode(cmpName string) (r CmpGOGPGlobalNamePrefixTreeNode) {
+	r = CmpGOGPGlobalNamePrefixTreeNodeLesser.CreateByName(cmpName)
 	return
 }
 
 //uniformed global function
-func (me CmpGOGPGlobalNamePrefix) F(left, right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
+func (me CmpGOGPGlobalNamePrefixTreeNode) F(left, right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
 	switch me {
 	case CMPLesser:
 		ok = me.less(left, right)
@@ -67,13 +67,13 @@ func (me CmpGOGPGlobalNamePrefix) F(left, right *GOGPGlobalNamePrefixTreeNode) (
 }
 
 //Lesser object
-func (me CmpGOGPGlobalNamePrefix) Lesser() CmpGOGPGlobalNamePrefix { return CMPLesser }
+func (me CmpGOGPGlobalNamePrefixTreeNode) Lesser() CmpGOGPGlobalNamePrefixTreeNode { return CMPLesser }
 
 //Greater object
-func (me CmpGOGPGlobalNamePrefix) Greater() CmpGOGPGlobalNamePrefix { return CMPGreater }
+func (me CmpGOGPGlobalNamePrefixTreeNode) Greater() CmpGOGPGlobalNamePrefixTreeNode { return CMPGreater }
 
 //show as string
-func (me CmpGOGPGlobalNamePrefix) String() (s string) {
+func (me CmpGOGPGlobalNamePrefixTreeNode) String() (s string) {
 	switch me {
 	case CMPLesser:
 		s = "Lesser"
@@ -86,7 +86,7 @@ func (me CmpGOGPGlobalNamePrefix) String() (s string) {
 }
 
 //create by bool
-func (me CmpGOGPGlobalNamePrefix) CreateByBool(bigFirst bool) (r CmpGOGPGlobalNamePrefix) {
+func (me CmpGOGPGlobalNamePrefixTreeNode) CreateByBool(bigFirst bool) (r CmpGOGPGlobalNamePrefixTreeNode) {
 	if bigFirst {
 		r = CMPGreater
 	} else {
@@ -96,7 +96,7 @@ func (me CmpGOGPGlobalNamePrefix) CreateByBool(bigFirst bool) (r CmpGOGPGlobalNa
 }
 
 //create cmp object by name
-func (me CmpGOGPGlobalNamePrefix) CreateByName(cmpName string) (r CmpGOGPGlobalNamePrefix) {
+func (me CmpGOGPGlobalNamePrefixTreeNode) CreateByName(cmpName string) (r CmpGOGPGlobalNamePrefixTreeNode) {
 	switch cmpName {
 	case "": //default Lesser
 		fallthrough
@@ -111,7 +111,7 @@ func (me CmpGOGPGlobalNamePrefix) CreateByName(cmpName string) (r CmpGOGPGlobalN
 }
 
 //lesser operation
-func (me CmpGOGPGlobalNamePrefix) less(left, right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
+func (me CmpGOGPGlobalNamePrefixTreeNode) less(left, right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
 
 	ok = left.Less(right)
 
@@ -119,7 +119,7 @@ func (me CmpGOGPGlobalNamePrefix) less(left, right *GOGPGlobalNamePrefixTreeNode
 }
 
 //Greater operation
-func (me CmpGOGPGlobalNamePrefix) great(left, right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
+func (me CmpGOGPGlobalNamePrefixTreeNode) great(left, right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
 
 	ok = right.Less(left)
 
@@ -138,49 +138,49 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right *GOGPGlobalNamePrefixTreeNod
 
 ////////////////////////////////////////////////////////////////////////////////
 
-var gGOGPGlobalNamePrefixSortSliceGbl struct {
-	cmp CmpGOGPGlobalNamePrefix
+var gGOGPGlobalNamePrefixTreeNodeSortSliceGbl struct {
+	cmp CmpGOGPGlobalNamePrefixTreeNode
 }
 
 func init() {
-	gGOGPGlobalNamePrefixSortSliceGbl.cmp = gGOGPGlobalNamePrefixSortSliceGbl.cmp.CreateByName("")
+	gGOGPGlobalNamePrefixTreeNodeSortSliceGbl.cmp = gGOGPGlobalNamePrefixTreeNodeSortSliceGbl.cmp.CreateByName("")
 }
 
 //new sort object
-func NewGOGPGlobalNamePrefixSortSlice(capacity int) *GOGPGlobalNamePrefixSortSlice {
-	p := &GOGPGlobalNamePrefixSortSlice{}
+func NewGOGPGlobalNamePrefixTreeNodeSortSlice(capacity int) *GOGPGlobalNamePrefixTreeNodeSortSlice {
+	p := &GOGPGlobalNamePrefixTreeNodeSortSlice{}
 	p.Init(capacity)
 	return p
 }
 
 //sort slice
-type GOGPGlobalNamePrefixSortSlice struct {
+type GOGPGlobalNamePrefixTreeNodeSortSlice struct {
 	d []*GOGPGlobalNamePrefixTreeNode
 }
 
 //init
-func (this *GOGPGlobalNamePrefixSortSlice) Init(capacity int) {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Init(capacity int) {
 	this.d = make([]*GOGPGlobalNamePrefixTreeNode, 0, capacity)
 }
 
 //sort
-func (this *GOGPGlobalNamePrefixSortSlice) Sort() {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Sort() {
 	sort.Sort(this)
 }
 
 //data buffer
-func (this *GOGPGlobalNamePrefixSortSlice) Buffer() []*GOGPGlobalNamePrefixTreeNode {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Buffer() []*GOGPGlobalNamePrefixTreeNode {
 	return this.d
 }
 
 //push
-func (this *GOGPGlobalNamePrefixSortSlice) Push(v *GOGPGlobalNamePrefixTreeNode) int {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Push(v *GOGPGlobalNamePrefixTreeNode) int {
 	this.d = append(this.d, v)
 	return this.Len()
 }
 
 //insert
-func (this *GOGPGlobalNamePrefixSortSlice) Insert(v *GOGPGlobalNamePrefixTreeNode, idx int) int {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Insert(v *GOGPGlobalNamePrefixTreeNode, idx int) int {
 	if idx >= 0 && idx < this.Len() {
 		right := this.d[idx+1:]
 		this.d = append(this.d[:idx], v)
@@ -192,7 +192,7 @@ func (this *GOGPGlobalNamePrefixSortSlice) Insert(v *GOGPGlobalNamePrefixTreeNod
 }
 
 //remove
-func (this *GOGPGlobalNamePrefixSortSlice) Remove(idx int) (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Remove(idx int) (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
 	if r, ok = this.Get(idx); ok {
 		right := this.d[idx+1:]
 		this.d = append(this.d[:idx], right...)
@@ -201,7 +201,7 @@ func (this *GOGPGlobalNamePrefixSortSlice) Remove(idx int) (r *GOGPGlobalNamePre
 }
 
 //pop
-func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
 	if ok = len(this.d) > 0; ok {
 		r = (this.d)[len(this.d)-1]
 	}
@@ -210,7 +210,7 @@ func (this *GOGPGlobalNamePrefixSortSlice) Pop() (r *GOGPGlobalNamePrefixTreeNod
 }
 
 //get
-func (this *GOGPGlobalNamePrefixSortSlice) Get(idx int) (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Get(idx int) (r *GOGPGlobalNamePrefixTreeNode, ok bool) {
 	if ok = idx >= 0 && idx < this.Len(); ok {
 		r = this.d[idx]
 	}
@@ -218,7 +218,7 @@ func (this *GOGPGlobalNamePrefixSortSlice) Get(idx int) (r *GOGPGlobalNamePrefix
 }
 
 //must get
-func (this *GOGPGlobalNamePrefixSortSlice) MustGet(idx int) (r *GOGPGlobalNamePrefixTreeNode) {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) MustGet(idx int) (r *GOGPGlobalNamePrefixTreeNode) {
 	ok := false
 	if r, ok = this.Get(idx); !ok {
 		panic(idx)
@@ -227,18 +227,18 @@ func (this *GOGPGlobalNamePrefixSortSlice) MustGet(idx int) (r *GOGPGlobalNamePr
 }
 
 //len
-func (this *GOGPGlobalNamePrefixSortSlice) Len() int {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Len() int {
 	return len(this.d)
 }
 
 //sort by Hash decend,the larger one first
-func (this *GOGPGlobalNamePrefixSortSlice) Less(i, j int) (ok bool) {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Less(i, j int) (ok bool) {
 	l, r := (this.d)[i], (this.d)[j]
-	return gGOGPGlobalNamePrefixSortSliceGbl.cmp.F(l, r)
+	return gGOGPGlobalNamePrefixTreeNodeSortSliceGbl.cmp.F(l, r)
 }
 
 //swap
-func (this *GOGPGlobalNamePrefixSortSlice) Swap(i, j int) {
+func (this *GOGPGlobalNamePrefixTreeNodeSortSlice) Swap(i, j int) {
 	(this.d)[i], (this.d)[j] = (this.d)[j], (this.d)[i]
 }
 
@@ -259,15 +259,15 @@ func NewGOGPGlobalNamePrefixTree() *GOGPGlobalNamePrefixTree {
 
 //tree node
 type GOGPGlobalNamePrefixTreeNode struct {
-	GOGPValueType
+	val      GOGPValueType
 	children GOGPGlobalNamePrefixTreeNodeSortSlice
 }
 
 func (this *GOGPGlobalNamePrefixTreeNode) Less(right *GOGPGlobalNamePrefixTreeNode) (ok bool) {
 	//#GOGP_IFDEF GOGP_HasCmpFunc
-	ok = this.GOGPValueType.Less(right.GOGPValueType)
+	ok = this.val.Less(right.val)
 	//#GOGP_ELSE
-	ok = this.GOGPValueType < right.GOGPValueType
+	ok = this.val < right.val
 	//#GOGP_ENDIF
 	return
 }
@@ -282,7 +282,7 @@ func (this *GOGPGlobalNamePrefixTreeNode) Children() []*GOGPGlobalNamePrefixTree
 
 //add a child
 func (this *GOGPGlobalNamePrefixTreeNode) AddChild(v GOGPValueType, idx int) (child *GOGPGlobalNamePrefixTreeNode) {
-	n := &GOGPGlobalNamePrefixTreeNode{GOGPValueType: v}
+	n := &GOGPGlobalNamePrefixTreeNode{val: v}
 	return this.AddChildNode(n, idx)
 }
 
@@ -318,7 +318,7 @@ func (this *GOGPGlobalNamePrefixTreeNode) Visitor() (v *GOGPGlobalNamePrefixTree
 
 //get all node data
 func (this *GOGPGlobalNamePrefixTreeNode) All() (list []GOGPValueType) {
-	list = append(list, this.GOGPValueType)
+	list = append(list, this.val)
 	for _, v := range this.children.Buffer() {
 		list = append(list, v.All()...)
 	}
@@ -441,9 +441,9 @@ func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Prev() (ok bool) {
 }
 
 //get node data
-func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Get() (data *GOGPValueType) {
+func (this *GOGPGlobalNamePrefixTreeNodeVisitor) Get() (data GOGPValueType) {
 	if nil != this.node {
-		data = &this.node.GOGPValueType
+		data = this.node.val
 	}
 	return
 }
