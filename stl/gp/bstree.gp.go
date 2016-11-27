@@ -1,9 +1,11 @@
+//rbtree+map+set
+
 package gp
 
-//#GOGP_FILE_BEGIN
+//#GOGP_FILE_BEGIN 1
 //#GOGP_IGNORE_BEGIN ///gogp_file_begin
 //
-/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 // This is a fake go code file
@@ -141,12 +143,55 @@ type GOGPGlobalNamePrefixBSTree struct {
 	root *GOGPGlobalNamePrefixBSTreeNode
 }
 
-type GOGPGlobalNamePrefixBSTreeNode struct {
+type GOGPGlobalNamePrefixBSTreeNodeData struct {
 	key GOGPKeyType
-	//#GOGP_IFDEF GOGPValueType
-	value GOGPValueType
-	//#GOGP_END_IF
+	//#GOGP_IFDEF VALUE_TYPE
+	val GOGPValueType
+	//#GOGP_ENDIF
+}
+
+type GOGPGlobalNamePrefixBSTreeNode struct {
+	val  GOGPGlobalNamePrefixBSTreeNodeData
 	l, r *GOGPGlobalNamePrefixBSTreeNode
+	flag int8 //for rbtree or avl tree
+}
+
+type GOGPGlobalNamePrefixBSTreeVisitor struct {
+	node, root *GOGPGlobalNamePrefixBSTreeNode
+}
+
+func (this *GOGPGlobalNamePrefixBSTree) InsertEqual(key GOGPKeyType) *GOGPGlobalNamePrefixBSTreeNode {
+	return nil
+}
+func (this *GOGPGlobalNamePrefixBSTree) InsertUnique(key GOGPKeyType) *GOGPGlobalNamePrefixBSTreeNode {
+	return nil
+}
+
+func (this *GOGPGlobalNamePrefixBSTree) Insert(key GOGPKeyType) *GOGPGlobalNamePrefixBSTreeNode {
+	return nil
+}
+func (this *GOGPGlobalNamePrefixBSTree) Remove(key GOGPKeyType) *GOGPGlobalNamePrefixBSTreeNode {
+	return nil
+}
+
+func (this *GOGPGlobalNamePrefixBSTree) Find(key GOGPKeyType) *GOGPGlobalNamePrefixBSTreeNode {
+	return nil
+}
+func (this *GOGPGlobalNamePrefixBSTree) LowerBound(key GOGPKeyType) *GOGPGlobalNamePrefixBSTreeNode {
+	return nil
+}
+func (this *GOGPGlobalNamePrefixBSTree) UpperBound(key GOGPKeyType) *GOGPGlobalNamePrefixBSTreeNode {
+	return nil
+}
+func (this *GOGPGlobalNamePrefixBSTree) Root() *GOGPGlobalNamePrefixBSTreeNode {
+	return nil
+}
+
+func (this *GOGPGlobalNamePrefixBSTree) rbtreeAdjust() {
+	return
+}
+func (this *GOGPGlobalNamePrefixBSTree) avltreeAdjust() {
+	return
 }
 
 //#GOGP_FILE_END
