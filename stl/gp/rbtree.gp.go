@@ -2,48 +2,30 @@
 
 package gp
 
-//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile_BEGIN
-//
-//
-/*   //<----This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
-//	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
-//
-//
-// This is exactly not a real go code file
-// It is used to generate .gp file by gogp tool
-// Real go code file will be generated from .gp file
-//
-//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile
+//#GOGP_FILE_BEGIN
 
 //import here...
 
-//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPDummyDefine
-//
-//these defines is used to make sure this fake go file can be compiled correctlly
-//and they will be removed from real go files
-//
+//#GOGP_REQUIRE(github.com/vipally/gogp/lib/fakedef,_)
+//#GOGP_REQUIRE(github.com/vipally/gx/stl/gp/functorcmp)
 
-type GOGPRBTreeData int
+////////////////////////////////////////////////////////////////////////////////
 
-func (this GOGPRBTreeData) Less(o GOGPRBTreeData) bool {
-	return this < o
+type GOGPGlobalNamePrefixRBTreeNodeData struct {
 }
-
-//
-//#GOGP_IGNORE_END////////////////////////////////GOGPDummyDefine
 
 //list node
-type GOGPTreeNamePrefixRBTreeNode struct {
-	GOGPRBTreeData
-	left, right *GOGPTreeNamePrefixRBTreeNode
+type GOGPGlobalNamePrefixRBTreeNode struct {
+	val         GOGPGlobalNamePrefixRBTreeNodeData
+	left, right *GOGPGlobalNamePrefixRBTreeNode
 }
 
-func (this *GOGPTreeNamePrefixRBTreeNode) Get() *GOGPRBTreeData {
-	return &this.GOGPRBTreeData
+func (this *GOGPGlobalNamePrefixRBTreeNode) Get() *GOGPGlobalNamePrefixRBTreeNodeData {
+	return &this.val
 }
 
 type GOGPTreeNamePrefixRBTreeNodeVisitor struct {
-	node, head *GOGPTreeNamePrefixRBTreeNode
+	node, head *GOGPGlobalNamePrefixRBTreeNode
 }
 
 func (this *GOGPTreeNamePrefixRBTreeNodeVisitor) Next() bool {
@@ -52,13 +34,13 @@ func (this *GOGPTreeNamePrefixRBTreeNodeVisitor) Next() bool {
 func (this *GOGPTreeNamePrefixRBTreeNodeVisitor) Prev() bool {
 	return false
 }
-func (this *GOGPTreeNamePrefixRBTreeNodeVisitor) Node() *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTreeNodeVisitor) Node() *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
 
 //list object
 type GOGPTreeNamePrefixRBTree struct {
-	head *GOGPTreeNamePrefixRBTreeNode
+	head *GOGPGlobalNamePrefixRBTreeNode
 }
 
 //new object
@@ -69,37 +51,35 @@ func NewGOGPStackNamePrefixDList() *GOGPTreeNamePrefixRBTree {
 func (this *GOGPTreeNamePrefixRBTree) Size() int {
 	return 0
 }
-func (this *GOGPTreeNamePrefixRBTree) Visitor(node *GOGPTreeNamePrefixRBTreeNode) *GOGPTreeNamePrefixRBTreeNodeVisitor {
+func (this *GOGPTreeNamePrefixRBTree) Visitor(node *GOGPGlobalNamePrefixRBTreeNode) *GOGPTreeNamePrefixRBTreeNodeVisitor {
 	return nil
 }
-func (this *GOGPTreeNamePrefixRBTree) Begin() *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTree) Begin() *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
-func (this *GOGPTreeNamePrefixRBTree) End() *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTree) End() *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
-func (this *GOGPTreeNamePrefixRBTree) Clear() *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTree) Clear() *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
-func (this *GOGPTreeNamePrefixRBTree) Insert(d GOGPRBTreeData) *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTree) Insert(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
-func (this *GOGPTreeNamePrefixRBTree) Delete(d GOGPRBTreeData) *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTree) Delete(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
-func (this *GOGPTreeNamePrefixRBTree) Remove(n *GOGPTreeNamePrefixRBTreeNode) *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTree) Remove(n *GOGPGlobalNamePrefixRBTreeNode) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
-func (this *GOGPTreeNamePrefixRBTree) LowerBound(d GOGPRBTreeData) *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTree) LowerBound(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
-func (this *GOGPTreeNamePrefixRBTree) UpperBound(d GOGPRBTreeData) *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTree) UpperBound(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
-func (this *GOGPTreeNamePrefixRBTree) Find(d GOGPRBTreeData) *GOGPTreeNamePrefixRBTreeNode {
+func (this *GOGPTreeNamePrefixRBTree) Find(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
 
-//#GOGP_IGNORE_BEGIN//////////////////////////////GOGPCommentDummyGoFile
-//*/
-//#GOGP_IGNORE_END////////////////////////////////GOGPCommentDummyGoFile_END
+//#GOGP_FILE_END
