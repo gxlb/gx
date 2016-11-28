@@ -2,10 +2,10 @@
 
 package gp
 
-//#GOGP_FILE_BEGIN
+//#GOGP_FILE_BEGIN 1
 //#GOGP_IGNORE_BEGIN ///gogp_file_begin
 //
-/*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
+///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
 //	 //If test or change .gp file required, comment it to modify and cmomile as normal go file
 //
 // This is a fake go code file
@@ -198,9 +198,35 @@ func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Node() *GOGPGlobalNamePrefixR
 	return nil
 }
 
-func (this *GOGPGlobalNamePrefixRBTreeNode) rotateLeft(root **GOGPGlobalNamePrefixRBTreeNode) {
+func (this *GOGPGlobalNamePrefixRBTreeNode) rebalence(root **GOGPGlobalNamePrefixRBTreeNode) {
+	if this != nil && *root == this {
+	}
 }
+
+func (this *GOGPGlobalNamePrefixRBTreeNode) rotateLeft(root **GOGPGlobalNamePrefixRBTreeNode) {
+	if this != nil && *root == this {
+		y := this.right
+		if this.right = y.left; y.left != nil {
+			y.left.parent = this
+		}
+		y.parent = this.parent
+		*root = y
+		y.left = this
+		this.parent = y
+	}
+}
+
 func (this *GOGPGlobalNamePrefixRBTreeNode) rotateRight(root **GOGPGlobalNamePrefixRBTreeNode) {
+	if this != nil && *root == this {
+		y := this.left
+		if this.left = y.right; y.right != nil {
+			y.right.parent = this
+		}
+		y.parent = this.parent
+		*root = y
+		y.right = this
+		this.parent = y
+	}
 }
 
 //new object
