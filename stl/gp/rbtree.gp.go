@@ -143,15 +143,25 @@ func init() {
 type ColorType int8
 
 const (
-	RED ColorType = iota //default
-	BLACK
+	RBTREE_RED ColorType = iota //default
+	RBTREE_BLACK
 ) //
 //#GOGP_END_ONCE
 
 type GOGPGlobalNamePrefixRBTree struct {
-	root *GOGPGlobalNamePrefixRBTreeNode
-	size int
-	cmp  CmpGOGPGlobalNamePrefix
+	header GOGPGlobalNamePrefixRBTreeNode
+	size   int
+	cmp    CmpGOGPGlobalNamePrefix
+}
+
+func (this *GOGPGlobalNamePrefixRBTree) root() *GOGPGlobalNamePrefixRBTreeNode {
+	return this.header.parent
+}
+func (this *GOGPGlobalNamePrefixRBTree) topLeft() *GOGPGlobalNamePrefixRBTreeNode {
+	return this.header.left
+}
+func (this *GOGPGlobalNamePrefixRBTree) topRight() *GOGPGlobalNamePrefixRBTreeNode {
+	return this.header.right
 }
 
 type GOGPGlobalNamePrefixRBTreeNodeData struct {
@@ -178,7 +188,7 @@ type GOGPGlobalNamePrefixRBTreeNode struct {
 	color               ColorType
 }
 
-func (this *GOGPGlobalNamePrefixRBTree) Root() *GOGPGlobalNamePrefixRBTreeNode { return this.root }
+//func (this *GOGPGlobalNamePrefixRBTree) Root() *GOGPGlobalNamePrefixRBTreeNode { return this.root() }
 
 func (this *GOGPGlobalNamePrefixRBTreeNode) Get() *GOGPGlobalNamePrefixRBTreeNodeData {
 	return &this.val
@@ -194,7 +204,7 @@ func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Next() bool {
 func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Prev() bool {
 	return false
 }
-func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Node() *GOGPGlobalNamePrefixRBTreeNode {
+func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Get() *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
 
@@ -214,6 +224,21 @@ func (this *GOGPGlobalNamePrefixRBTreeNode) rotateLeft(root **GOGPGlobalNamePref
 		y.left = this
 		this.parent = y
 	}
+}
+
+func (this *GOGPGlobalNamePrefixRBTreeNode) topLeft(n *GOGPGlobalNamePrefixRBTreeNode) {
+	if this != nil {
+		for n = this; n.left != nil; n = n.left { //body do nothing
+		}
+	}
+	return
+}
+func (this *GOGPGlobalNamePrefixRBTreeNode) topRight(n *GOGPGlobalNamePrefixRBTreeNode) {
+	if this != nil {
+		for n = this; n.right != nil; n = n.right { //body do nothing
+		}
+	}
+	return
 }
 
 func (this *GOGPGlobalNamePrefixRBTreeNode) rotateRight(root **GOGPGlobalNamePrefixRBTreeNode) {
@@ -242,7 +267,7 @@ func (this *GOGPGlobalNamePrefixRBTree) insertEqual(d GOGPGlobalNamePrefixRBTree
 }
 
 func (this *GOGPGlobalNamePrefixRBTree) Size() int {
-	return 0
+	return this.size
 }
 func (this *GOGPGlobalNamePrefixRBTree) Visitor(node *GOGPGlobalNamePrefixRBTreeNode) *GOGPGlobalNamePrefixRBTreeNodeVisitor {
 	return nil
@@ -271,8 +296,19 @@ func (this *GOGPGlobalNamePrefixRBTree) LowerBound(d GOGPGlobalNamePrefixRBTreeN
 func (this *GOGPGlobalNamePrefixRBTree) UpperBound(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
-func (this *GOGPGlobalNamePrefixRBTree) Find(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
-	return nil
+func (this *GOGPGlobalNamePrefixRBTree) Find(key GOGPKeyType) (r *GOGPGlobalNamePrefixRBTreeNode) {
+	var y *GOGPGlobalNamePrefixRBTreeNode = nil
+	for n := this.root(); n != nil; {
+		if !this.cmp.F(n.val.key, key) {
+			y, n = n, n.left
+		} else {
+			n = n.right
+		}
+	}
+	if y != nil && !this.cmp.F(key, y.val.key) {
+		r = y
+	}
+	return
 }
 
 //#GOGP_FILE_END
