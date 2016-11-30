@@ -131,13 +131,13 @@ func (me CmpGOGPGlobalNamePrefix) great(left, right GOGPKeyType) (ok bool) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-var gGOGPGlobalNamePrefixRBTreeGbl struct {
-	cmp CmpGOGPGlobalNamePrefix
-}
+//var gGOGPGlobalNamePrefixRBTreeGbl struct {
+//	cmp CmpGOGPGlobalNamePrefix
+//}
 
-func init() {
-	gGOGPGlobalNamePrefixRBTreeGbl.cmp = gGOGPGlobalNamePrefixRBTreeGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
-}
+//func init() {
+//	gGOGPGlobalNamePrefixRBTreeGbl.cmp = gGOGPGlobalNamePrefixRBTreeGbl.cmp.CreateByName("#GOGP_GPGCFG(GOGP_DefaultCmpType)")
+//}
 
 //#GOGP_ONCE
 type ColorType int8
@@ -201,9 +201,11 @@ type GOGPGlobalNamePrefixRBTreeNodeVisitor struct {
 func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Next() bool {
 	return false
 }
+
 func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Prev() bool {
 	return false
 }
+
 func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Get() *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
@@ -233,6 +235,7 @@ func (this *GOGPGlobalNamePrefixRBTreeNode) topLeft(n *GOGPGlobalNamePrefixRBTre
 	}
 	return
 }
+
 func (this *GOGPGlobalNamePrefixRBTreeNode) topRight(n *GOGPGlobalNamePrefixRBTreeNode) {
 	if this != nil {
 		for n = this; n.right != nil; n = n.right { //body do nothing
@@ -259,9 +262,19 @@ func NewGOGPGlobalNamePrefixRBTree() *GOGPGlobalNamePrefixRBTree {
 	return &GOGPGlobalNamePrefixRBTree{}
 }
 
+func (this *GOGPGlobalNamePrefixRBTree) Init(bigFirst bool) {
+	this.header.parent = nil
+	this.header.left = nil
+	this.header.right = nil
+	this.header.color = RBTREE_RED
+	this.size = 0
+	this.cmp.CreateByBool(bigFirst)
+}
+
 func (this *GOGPGlobalNamePrefixRBTree) insertUnique(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
+
 func (this *GOGPGlobalNamePrefixRBTree) insertEqual(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
@@ -269,33 +282,47 @@ func (this *GOGPGlobalNamePrefixRBTree) insertEqual(d GOGPGlobalNamePrefixRBTree
 func (this *GOGPGlobalNamePrefixRBTree) Size() int {
 	return this.size
 }
+
+func (this *GOGPGlobalNamePrefixRBTree) Empty() bool {
+	return this.root() == nil
+}
+
 func (this *GOGPGlobalNamePrefixRBTree) Visitor(node *GOGPGlobalNamePrefixRBTreeNode) *GOGPGlobalNamePrefixRBTreeNodeVisitor {
 	return nil
 }
+
 func (this *GOGPGlobalNamePrefixRBTree) Begin() *GOGPGlobalNamePrefixRBTreeNode {
-	return nil
+	return this.topLeft()
 }
+
 func (this *GOGPGlobalNamePrefixRBTree) End() *GOGPGlobalNamePrefixRBTreeNode {
-	return nil
+	return &this.header
 }
-func (this *GOGPGlobalNamePrefixRBTree) Clear() *GOGPGlobalNamePrefixRBTreeNode {
-	return nil
+
+func (this *GOGPGlobalNamePrefixRBTree) Clear() {
+	this.Init(this.cmp == CMPGreater)
 }
+
 func (this *GOGPGlobalNamePrefixRBTree) Insert(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
+
 func (this *GOGPGlobalNamePrefixRBTree) Remove(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
+
 func (this *GOGPGlobalNamePrefixRBTree) Erase(n *GOGPGlobalNamePrefixRBTreeNode) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
+
 func (this *GOGPGlobalNamePrefixRBTree) LowerBound(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
+
 func (this *GOGPGlobalNamePrefixRBTree) UpperBound(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
+
 func (this *GOGPGlobalNamePrefixRBTree) Find(key GOGPKeyType) (r *GOGPGlobalNamePrefixRBTreeNode) {
 	var y *GOGPGlobalNamePrefixRBTreeNode = nil
 	for n := this.root(); n != nil; {
