@@ -215,19 +215,6 @@ func (this *GOGPGlobalNamePrefixRBTreeNode) rebalence(root **GOGPGlobalNamePrefi
 	}
 }
 
-func (this *GOGPGlobalNamePrefixRBTreeNode) rotateLeft(root **GOGPGlobalNamePrefixRBTreeNode) {
-	if this != nil && *root == this {
-		y := this.right
-		if this.right = y.left; y.left != nil {
-			y.left.parent = this
-		}
-		y.parent = this.parent
-		*root = y
-		y.left = this
-		this.parent = y
-	}
-}
-
 func (this *GOGPGlobalNamePrefixRBTreeNode) topLeft(n *GOGPGlobalNamePrefixRBTreeNode) {
 	if this != nil {
 		for n = this; n.left != nil; n = n.left { //body do nothing
@@ -242,6 +229,19 @@ func (this *GOGPGlobalNamePrefixRBTreeNode) topRight(n *GOGPGlobalNamePrefixRBTr
 		}
 	}
 	return
+}
+
+func (this *GOGPGlobalNamePrefixRBTreeNode) rotateLeft(root **GOGPGlobalNamePrefixRBTreeNode) {
+	if this != nil && *root == this {
+		y := this.right
+		if this.right = y.left; y.left != nil {
+			y.left.parent = this
+		}
+		y.parent = this.parent
+		*root = y
+		y.left = this
+		this.parent = y
+	}
 }
 
 func (this *GOGPGlobalNamePrefixRBTreeNode) rotateRight(root **GOGPGlobalNamePrefixRBTreeNode) {
