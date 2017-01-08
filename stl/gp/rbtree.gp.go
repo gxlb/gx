@@ -207,7 +207,7 @@ func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Prev() bool {
 }
 
 func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Get() *GOGPGlobalNamePrefixRBTreeNode {
-	return nil
+	return this.node
 }
 
 func (this *GOGPGlobalNamePrefixRBTreeNode) rebalence(root **GOGPGlobalNamePrefixRBTreeNode) {
