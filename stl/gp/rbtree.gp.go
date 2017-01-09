@@ -272,10 +272,34 @@ func (this *GOGPGlobalNamePrefixRBTree) Init(bigFirst bool) {
 }
 
 func (this *GOGPGlobalNamePrefixRBTree) insertUnique(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
-	return nil
+	x, y, comp := this.root(), &this.header, true
+	for x != nil {
+		y = x
+		comp = this.cmp.F(d.key, x.val.key)
+		if comp {
+			x = x.left
+		} else {
+			x = x.right
+		}
+	}
+	//todo
+	return this.insert(x, y, d)
 }
 
 func (this *GOGPGlobalNamePrefixRBTree) insertEqual(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
+	x, y := this.root(), &this.header
+	for x != nil {
+		y = x
+		if this.cmp.F(d.key, x.val.key) {
+			x = x.left
+		} else {
+			x = x.right
+		}
+	}
+	return this.insert(x, y, d)
+}
+
+func (this *GOGPGlobalNamePrefixRBTree) insert(x, y *GOGPGlobalNamePrefixRBTreeNode, d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
 	return nil
 }
 
