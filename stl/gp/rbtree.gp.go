@@ -154,6 +154,12 @@ type GOGPGlobalNamePrefixRBTree struct {
 	cmp    CmpGOGPGlobalNamePrefix
 }
 
+func (this *GOGPGlobalNamePrefixRBTree) createNode(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
+	r := &GOGPGlobalNamePrefixRBTreeNode{}
+	r.val = d
+	return r
+}
+
 func (this *GOGPGlobalNamePrefixRBTree) root() *GOGPGlobalNamePrefixRBTreeNode {
 	return this.header.parent
 }
@@ -212,6 +218,7 @@ func (this *GOGPGlobalNamePrefixRBTreeNodeVisitor) Get() *GOGPGlobalNamePrefixRB
 
 func (this *GOGPGlobalNamePrefixRBTreeNode) rebalence(root **GOGPGlobalNamePrefixRBTreeNode) {
 	if this != nil && *root == this {
+		this.color = RBTREE_RED
 	}
 }
 
@@ -319,8 +326,17 @@ func (this *GOGPGlobalNamePrefixRBTree) insertUnique(d GOGPGlobalNamePrefixRBTre
 			x = x.right
 		}
 	}
-	//todo
-	return this.insert(x, y, d)
+	if comp {
+		if y == this.topLeft() {
+			return this.insert(x, y, d)
+		} else {
+			y = y.prev()
+		}
+	}
+	if this.cmp.F(y.val.key, d.key) {
+		return this.insert(x, y, d)
+	}
+	return nil
 }
 
 func (this *GOGPGlobalNamePrefixRBTree) insertEqual(d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
@@ -336,8 +352,27 @@ func (this *GOGPGlobalNamePrefixRBTree) insertEqual(d GOGPGlobalNamePrefixRBTree
 	return this.insert(x, y, d)
 }
 
-func (this *GOGPGlobalNamePrefixRBTree) insert(x, y *GOGPGlobalNamePrefixRBTreeNode, d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
-	return nil
+func (this *GOGPGlobalNamePrefixRBTree) insert(_x, _y *GOGPGlobalNamePrefixRBTreeNode, d GOGPGlobalNamePrefixRBTreeNodeData) *GOGPGlobalNamePrefixRBTreeNode {
+	x, y, z := _x, _y, this.createNode(d)
+	if y == &this.header || x != nil || this.cmp.F(d.key, y.val.key) {
+		y.left = z
+		if y == &this.header {
+			this.header.parent = z
+			this.header.right = z
+		} else if y == this.header.left {
+			this.header.left = z
+		}
+	} else {
+		y.right = z
+		if y == this.header.right {
+			this.header.right = z
+		}
+	}
+	z.parent = y
+	z.left, z.right = nil, nil
+	z.rebalence(&this.header.parent)
+	this.size++
+	return z
 }
 
 func (this *GOGPGlobalNamePrefixRBTree) Size() int {
