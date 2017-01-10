@@ -215,7 +215,7 @@ func (this *GOGPGlobalNamePrefixRBTreeNode) rebalence(root **GOGPGlobalNamePrefi
 	}
 }
 
-func (this *GOGPGlobalNamePrefixRBTreeNode) topLeft(n *GOGPGlobalNamePrefixRBTreeNode) {
+func (this *GOGPGlobalNamePrefixRBTreeNode) topLeft() (n *GOGPGlobalNamePrefixRBTreeNode) {
 	if this != nil {
 		for n = this; n.left != nil; n = n.left { //body do nothing
 		}
@@ -223,9 +223,46 @@ func (this *GOGPGlobalNamePrefixRBTreeNode) topLeft(n *GOGPGlobalNamePrefixRBTre
 	return
 }
 
-func (this *GOGPGlobalNamePrefixRBTreeNode) topRight(n *GOGPGlobalNamePrefixRBTreeNode) {
+func (this *GOGPGlobalNamePrefixRBTreeNode) topRight() (n *GOGPGlobalNamePrefixRBTreeNode) {
 	if this != nil {
 		for n = this; n.right != nil; n = n.right { //body do nothing
+		}
+	}
+	return
+}
+
+//next node
+func (this *GOGPGlobalNamePrefixRBTreeNode) next() (n *GOGPGlobalNamePrefixRBTreeNode) {
+	if this != nil {
+		if this.right != nil {
+			n = this.right.topLeft()
+		} else {
+			x, y := this, this.parent
+			for x == y.right {
+				x, y = y, y.parent
+			}
+			if x.right != y { //x is not header
+				x = y
+			}
+			n = x
+		}
+	}
+	return
+}
+
+//prev node
+func (this *GOGPGlobalNamePrefixRBTreeNode) prev() (n *GOGPGlobalNamePrefixRBTreeNode) {
+	if this != nil {
+		if this.color == RBTREE_RED && this.parent == this { //this is header
+			n = this.right
+		} else if this.left != nil {
+			n = this.left.topRight()
+		} else {
+			x, y := this, this.parent
+			for x == y.left {
+				x, y = y, y.parent
+			}
+			n = y
 		}
 	}
 	return
