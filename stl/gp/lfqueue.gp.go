@@ -45,35 +45,72 @@ func (this *GOGPGlobalNamePrefixLFQueue) makeNode(v GOGPValueType) (n *GOGPGloba
 func (this *GOGPGlobalNamePrefixLFQueue) PushFront(v GOGPValueType) bool {
 	n := this.makeNode(v)
 	p := unsafe.Pointer(n)
-	if atomic.LoadPointer(&this.tail) == nil {
-		atomic.StorePointer(&this.tail, p)
-	}
 	for {
 		n.next = atomic.LoadPointer(&this.head.next)
 		if atomic.CompareAndSwapPointer(&this.head.next, n.next, p) {
 			break
 		}
 	}
+	if atomic.LoadPointer(&this.tail) == nil {
+		atomic.StorePointer(&this.tail, p)
+	}
 	atomic.AddInt32(&this.size, 1)
 	return true
 }
 
 func (this *GOGPGlobalNamePrefixLFQueue) PushBack(v GOGPValueType) bool {
-	//	n := this.makeNode(v)
-	//	for {
-	//		t := atomic.LoadPointer(&this.tail)
-	//		if t == nil {
-	//		}
-	//	}
+	n := this.makeNode(v)
+	p := unsafe.Pointer(n)
+	for {
+		t := atomic.LoadPointer(&this.tail)
+		if t == nil {
+			atomic.CompareAndSwapPointer(&this.tail, nil, p)
+			if atomic.CompareAndSwapPointer(&this.head.next, nil, p) {
+				break
+			}
+		} else {
+			tt := (*GOGPGlobalNamePrefixLFQueueNode)(t)
+			if atomic.CompareAndSwapPointer(&this.tail, t, p) {
+				tt.next = p
+				break
+			}
+		}
+	}
+	atomic.AddInt32(&this.size, 1)
 	return true
 }
 
 func (this *GOGPGlobalNamePrefixLFQueue) PopFront() (v GOGPValueType, ok bool) {
+	for {
+		t := atomic.LoadPointer(&this.head.next)
+		if t == nil {
+			break
+		} else {
+			n := (*GOGPGlobalNamePrefixLFQueueNode)(t)
+			next := n.next
+			if atomic.CompareAndSwapPointer(&this.head.next, t, next) {
+				v, ok = n.val, true
+				for {
+					n.next = atomic.LoadPointer(&this.free)
+					if atomic.CompareAndSwapPointer(&this.free, n.next, t) {
+						break
+					}
+				}
+				break
+			}
+		}
+	}
+	atomic.AddInt32(&this.size, -1)
 	return
 }
 
-func (this *GOGPGlobalNamePrefixLFQueue) ClearFree() {
+func (this *GOGPGlobalNamePrefixLFQueue) Clear() {
+	atomic.StorePointer(&this.head.next, nil)
+	atomic.StorePointer(&this.tail, nil)
+}
 
+func (this *GOGPGlobalNamePrefixLFQueue) ClearFree() {
+	atomic.StorePointer(&this.free, nil)
 }
 
 //func (this *GOGPGlobalNamePrefixLFQueue) PopBack() (v GOGPValueType, ok bool)  { return }
