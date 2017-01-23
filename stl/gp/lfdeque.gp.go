@@ -44,6 +44,7 @@ type GOGPGlobalNamePrefixLFDeque struct {
 	//tail point to the first space available for write
 	//headtail=tai<<32 + head
 	headtail uint64
+	busy     uint64
 	d        []GOGPValueType
 }
 
@@ -77,9 +78,10 @@ func (this *GOGPGlobalNamePrefixLFDeque) newBuf(bufSize int32) {
 //clear all deque data
 func (this *GOGPGlobalNamePrefixLFDeque) Clear() {
 	atomic.StoreUint64(&this.headtail, 0)
+	this.busy = 0
 }
 
-//push to front of deque
+//push to front of deque, maybe block when busy
 func (this *GOGPGlobalNamePrefixLFDeque) PushFront(v GOGPValueType) (ok bool) {
 	if ok = true; ok {
 		if nil == this.d { //init if needed
@@ -89,8 +91,9 @@ func (this *GOGPGlobalNamePrefixLFDeque) PushFront(v GOGPValueType) (ok bool) {
 		for {
 			head, tail, headtail := this.headTail()
 			head = this.prev(head)
-			if head == tail {
-				time.Sleep(time.Microsecond)
+			if head == tail { //buffer full, wait
+				atomic.AddUint64(&this.busy, 1)
+				time.Sleep(time.Millisecond)
 				continue
 			}
 			this.d[head] = v
@@ -103,7 +106,7 @@ func (this *GOGPGlobalNamePrefixLFDeque) PushFront(v GOGPValueType) (ok bool) {
 	return true
 }
 
-//push to back of deque
+//push to back of deque, maybe block when busy
 func (this *GOGPGlobalNamePrefixLFDeque) PushBack(v GOGPValueType) (ok bool) {
 	if ok = true; ok {
 		if nil == this.d { //init if needed
@@ -113,8 +116,9 @@ func (this *GOGPGlobalNamePrefixLFDeque) PushBack(v GOGPValueType) (ok bool) {
 		for {
 			head, tail, headtail := this.headTail()
 			tailNext := this.next(tail)
-			if head == tailNext {
-				time.Sleep(time.Microsecond)
+			if head == tailNext { //buffer full, wait
+				atomic.AddUint64(&this.busy, 1)
+				time.Sleep(time.Millisecond)
 				continue
 			}
 			this.d[tail] = v
@@ -175,6 +179,10 @@ func (this *GOGPGlobalNamePrefixLFDeque) Size() (size uint32) {
 		size = this.Cap() - (head - tail)
 	}
 	return
+}
+
+func (this *GOGPGlobalNamePrefixLFDeque) Busy() uint64 {
+	return atomic.LoadUint64(&this.busy)
 }
 
 //if deque is empty
