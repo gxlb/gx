@@ -14,7 +14,6 @@ package gp
 
 import (
 	"sync/atomic"
-	"unsafe"
 )
 
 //#GOGP_REQUIRE(github.com/vipally/gogp/lib/fakedef,_)
@@ -28,6 +27,12 @@ func (this GOGPValueType) Less(o GOGPValueType) bool { return this < o }
 func (this GOGPValueType) Show() string              { return "" } //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#GOGP_IGNORE_END //required from(github.com/vipally/gogp/lib/fakedef)
+
+//#GOGP_ONCE
+const (
+	defaultLFDequeCap = 8
+) //
+//#GOGP_END_ONCE
 
 //deque object
 type GOGPGlobalNamePrefixLFDeque struct {
@@ -52,7 +57,7 @@ func NewGOGPDequeNamePrefixLFDeque(bufSize int32) *GOGPGlobalNamePrefixLFDeque {
 func (this *GOGPGlobalNamePrefixLFDeque) Init(bufSize int32) {
 	if nil == this.d {
 		if bufSize <= 0 {
-			bufSize = 8 //default buffer size
+			bufSize = defaultLFDequeCap //default buffer size
 		}
 		this.newBuf(bufSize)
 	}
@@ -70,7 +75,7 @@ func (this *GOGPGlobalNamePrefixLFDeque) newBuf(bufSize int32) {
 
 //clear all deque data
 func (this *GOGPGlobalNamePrefixLFDeque) Clear() {
-	atomic.StoreInt64((*int64)(unsafe.Pointer(&this.head)), 0)
+	atomic.StoreUint64(&this.headtail, 0)
 }
 
 //push to front of deque
@@ -80,16 +85,16 @@ func (this *GOGPGlobalNamePrefixLFDeque) PushFront(v GOGPValueType) (ok bool) {
 			this.Init(-1)
 		}
 
-		this.head = this.prev(this.head) //move head to prev empty space
-		this.d[this.head] = v
-		if this.head == this.tail { //head reaches tail, buffer full
-			oldCap := this.Cap()
-			d := this.d
-			this.newBuf(oldCap * 2)
-			h := copy(this.d, d[this.head:])
-			t := copy(this.d[:h], d[:this.tail])
-			this.head, this.tail = 0, int32(h+t)
-		}
+		//		this.head = this.prev(this.head) //move head to prev empty space
+		//		this.d[this.head] = v
+		//		if this.head == this.tail { //head reaches tail, buffer full
+		//			oldCap := this.Cap()
+		//			d := this.d
+		//			this.newBuf(oldCap * 2)
+		//			h := copy(this.d, d[this.head:])
+		//			t := copy(this.d[:h], d[:this.tail])
+		//			this.head, this.tail = 0, int32(h+t)
+		//		}
 	}
 	return
 }
@@ -101,49 +106,50 @@ func (this *GOGPGlobalNamePrefixLFDeque) PushBack(v GOGPValueType) (ok bool) {
 			this.Init(-1)
 		}
 
-		this.d[this.tail] = v
-		this.tail = this.next(this.tail)
-		if this.tail == this.head { //tail catches up head, buffer full
-			oldCap := this.Cap()
-			d := this.d
-			this.newBuf(oldCap * 2)
-			h := copy(this.d, d[this.head:])
-			t := copy(this.d[:h], d[:this.tail])
-			this.head, this.tail = 0, int32(h+t)
-		}
+		//		this.d[this.tail] = v
+		//		this.tail = this.next(this.tail)
+		//		if this.tail == this.head { //tail catches up head, buffer full
+		//			oldCap := this.Cap()
+		//			d := this.d
+		//			this.newBuf(oldCap * 2)
+		//			h := copy(this.d, d[this.head:])
+		//			t := copy(this.d[:h], d[:this.tail])
+		//			this.head, this.tail = 0, int32(h+t)
+		//		}
 	}
 	return
 }
 
 //pop front of deque
 func (this *GOGPGlobalNamePrefixLFDeque) PopFront() (front GOGPValueType, ok bool) {
-	if ok = this.head != this.tail; ok {
-		front = this.d[this.head]
-		this.head = this.next(this.head)
-	}
+	//	if ok = this.head != this.tail; ok {
+	//		front = this.d[this.head]
+	//		this.head = this.next(this.head)
+	//	}
 	return
 }
 
 //pop back of deque
 func (this *GOGPGlobalNamePrefixLFDeque) PopBack() (back GOGPValueType, ok bool) {
-	if ok = this.head != this.tail; ok {
-		this.tail = this.prev(this.tail)
-		back = this.d[this.tail]
-	}
+	//	if ok = this.head != this.tail; ok {
+	//		this.tail = this.prev(this.tail)
+	//		back = this.d[this.tail]
+	//	}
 	return
 }
 
 //data buffer size
-func (this *GOGPGlobalNamePrefixLFDeque) Cap() int32 {
-	return int32(len(this.d))
+func (this *GOGPGlobalNamePrefixLFDeque) Cap() uint32 {
+	return uint32(len(this.d))
 }
 
 //size of deque
-func (this *GOGPGlobalNamePrefixLFDeque) Size() (size int32) {
-	if this.tail >= this.head {
-		size = this.tail - this.head
+func (this *GOGPGlobalNamePrefixLFDeque) Size() (size uint32) {
+	head, tail := this.headTail()
+	if tail >= head {
+		size = tail - head
 	} else {
-		size = this.Cap() - (this.head - this.tail)
+		size = this.Cap() - (head - tail)
 	}
 	return
 }
@@ -153,8 +159,22 @@ func (this *GOGPGlobalNamePrefixLFDeque) Empty() bool {
 	return this.Size() == 0
 }
 
+func (this *GOGPGlobalNamePrefixLFDeque) headTail() (head, tail uint32) {
+	headtail := atomic.LoadUint64(&this.headtail)
+	head = uint32(headtail & 0xFFFFFFFF)
+	tail = uint32((headtail >> 8) & 0xFFFFFFFF)
+	return
+}
+
+func (this *GOGPGlobalNamePrefixLFDeque) makeHeadTail(head, tail uint32) {
+	headtail := atomic.LoadUint64(&this.headtail)
+	head = uint32(headtail & 0xFFFFFFFF)
+	tail = uint32((headtail >> 8) & 0xFFFFFFFF)
+	return
+}
+
 //next buff
-func (this *GOGPGlobalNamePrefixLFDeque) next(idx int32) (r int32) {
+func (this *GOGPGlobalNamePrefixLFDeque) next(idx uint32) (r uint32) {
 	if r = idx + 1; r >= this.Cap() {
 		r = 0
 	}
@@ -162,7 +182,7 @@ func (this *GOGPGlobalNamePrefixLFDeque) next(idx int32) (r int32) {
 }
 
 //prev buff
-func (this *GOGPGlobalNamePrefixLFDeque) prev(idx int32) (r int32) {
+func (this *GOGPGlobalNamePrefixLFDeque) prev(idx uint32) (r uint32) {
 	if r = idx - 1; r < 0 {
 		r = this.Cap() - 1
 	}
