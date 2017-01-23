@@ -1,6 +1,6 @@
 package gp
 
-//#GOGP_FILE_BEGIN 1
+//#GOGP_FILE_BEGIN
 //#GOGP_IGNORE_BEGIN ///gogp_file_begin
 //
 ///*   //This line can be uncommented to disable all this file, and it doesn't effect to the .gp file
