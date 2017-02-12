@@ -36,9 +36,8 @@ type GOGPGlobalNamePrefixDeque struct {
 	//so if tail<head, data is [head, end, 0, tail)
 	//head point to the first elem  available for read
 	//tail point to the first space available for write
-	head int
-	tail int
-	d    []GOGPValueType
+	head, tail int
+	d          []GOGPValueType
 }
 
 //new object
