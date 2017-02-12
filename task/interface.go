@@ -1,5 +1,5 @@
-package tasks
+package task
 
 type Executer interface {
-	Execute() int
+	Execute() bool
 }
