@@ -5,7 +5,7 @@ import (
 )
 
 var taskSys struct {
-	a int
+	run bool
 }
 
 type TaskSysStatus struct {
@@ -24,3 +24,17 @@ type TaskSysStatus struct {
 	AvgListLen float32
 	TotalTime  time.Duration
 }
+
+func Start() {
+
+}
+
+func Stop() {
+
+}
+
+func PushTask() {
+
+}
+
+func workerFunc() {}
