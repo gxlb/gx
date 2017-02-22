@@ -6,6 +6,7 @@ import (
 
 var taskSys struct {
 	run bool
+	ch  chan bool
 }
 
 type TaskSysStatus struct {
