@@ -16,6 +16,7 @@ const (
 
 //refer http://lmax-exchange.github.io/disruptor/
 //RingBuffer object
+//Thread-safe, Use atomic algorithm to avoid Mutex lock
 type GOGPGlobalNamePrefixRingBuffer struct {
 	//real data is [head,tail)
 	//buffer d is cycle, that is to say, next(len(d)-1)=0, prev(0)=len(d)-1
@@ -55,10 +56,35 @@ func (this *GOGPGlobalNamePrefixRingBuffer) newBuf(bufSize int) {
 	}
 }
 
-//push to front of deque, maybe block when busy
-//func (this *GOGPGlobalNamePrefixRingBuffer) PushFront(v GOGPValueType) (ok bool) { return }
+//push to back of deque, will block when full
+func (this *GOGPGlobalNamePrefixRingBuffer) MustPush(v GOGPValueType) (ok bool) {
+	tail_r := atomic.AddUint64(&this.tail_r, 1)
+	old := tail_r - 1
+	for tail_r > atomic.LoadUint64(&this.head)+this.mask+1 { //wait while full, body do nothing
+	}
 
-//push to back of deque, maybe block when busy
+	idx := old & this.mask
+	this.d[idx], ok = v, true
+	for !atomic.CompareAndSwapUint64(&this.tail, old, tail_r) { //body do nothing
+	}
+	return
+}
+
+//pop front of deque, will block when empty
+func (this *GOGPGlobalNamePrefixRingBuffer) MustPop() (val GOGPValueType, ok bool) {
+	head_r := atomic.AddUint64(&this.head_r, 1)
+	old := head_r - 1
+	for old >= atomic.LoadUint64(&this.tail) { //wait while empty, body do nothing
+	}
+
+	idx := old & this.mask
+	val, ok = this.d[idx], true
+	for !atomic.CompareAndSwapUint64(&this.head, old, head_r) { //body do nothing
+	}
+	return
+}
+
+//push to back of deque, will return false when full
 func (this *GOGPGlobalNamePrefixRingBuffer) Push(v GOGPValueType) (ok bool) {
 	tail_r := atomic.AddUint64(&this.tail_r, 1)
 	idx := tail_r & this.mask
@@ -68,7 +94,7 @@ func (this *GOGPGlobalNamePrefixRingBuffer) Push(v GOGPValueType) (ok bool) {
 	return
 }
 
-//pop front of deque
+//pop front of deque, will return false when empty
 func (this *GOGPGlobalNamePrefixRingBuffer) Pop() (val GOGPValueType, ok bool) {
 	head_r := atomic.AddUint64(&this.head_r, 1)
 	idx := head_r & this.mask
