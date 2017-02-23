@@ -104,33 +104,24 @@ func (this *GOGPGlobalNamePrefixRingBuffer) Pop() (val GOGPValueType, ok bool) {
 	return
 }
 
-//pop back of deque
-//func (this *GOGPGlobalNamePrefixRingBuffer) PopBack() (back GOGPValueType, ok bool) { return }
-
 //data buffer size
 func (this *GOGPGlobalNamePrefixRingBuffer) Cap() uint32 {
 	return uint32(len(this.d))
 }
 
-////size of deque
-//func (this *GOGPGlobalNamePrefixRingBuffer) Size() (size uint32) {
-//	head, tail, _ := this.headTail()
-//	if tail >= head {
-//		size = tail - head
-//	} else {
-//		size = this.Cap() - (head - tail)
-//	}
-//	return
-//}
+//size of queue
+func (this *GOGPGlobalNamePrefixRingBuffer) Size() (size int) {
+	return int(atomic.LoadUint64(&this.tail) - atomic.LoadUint64(&this.head))
+}
 
 //Busy returns how many times Push when busy
 func (this *GOGPGlobalNamePrefixRingBuffer) Busy() uint64 {
 	return atomic.LoadUint64(&this.busy)
 }
 
-////if deque is empty
-//func (this *GOGPGlobalNamePrefixRingBuffer) Empty() bool {
-//	return this.Size() == 0
-//}
+//if queue is empty
+func (this *GOGPGlobalNamePrefixRingBuffer) Empty() bool {
+	return this.Size() == 0
+}
 
 //#GOGP_FILE_END
