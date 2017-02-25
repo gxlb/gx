@@ -1,0 +1,3 @@
+package debug
+
+func Log() {}
