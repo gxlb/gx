@@ -27,6 +27,8 @@ func (me ListenerId) Get() uint32 {
 //Listener creater
 type Creater interface {
 	Create(listenerName string, listenerId ListenerId, handler Handler, filters ...interface{}) Listener
+	EventId() EventId  //
+	EventName() string //
 }
 
 //event listener
@@ -35,8 +37,6 @@ type Listener interface {
 
 	Filt(para ...interface{}) bool     //if Filt return true,the OnEvent will not be callback
 	OnEvent(para ...interface{}) error //event Callback func
-	EventId() EventId                  //
-	EventName() string                 //
 	ListenerId() ListenerId            //
 	ListenerName() string              //
 	IsEnable() bool                    //
