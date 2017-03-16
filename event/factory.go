@@ -1,15 +1,11 @@
 package event
 
-import (
-	"github.com/vipally/gx/event/eventbase"
-)
-
 //define an event
-func DefineEvent(id int, name string) eventbase.EventId {
+func DefineEvent(id int, name string) EventId {
 	return 0
 }
 
 //register an event creater
-func RegEvent(creater eventbase.Creater) error {
+func RegEvent(creater Creater) error {
 	return nil
 }

@@ -1,4 +1,4 @@
-package eventbase
+package event
 
 //event handler
 type Handler interface {
@@ -26,15 +26,14 @@ func (me ListenerId) Get() uint32 {
 
 //Listener creater
 type Creater interface {
-	Create(listenerName string, listenerId ListenerId, handler Handler, filters ...interface{}) Listener
-	EventId() EventId  //
-	EventName() string //
+	Create(listenerName string, listenerId ListenerId, handler Handler, filters ...interface{}) Listener //
+	EventId() EventId                                                                                    //
+	EventName() string                                                                                   //
 }
 
 //event listener
 type Listener interface {
-	Creater //Listener must create itself
-
+	Creater                            //Listener must create itself
 	Filt(para ...interface{}) bool     //if Filt return true,the OnEvent will not be callback
 	OnEvent(para ...interface{}) error //event Callback func
 	ListenerId() ListenerId            //
