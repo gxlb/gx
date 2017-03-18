@@ -14,12 +14,6 @@ const (
 	MaxRef = 100000
 )
 
-type ErrorId int
-type WithIdError interface {
-	error
-	Id() ErrorId
-}
-
 type ErrMgr struct {
 	id2Obj map[ErrorId]*ErrorDef
 }
@@ -29,13 +23,14 @@ type ErrorDef struct {
 	id      ErrorId
 	ref     int
 }
-type ErrorObjRaw struct {
-	id ErrorId
-}
-type ErrorObj struct {
-	ErrorObjRaw
-	para []interface{}
-}
+
+//type ErrorObjRaw struct {
+//	id ErrorId
+//}
+//type ErrorObj struct {
+//	ErrorObjRaw
+//	para []interface{}
+//}
 
 //func (this *ErrorObj) Clone(para ...interface{}) *ErrorObj {
 //	return &ErrorObj{id: this.ErrorObjRaw.id, para: para}
