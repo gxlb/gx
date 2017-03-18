@@ -16,7 +16,7 @@ type ErrorObj struct {
 }
 
 //regist an error
-func Regist(moduleId uint16, name, content string, handle Handler) ErrorId {
+func Reg(moduleId uint16, name, content string, handle Handler) ErrorId {
 	return 0
 }
 
@@ -25,7 +25,7 @@ type ErrorInfo struct {
 	name    string
 	id      ErrorId
 	ref     int
-	Objs    []Error
+	Objs    []ErrorObj
 }
 
 type Handler byte

@@ -32,11 +32,11 @@ func (this *GOGPGlobalNamePrefixFactory) GetCreaterByName(name string) (creater 
 	return
 }
 
-func (this *GOGPGlobalNamePrefixFactory) CreateById(id GOGPIdType) (product Product, ok bool) {
+func (this *GOGPGlobalNamePrefixFactory) CreateById(id GOGPIdType, GOGPPara GOGPParaType) (product Product, ok bool) {
 	return
 }
 
-func (this *GOGPGlobalNamePrefixFactory) CreateByName(name string) (product Product, ok bool) {
+func (this *GOGPGlobalNamePrefixFactory) CreateByName(name string, GOGPPara GOGPParaType) (product Product, ok bool) {
 	return
 }
 
