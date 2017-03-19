@@ -1,31 +1,26 @@
+//对象工厂 每个类型都包含一个Creator 对应的对象由相应的Creater生产 出来的对象都用interface{}表示
+//有了这个对象工厂 就可以通过配置预定义好的字符串 生成对应的对象了
+//像协议buff转协议对象这种活就都由这个factory承包了
+
+//实现工厂模式
 package factory
 
-//create load store
-type Creator interface {
-	Create() interface{}
+type Creater interface{ //Factory
+	Create(arg... interface{}) interface{}
 }
 
-var (
-	gMapCreator map[string]Creator
-	gMapId      map[int]string
+var(
+	g_factory = NewFactoryS()
 )
 
-func RegCreator(name string, creator Creator) {
 
+func AddCreater(typename string, creater Creater) error{
+	return g_factory.AddCreater(typename, creater)
+}
+func RemoveCreater(typename string) error{
+	return g_factory.RemoveCreater(typename)
 }
 
-//create by name
-func Create(name string) interface{} {
-	if v, ok := gMapCreator[name]; ok {
-		return v.Create()
-	}
-	return nil
-}
-
-//create by id
-func CreateById(id int) interface{} {
-	if v, ok := gMapId[id]; ok {
-		return Create(v)
-	}
-	return nil
+func Create(typename string, arg... interface{}) interface{}{
+	return g_factory.Create(typename, arg...)
 }
