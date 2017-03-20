@@ -38,6 +38,8 @@ type GOGPGlobalNamePrefixMapping struct {
 	reverse map[GOGPValueType]GOGPKeyType
 }
 
+type GOGPGlobalNamePrefixMappingIdType GOGPKeyType
+
 func NewGOGPGlobalNamePrefixMapping() *GOGPGlobalNamePrefixMapping {
 	p := &GOGPGlobalNamePrefixMapping{}
 	p.Init()
@@ -50,16 +52,18 @@ func (this *GOGPGlobalNamePrefixMapping) Init() {
 }
 
 //make mapping
-func (this *GOGPGlobalNamePrefixMapping) Insert(k GOGPKeyType, v GOGPValueType) error {
+func (this *GOGPGlobalNamePrefixMapping) Insert(k GOGPKeyType, v GOGPValueType) (id GOGPGlobalNamePrefixMappingIdType, err error) {
 	if _, ok := this.Find(k); ok {
-		return fmt.Errorf("dumplicate key : %#v", k)
+		err = fmt.Errorf("dumplicate key : %#v", k)
+		return
 	}
 	if _, ok := this.ReverseFind(v); ok {
-		return fmt.Errorf("dumplicate value : %#v", v)
+		err = fmt.Errorf("dumplicate value : %#v", v)
+		return
 	}
 	this.normal[k] = v
 	this.reverse[v] = k
-	return nil
+	return GOGPGlobalNamePrefixMappingIdType(k), nil
 }
 
 //remove by key
