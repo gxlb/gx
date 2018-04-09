@@ -100,7 +100,7 @@ func (this *RsaServer) Sign(src []byte, hash crypto.Hash) ([]byte, error) {
 	return rsa.SignPKCS1v15(rand.Reader, this.privateKey, hash, hashed)
 }
 
-func GenRsaKeys(bits int) (privateKey, publicKey string, err error) {
+func GenRsaKeys(bits int) (privateKey, publicKey []byte, err error) {
 	//generate private key
 	priKey, _err := rsa.GenerateKey(rand.Reader, bits)
 	if _err != nil {
@@ -117,7 +117,7 @@ func GenRsaKeys(bits int) (privateKey, publicKey string, err error) {
 	if err != nil {
 		return "", "", err
 	}
-	privateKey = bufPri.String()
+	privateKey = bufPri.Bytes()
 
 	// generate public key from private key
 	pubKey := &priKey.PublicKey
@@ -134,6 +134,6 @@ func GenRsaKeys(bits int) (privateKey, publicKey string, err error) {
 	if err != nil {
 		return "", "", err
 	}
-	publicKey = bufPub.String()
+	publicKey = bufPub.Bytes()
 	return
 }
